@@ -8,208 +8,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        primary: '#0B6E99',
-                        'primary-dark': '#084F6F',
-                        accent: '#00C2CB',
-                    }
-                }
-            }
+            theme: { extend: {
+                fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                colors: { primary: '#0B6E99', 'primary-dark': '#084F6F', accent: '#00C2CB' }
+            }}
         }
     </script>
     <style>
-        body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-        }
-        
-        /* Smooth transitions */
-        a, button {
-            transition: all 0.25s ease;
-        }
-        
-        /* Button hover effect */
-        button, 
-        a[class*="bg-primary"],
-        a[class*="rounded-full"] {
-            transition: all 0.25s ease;
-        }
-        
-        button:hover,
-        a[class*="bg-primary"]:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25);
-        }
-        
-        /* Navbar link hover */
-        nav a {
-            transition: color 0.2s ease;
-        }
-        
-        /* Page fade-in */
-        body {
-            animation: fadeIn 0.4s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-            
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
-        }
-        
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
+        body { font-family: 'Inter', system-ui, sans-serif; animation: fadeIn 0.4s ease-out; }
+        a, button { transition: all 0.25s ease; }
+        button:hover, a[class*="bg-primary"]:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
-    
-    <!-- Navbar -->
-    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-3">
-                <img src="assets/archwaylogo.png" alt="Archway" class="h-10 object-contain">
-            </a>
-            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
-                <a href="index.html" class="text-slate-600 hover:text-primary transition">Home</a>
-                <a href="applicants.html" class="text-slate-600 hover:text-primary transition">Applicants</a>
-                <a href="employers.html" class="text-primary font-semibold">Employers</a>
-                <a href="about.html" class="text-slate-600 hover:text-primary transition">About Us</a>
-            </div>
-            <a href="index.html#contact" class="hidden md:inline-flex items-center px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition">
-                Contact Us
-            </a>
-        </div>
-    </nav>
-    
-    <!-- Header -->
-    <div class="bg-primary text-white py-12">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">For Employers</h1>
-            <p class="text-white/90">Partner with Archway for quality and ethical Filipino manpower solutions.</p>
-        </div>
-    </div>
-    
-    <!-- Content -->
-    <div class="max-w-4xl mx-auto px-4 py-12">
-        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10 space-y-10">
-            
-            <!-- Intro -->
-            <div>
-                <h2 class="text-xl font-bold text-primary mb-4">Documentary Requirements</h2>
-                <p class="text-slate-600 leading-relaxed mb-4">
-                    The documentary requirements from principal employers vary depending on the host country’s own set of rules and regulations pertaining to hiring foreign workers. POEA is also concerned on the state of economy, the records on human rights abuses being reported by the Philippine labor attaché back to our government. As such, additional requirements may be required by the POEA as it deems necessary in order to protect the welfare of the Filipino workers.
-                </p>
-                <p class="text-slate-600 leading-relaxed">
-                    However, the following are the typical basic requirements that are asked of our principal employers.
-                </p>
-            </div>
-            
-            <!-- Requirements List -->
-            <div>
-                <ol class="space-y-4 text-slate-600 list-decimal list-inside">
-                    <li>
-                        <strong>Manpower Demand Letter</strong> (to the agency) – It enumerates the number of workers required, salaries & benefits and terms of employment;
-                    </li>
-                    <li>
-                        <strong>Special Power of Attorney (SPA)</strong> – This is a legal document binding the principal with the designated agency, vesting authority to the agency to recruit and deploy workers on their behalf;
-                    </li>
-                    <li>
-                        <strong>Master Employment Contract / Individual Contract</strong> – This is a legal document binding all parties: employer, agency and the worker, to a set of agreements concerning the job offered, salary offered, working schedules, rest days, and benefits. It also embodies terms of termination and expatriation at the end of the contract;
-                    </li>
-                    <li>
-                        <strong>Recruitment Agreement</strong>;
-                    </li>
-                    <li>
-                        <strong>Arabic Visa with English translation</strong>;
-                    </li>
-                    <li>
-                        <strong>Visa Delegation</strong>;
-                    </li>
-                    <li>
-                        <strong>Certificate of Commercial Registration</strong>;
-                    </li>
-                    <li>
-                        <strong>Photocopy of sponsor’s national ID</strong>;
-                    </li>
-                    <li>
-                        <strong>Location map and photos of accommodation</strong>;
-                    </li>
-                    <li>
-                        <strong>Letter of Commitment</strong>;
-                    </li>
-                    <li>
-                        <strong>Survey Form</strong> if applicable;
-                    </li>
-                    <li>
-                        <strong>Revocation</strong> if applicable;
-                    </li>
-                    <li>
-                        <strong>Authorization letter</strong> of the authorized representative;
-                    </li>
-                    <li>
-                        <strong>ID copy</strong> of authorized representative.
-                    </li>
-                </ol>
-            </div>
-            
-            <!-- Note -->
-            <div class="bg-slate-50 rounded-xl p-5 text-slate-600 text-sm leading-relaxed">
-                <p class="mb-3">
-                    All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the POEA for acknowledgment and registration. It is important that these documents carry English translations.
-                </p>
-                <p>
-                    If you have any questions regarding the above, do not hesitate to get in touch with our Recruitment Officer via email at 
-                    <a href="mailto:inquiry@archwayintl.com.ph" class="text-primary font-medium hover:underline">inquiry@archwayintl.com.ph</a>. 
-                    We’ll be happy to hear from you.
-                </p>
-            </div>
-            
-            <!-- CTA -->
-            <div class="pt-2">
-                <a href="index.html#contact" 
-                class="inline-flex items-center px-7 py-3.5 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition">
-                Contact Us / Partner With Us
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-<!-- Footer -->
-<footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
-    <p>© 2026 Archway International & Marketing Services, Inc. All rights reserved.</p>
-</footer>
-
-<script>
-   
-    const observerOptions = {
-      threshold: 0.15,
-      rootMargin: "0px 0px -50px 0px"
-    };
-  
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-         
-        }
-      });
-    }, observerOptions);
-  
-    document.querySelectorAll('.reveal').forEach(el => {
-      observer.observe(el);
-    });
-  </script>
-
+    <div id="app"></div>
+    <script src="config.js"></script>
+    <script src="site.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', renderEmployersPage);
+    </script>
 </body>
 </html>

@@ -57,7 +57,7 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-             
+        
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -67,6 +67,18 @@
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .accordion-content.open {
+            max-height: 1000px; 
+            opacity: 1;
         }
         
     </style>
@@ -103,7 +115,7 @@
     <div class="max-w-4xl mx-auto px-4 py-12">
         <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
             
-            <form action="https://formsubmit.co/jparaiso.digital@gmail.com" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
+            <form action="https://formsubmit.co/jparaiso.digital@gmail.com"" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
                 
                 <!-- FormSubmit settings -->
                 <input type="hidden" name="_subject" value="New Job Application - Archway">
@@ -351,57 +363,59 @@
 <div class="max-w-4xl mx-auto px-4 pb-16 space-y-6">
     
     <!-- Job Interview Protocols -->
-    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden reveal">
         <button onclick="toggleSection('protocols')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
             <h2 class="text-lg font-bold text-primary">Job Interview Protocols</h2>
-            <span id="icon-protocols" class="text-2xl text-primary">+</span>
+            <span id="icon-protocols" class="text-2xl text-primary transition-transform duration-300">+</span>
         </button>
-        <div id="protocols" class="hidden px-5 md:px-6 pb-6 text-slate-600 leading-relaxed space-y-3 text-sm">
-            <p>There really is no better way to pass a personal interview than to fully prepare yourself for it. It therefore goes without saying that you should be able to defend your application for the position you applied for with total confidence.</p>
-            <p>Defending your position is knowing the basics, theories and application of your knowledge in a given field or profession. Aside from being confident about yourself, you must also keep in mind the following pointers:</p>
-            <ol class="list-decimal list-inside space-y-2 ml-1">
-                <li>Be on time. Arriving at least 30 minutes before the interview gives you enough time to freshen up, relax and compose yourself.</li>
-                <li>Look your best. Wear clean and appropriate office attire or uniform in line with your trade or profession.</li>
-                <li>Greet your interviewer with a smile of confidence. A good grip during a handshake typically conveys a feeling of confidence on your part. It is wise to ask the agency coordinator about the culture of the interviewer. If their culture is such that they do not do handshakes, simply greet your interviewer with a warm smile.</li>
-                <li>Respond to questions in a clear manner. Simple English will do as long as it is clear and in the correct grammar. It is better to be honest to say “I am sorry” if you really do not know the answer. Wait for the interviewer to finish his question before answering.</li>
-                <li>Answers to questions must be direct-to-the-point. Walang paligoy-ligoy at walang sad stories about your family. Negative comments about yourself or your family will earn you negative points only.</li>
-                <li>Maintain good eye contact. Look into the eyes and lips of your interviewer when he speaks. It tells the interviewer how attentive you are.</li>
-                <li>If you did not understand the question the first time, be polite to ask your interviewer to repeat his question: “I am sorry, could you please repeat your question?”</li>
-                <li>At the end of the interview, thank your interviewer, mentioning his/her name. Ex: “Thank you, Mr. Jones, for the interview.”</li>
-            </ol>
+        <div id="protocols" class="accordion-content px-5 md:px-6 text-slate-600 leading-relaxed space-y-3 text-sm">
+            <div class="pb-6">
+                <p>There really is no better way to pass a personal interview than to fully prepare yourself for it. It therefore goes without saying that you should be able to defend your application for the position you applied for with total confidence.</p>
+                <p>Defending your position is knowing the basics, theories and application of your knowledge in a given field or profession. Aside from being confident about yourself, you must also keep in mind the following pointers:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-1">
+                    <li>Be on time. Arriving at least 30 minutes before the interview gives you enough time to freshen up, relax and compose yourself.</li>
+                    <li>Look your best. Wear clean and appropriate office attire or uniform in line with your trade or profession.</li>
+                    <li>Greet your interviewer with a smile of confidence. A good grip during a handshake typically conveys a feeling of confidence on your part. It is wise to ask the agency coordinator about the culture of the interviewer. If their culture is such that they do not do handshakes, simply greet your interviewer with a warm smile.</li>
+                    <li>Respond to questions in a clear manner. Simple English will do as long as it is clear and in the correct grammar. It is better to be honest to say “I am sorry” if you really do not know the answer. Wait for the interviewer to finish his question before answering.</li>
+                    <li>Answers to questions must be direct-to-the-point. Walang paligoy-ligoy at walang sad stories about your family. Negative comments about yourself or your family will earn you negative points only.</li>
+                    <li>Maintain good eye contact. Look into the eyes and lips of your interviewer when he speaks. It tells the interviewer how attentive you are.</li>
+                    <li>If you did not understand the question the first time, be polite to ask your interviewer to repeat his question: “I am sorry, could you please repeat your question?”</li>
+                    <li>At the end of the interview, thank your interviewer, mentioning his/her name. Ex: “Thank you, Mr. Jones, for the interview.”</li>
+                </ol>
+            </div>
         </div>
     </div>
     
     <!-- Initial Documentary Requirements -->
-    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden reveal">
         <button onclick="toggleSection('docs')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
             <h2 class="text-lg font-bold text-primary">Initial Documentary Requirements</h2>
-            <span id="icon-docs" class="text-2xl text-primary">+</span>
+            <span id="icon-docs" class="text-2xl text-primary transition-transform duration-300">+</span>
         </button>
-        <div id="docs" class="hidden px-5 md:px-6 pb-6 text-slate-600 leading-relaxed text-sm space-y-6">
-            
-            <div>
-                <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Overseas Jobs</h3>
-                <ul class="list-disc list-inside space-y-1 ml-1">
-                    <li>Resume with detailed Job Description</li>
-                    <li>Employment / Training Certificates</li>
-                    <li>Diploma & Transcript Of Records</li>
-                    <li>Board Certificates / PRC ID</li>
-                    <li>NBI Clearance</li>
-                    <li>Passport photos, 6 pcs. 2×2 Colored Photos (w/ collar)</li>
-                    <li>2 Whole-body photos ( 4R / in business attire with white background )</li>
-                </ul>
-            </div>
-            
-            <div>
-                <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Local Jobs</h3>
-                <ul class="list-disc list-inside space-y-1 ml-1">
-                    <li>Resume with Job Description</li>
-                    <li>Employment / Training Certificates</li>
-                    <li>Diploma & Transcript Of Records</li>
-                    <li>NBI Clearance</li>
-                    <li>2×2 Colored Photos (w/ collar)</li>
-                </ul>
+        <div id="docs" class="accordion-content px-5 md:px-6 text-slate-600 leading-relaxed text-sm">
+            <div class="pb-6 space-y-6">
+                <div>
+                    <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Overseas Jobs</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-1">
+                        <li>Resume with detailed Job Description</li>
+                        <li>Employment / Training Certificates</li>
+                        <li>Diploma & Transcript Of Records</li>
+                        <li>Board Certificates / PRC ID</li>
+                        <li>NBI Clearance</li>
+                        <li>Passport photos, 6 pcs. 2×2 Colored Photos (w/ collar)</li>
+                        <li>2 Whole-body photos ( 4R / in business attire with white background )</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Local Jobs</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-1">
+                        <li>Resume with Job Description</li>
+                        <li>Employment / Training Certificates</li>
+                        <li>Diploma & Transcript Of Records</li>
+                        <li>NBI Clearance</li>
+                        <li>2×2 Colored Photos (w/ collar)</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -486,17 +500,22 @@
 
 <!-- Simple toggle script -->
 <script>
+
     function toggleSection(id) {
         const section = document.getElementById(id);
         const icon = document.getElementById('icon-' + id);
-        if (section.classList.contains('hidden')) {
-            section.classList.remove('hidden');
-            icon.textContent = '−';
-        } else {
-            section.classList.add('hidden');
+        
+        if (section.classList.contains('open')) {
+            section.classList.remove('open');
             icon.textContent = '+';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            section.classList.add('open');
+            icon.textContent = '−';
+            icon.style.transform = 'rotate(180deg)';
         }
     }
+
 </script>
 
 <!-- Footer -->
@@ -505,25 +524,25 @@
 </footer>
 
 <script>
-   
+    
     const observerOptions = {
-      threshold: 0.15,
-      rootMargin: "0px 0px -50px 0px"
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px"
     };
-  
+    
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-         
-        }
-      });
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                
+            }
+        });
     }, observerOptions);
-  
+    
     document.querySelectorAll('.reveal').forEach(el => {
-      observer.observe(el);
+        observer.observe(el);
     });
-  </script>
+</script>
 
 </body>
 </html>
