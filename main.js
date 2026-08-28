@@ -101,10 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <h3 class="text-xl font-bold text-slate-900 mb-3">${c.jobs.local.title}</h3>
             <p class="text-slate-500 mb-6 leading-relaxed">${c.jobs.local.description}</p>
-            <a href="#applicants" class="inline-flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
-              ${c.jobs.local.button}
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
+            <a href="applicants.html" class="inline-flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
+  ${c.jobs.local.button}
+  ...
+</a>
+  
           </div>
           <div class="group bg-white rounded-2xl border border-slate-200 p-8 hover:border-primary/30 hover:shadow-xl transition duration-300">
             <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
@@ -112,10 +113,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <h3 class="text-xl font-bold text-slate-900 mb-3">${c.jobs.overseas.title}</h3>
             <p class="text-slate-500 mb-6 leading-relaxed">${c.jobs.overseas.description}</p>
-            <a href="#applicants" class="inline-flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
-              ${c.jobs.overseas.button}
-              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
+            <a href="applicants.html" class="inline-flex items-center text-primary font-semibold group-hover:gap-2 transition-all">
+  ${c.jobs.overseas.button}
+  ...
+</a>
+
           </div>
         </div>
       </div>

@@ -21,7 +21,42 @@
         }
     </script>
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+        }
+    
+        /* Smooth transitions */
+        a, button {
+            transition: all 0.25s ease;
+        }
+    
+        /* Button hover effect */
+        button, 
+        a[class*="bg-primary"],
+        a[class*="rounded-full"] {
+            transition: all 0.25s ease;
+        }
+    
+        button:hover,
+        a[class*="bg-primary"]:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25);
+        }
+    
+        /* Navbar link hover */
+        nav a {
+            transition: color 0.2s ease;
+        }
+    
+        /* Page fade-in */
+        body {
+            animation: fadeIn 0.4s ease-out;
+        }
+    
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -299,6 +334,157 @@
     </form>
 </div>
 </div>
+
+<!-- Extra Info Sections -->
+<div class="max-w-4xl mx-auto px-4 pb-16 space-y-6">
+    
+    <!-- Job Interview Protocols -->
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+        <button onclick="toggleSection('protocols')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
+            <h2 class="text-lg font-bold text-primary">Job Interview Protocols</h2>
+            <span id="icon-protocols" class="text-2xl text-primary">+</span>
+        </button>
+        <div id="protocols" class="hidden px-5 md:px-6 pb-6 text-slate-600 leading-relaxed space-y-3 text-sm">
+            <p>There really is no better way to pass a personal interview than to fully prepare yourself for it. It therefore goes without saying that you should be able to defend your application for the position you applied for with total confidence.</p>
+            <p>Defending your position is knowing the basics, theories and application of your knowledge in a given field or profession. Aside from being confident about yourself, you must also keep in mind the following pointers:</p>
+            <ol class="list-decimal list-inside space-y-2 ml-1">
+                <li>Be on time. Arriving at least 30 minutes before the interview gives you enough time to freshen up, relax and compose yourself.</li>
+                <li>Look your best. Wear clean and appropriate office attire or uniform in line with your trade or profession.</li>
+                <li>Greet your interviewer with a smile of confidence. A good grip during a handshake typically conveys a feeling of confidence on your part. It is wise to ask the agency coordinator about the culture of the interviewer. If their culture is such that they do not do handshakes, simply greet your interviewer with a warm smile.</li>
+                <li>Respond to questions in a clear manner. Simple English will do as long as it is clear and in the correct grammar. It is better to be honest to say “I am sorry” if you really do not know the answer. Wait for the interviewer to finish his question before answering.</li>
+                <li>Answers to questions must be direct-to-the-point. Walang paligoy-ligoy at walang sad stories about your family. Negative comments about yourself or your family will earn you negative points only.</li>
+                <li>Maintain good eye contact. Look into the eyes and lips of your interviewer when he speaks. It tells the interviewer how attentive you are.</li>
+                <li>If you did not understand the question the first time, be polite to ask your interviewer to repeat his question: “I am sorry, could you please repeat your question?”</li>
+                <li>At the end of the interview, thank your interviewer, mentioning his/her name. Ex: “Thank you, Mr. Jones, for the interview.”</li>
+            </ol>
+        </div>
+    </div>
+    
+    <!-- Initial Documentary Requirements -->
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+        <button onclick="toggleSection('docs')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
+            <h2 class="text-lg font-bold text-primary">Initial Documentary Requirements</h2>
+            <span id="icon-docs" class="text-2xl text-primary">+</span>
+        </button>
+        <div id="docs" class="hidden px-5 md:px-6 pb-6 text-slate-600 leading-relaxed text-sm space-y-6">
+            
+            <div>
+                <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Overseas Jobs</h3>
+                <ul class="list-disc list-inside space-y-1 ml-1">
+                    <li>Resume with detailed Job Description</li>
+                    <li>Employment / Training Certificates</li>
+                    <li>Diploma & Transcript Of Records</li>
+                    <li>Board Certificates / PRC ID</li>
+                    <li>NBI Clearance</li>
+                    <li>Passport photos, 6 pcs. 2×2 Colored Photos (w/ collar)</li>
+                    <li>2 Whole-body photos ( 4R / in business attire with white background )</li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="font-semibold text-slate-800 mb-2">Initial Requirements for Local Jobs</h3>
+                <ul class="list-disc list-inside space-y-1 ml-1">
+                    <li>Resume with Job Description</li>
+                    <li>Employment / Training Certificates</li>
+                    <li>Diploma & Transcript Of Records</li>
+                    <li>NBI Clearance</li>
+                    <li>2×2 Colored Photos (w/ collar)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Process Steps - Vertical Timeline -->
+    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10">
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2">We’ll Be There Every Step of the Way</h2>
+        <p class="text-center text-slate-500 mb-12 text-sm">From application to deployment — we guide you through the entire process.</p>
+        
+        <div class="relative max-w-2xl mx-auto">
+            <!-- Vertical Line -->
+            <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-primary/20"></div>
+            
+            <!-- Steps -->
+            <div class="space-y-10">
+                <!-- Step 1 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">1</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Sourcing</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">We receive manpower requests from clients and begin searching for qualified candidates.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">2</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Initial Interview</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Candidates undergo initial screening and interview by our recruitment team.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">3</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Pre-Selection</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Shortlisted applicants are prepared and documents are checked for completeness.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 4 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">4</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Principal Interview</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Selected candidates are presented to the foreign principal for final interview.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 5 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">5</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Final Selection</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Successful candidates are officially selected and proceed to the next stage.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 6 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">6</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Travel Clearances</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">We assist with POEA processing, medicals, visas, and all required clearances.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 7 -->
+                <div class="relative flex gap-6">
+                    <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">7</div>
+                    <div class="pt-1">
+                        <h3 class="font-semibold text-slate-800 text-lg mb-1">Deployment</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">Workers are deployed to their destination. We remain available for support even after deployment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Simple toggle script -->
+<script>
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        if (section.classList.contains('hidden')) {
+            section.classList.remove('hidden');
+            icon.textContent = '−';
+        } else {
+            section.classList.add('hidden');
+            icon.textContent = '+';
+        }
+    }
+</script>
 
 <!-- Footer -->
 <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">

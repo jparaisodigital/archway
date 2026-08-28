@@ -10,7 +10,7 @@
 
 ## Immediate Priority (Today – for Meeting)
 
-**Goal:** Working Application Form that sends to HR email (within 2 hours)
+**Goal:** Working Application Form that sends to HR email 
 
 - [x] Create simplified but long Application Form
 - [x] Include Resume / CV file upload

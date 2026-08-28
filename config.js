@@ -8,7 +8,7 @@ const config = {
 
     // Logo (config-driven)
   logo: {
-    src: "assets/archway.png",  
+    src: "assets/archwaylogo.png",  
     alt: "Archway Logo",
     height: 40                 
   },
