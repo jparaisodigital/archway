@@ -24,39 +24,51 @@
         body { 
             font-family: 'Inter', system-ui, sans-serif; 
         }
-    
+        
         /* Smooth transitions */
         a, button {
             transition: all 0.25s ease;
         }
-    
+        
         /* Button hover effect */
         button, 
         a[class*="bg-primary"],
         a[class*="rounded-full"] {
             transition: all 0.25s ease;
         }
-    
+        
         button:hover,
         a[class*="bg-primary"]:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25);
         }
-    
+        
         /* Navbar link hover */
         nav a {
             transition: color 0.2s ease;
         }
-    
+        
         /* Page fade-in */
         body {
             animation: fadeIn 0.4s ease-out;
         }
-    
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+             
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -65,7 +77,7 @@
     <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-3">
-                <img src="assets/archway.png" alt="Archway" class="h-10 object-contain">
+                <img src="assets/archwaylogo.png" alt="Archway" class="h-10 object-contain">
             </a>
             <div class="hidden md:flex items-center gap-8 text-sm font-medium">
                 <a href="index.html" class="text-slate-600 hover:text-primary transition">Home</a>
@@ -471,6 +483,7 @@
         </div>
     </div>
 </div>
+
 <!-- Simple toggle script -->
 <script>
     function toggleSection(id) {
@@ -490,6 +503,27 @@
 <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
     <p>© 2026 Archway International & Marketing Services, Inc. All rights reserved.</p>
 </footer>
+
+<script>
+   
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -50px 0px"
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+         
+        }
+      });
+    }, observerOptions);
+  
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
 
 </body>
 </html>

@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   app.appendChild(hero);
   
   // ========== STATS ==========
-  const stats = el('section', 'relative -mt-10 z-10');
+  const stats = el('section', 'relative -mt-10 z-10 reveal');
   stats.innerHTML = `
       <div class="max-w-7xl mx-auto px-6">
         <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   app.appendChild(stats);
   
   // ========== JOBS ==========
-  const jobs = el('section', 'py-20 lg:py-28');
+  const jobs = el('section', 'py-20 lg:py-28 reveal');
   jobs.id = 'jobs';
   jobs.innerHTML = `
       <div class="max-w-7xl mx-auto px-6">
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
   app.appendChild(jobs);
   
   // ========== ABOUT ==========
-  const about = el('section', 'py-20 lg:py-28 bg-white');
+  const about = el('section', 'py-20 lg:py-28 bg-white reveal');
   about.id = 'about';
   about.innerHTML = `
       <div class="max-w-7xl mx-auto px-6">
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
   app.appendChild(about);
   
   // ========== CONTACT ==========
-  const contact = el('section', 'py-20 lg:py-28 bg-primary text-white');
+  const contact = el('section', 'py-20 lg:py-28 bg-primary text-white reveal');
   contact.id = 'contact';
   contact.innerHTML = `
       <div class="max-w-7xl mx-auto px-6">
@@ -226,11 +226,29 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   app.appendChild(footer);
   
-  // Simple mobile menu toggle (optional enhancement)
+  // Simple mobile menu toggle 
   const btn = document.getElementById('mobile-menu-btn');
   if (btn) {
     btn.addEventListener('click', () => {
       alert('Mobile menu – for demo lang. Pwede nating gawing full dropdown later.');
     });
   }
+
+    // ===== Scroll Reveal =====
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -40px 0px"
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+  
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
 });

@@ -22,47 +22,81 @@
       }
     }
   </script>
-    <style>
-      html { scroll-behavior: smooth; }
-      
-      body { 
-        font-family: 'Inter', system-ui, sans-serif; 
-        animation: fadeIn 0.4s ease-out;
-      }
-  
-      /* Smooth transitions */
-      a, button {
-        transition: all 0.25s ease;
-      }
-  
-      /* Button hover effect */
-      button, 
-      a[class*="bg-primary"],
-      a[class*="rounded-full"] {
-        transition: all 0.25s ease;
-      }
-  
-      button:hover,
-      a[class*="bg-primary"]:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25);
-      }
-  
-      /* Navbar link hover */
-      nav a {
-        transition: color 0.2s ease;
-      }
-  
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style>
+  <style>
+    html { scroll-behavior: smooth; }
+    
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      animation: fadeIn 0.4s ease-out;
+    }
+    
+    /* Smooth transitions */
+    a, button {
+      transition: all 0.25s ease;
+    }
+    
+    /* Button hover effect */
+    button, 
+    a[class*="bg-primary"],
+    a[class*="rounded-full"] {
+      transition: all 0.25s ease;
+    }
+    
+    button:hover,
+    a[class*="bg-primary"]:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25);
+    }
+    
+    /* Navbar link hover */
+    nav a {
+      transition: color 0.2s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased">
   <div id="app"></div>
-
+  
   <script src="config.js"></script>
   <script src="main.js"></script>
+
+  <script>
+   
+    const observerOptions = {
+      threshold: 0.15,
+      rootMargin: "0px 0px -50px 0px"
+    };
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+         
+        }
+      });
+    }, observerOptions);
+  
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+
 </body>
 </html>
