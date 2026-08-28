@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Applicants | Archway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+                    colors: {
+                        primary: '#0B6E99',
+                        'primary-dark': '#084F6F',
+                        accent: '#00C2CB',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    
+    <!-- Navbar -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <img src="assets/archway.png" alt="Archway" class="h-10 object-contain">
+            </a>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="index.html" class="text-slate-600 hover:text-primary transition">Home</a>
+                <a href="applicants.html" class="text-primary font-semibold">Applicants</a>
+                <a href="employers.html" class="text-slate-600 hover:text-primary transition">Employers</a>
+                <a href="about.html" class="text-slate-600 hover:text-primary transition">About Us</a>
+            </div>
+            <a href="index.html#contact" class="hidden md:inline-flex items-center px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition">
+                Contact Us
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Header -->
+    <div class="bg-primary text-white py-12">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">Application Form</h1>
+            <p class="text-white/90">Be the first to be notified of new job openings! Fill-up the form below and submit to HR.</p>
+        </div>
+    </div>
+    
+    <!-- Form Section -->
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+            
+            <form action="https://formsubmit.co/jparaiso.digital@gmail.com" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
+                
+                <!-- FormSubmit settings -->
+                <input type="hidden" name="_subject" value="New Job Application - Archway">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                
+                <!-- Job Preference -->
+                <div>
+                    <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Job Preference</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Job Applying For *</label>
+                            <input type="text" name="Job Applying For" required
+                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                            placeholder="e.g. Operations Supervisor">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Job Type *</label>
+                            <select name="Job Type" required
+                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                            <option value="">Select...</option>
+                            <option value="Local">Local</option>
+                            <option value="Overseas">Overseas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Expected Monthly Salary</label>
+                        <input type="text" name="Expected Monthly Salary"
+                        class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Personal Information -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Personal Information</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">First Name *</label>
+                        <input type="text" name="First Name" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Middle Name</label>
+                        <input type="text" name="Middle Name" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Last Name *</label>
+                        <input type="text" name="Last Name" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Gender *</label>
+                        <select name="Gender" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                            <option value="">Select...</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Birthdate *</label>
+                        <input type="date" name="Birthdate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Birthplace</label>
+                        <input type="text" name="Birthplace" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Citizenship *</label>
+                        <input type="text" name="Citizenship" value="Filipino" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Civil Status *</label>
+                        <select name="Civil Status" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                            <option value="">Select...</option>
+                            <option>Single</option>
+                            <option>Married</option>
+                            <option>Widowed</option>
+                            <option>Separated</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium mb-1">Address *</label>
+                        <input type="text" name="Address" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">City *</label>
+                        <input type="text" name="City" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Zip Code</label>
+                        <input type="text" name="Zip Code" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Country *</label>
+                        <input type="text" name="Country" value="Philippines" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Mobile Phone *</label>
+                        <input type="tel" name="Mobile Phone" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Email *</label>
+                        <input type="email" name="Email" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">SSS No.</label>
+                        <input type="text" name="SSS No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">PhilHealth No.</label>
+                        <input type="text" name="PhilHealth No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Pag-IBIG No.</label>
+                        <input type="text" name="Pag-IBIG No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">TIN</label>
+                        <input type="text" name="TIN" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Emergency Contact -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">In Case of Emergency</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Contact Person *</label>
+                        <input type="text" name="Emergency Contact Person" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Relationship</label>
+                        <input type="text" name="Emergency Relationship" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Phone *</label>
+                        <input type="tel" name="Emergency Phone" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Address</label>
+                        <input type="text" name="Emergency Address" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Academic Information -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Academic Information</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Highest Educational Attainment *</label>
+                        <select name="Highest Education" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                            <option value="">Select...</option>
+                            <option>High School Graduate</option>
+                            <option>College Graduate</option>
+                            <option>Masteral Graduate</option>
+                            <option>PhD Graduate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Course / Degree & School</label>
+                        <textarea name="Course and School" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="Course taken, degree obtained, name of school, year graduated"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">High School & Elementary Education</label>
+                        <textarea name="High School and Elementary" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="Highest grade completed, name of school, year graduated"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Professional Licenses</label>
+                        <input type="text" name="Professional Licenses" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Skills</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Languages Spoken</label>
+                        <input type="text" name="Languages Spoken" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="e.g. Filipino, English">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Knowledge of Software / Tools</label>
+                        <input type="text" name="Software Tools" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="MS Word, Excel, Photoshop, etc.">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium mb-1">Other Special Skills</label>
+                        <input type="text" name="Special Skills" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium mb-1">Seminars Attended</label>
+                        <textarea name="Seminars Attended" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="Title of seminars & dates attended"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Previous Employment -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Previous Employments</h2>
+                <textarea name="Previous Employments" rows="4" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+                placeholder="Previous employers, dates employed, position held, & tasks performed"></textarea>
+            </div>
+            
+            <!-- Resume Upload -->
+            <div>
+                <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Resume / CV Upload</h2>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Upload your Resume (PDF or Word) *</label>
+                    <input type="file" name="Resume" accept=".pdf,.doc,.docx" required
+                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                    <p class="text-xs text-slate-500 mt-1">Accepted: PDF, DOC, DOCX • Max recommended size: 5MB</p>
+                </div>
+            </div>
+            
+            <!-- Consent -->
+            <div class="bg-slate-50 p-4 rounded-lg text-sm text-slate-600">
+                <label class="flex items-start gap-3">
+                    <input type="checkbox" name="Consent" required class="mt-1">
+                    <span>
+                        I certify that the information provided is true and correct. I understand that any false statement may result in the rejection of my application.
+                        I also consent to the processing of my personal data in accordance with the Data Privacy Act of 2012.
+                    </span>
+                </label>
+            </div>
+            
+            <!-- Submit -->
+            <div class="pt-4">
+                <button type="submit"
+                class="w-full md:w-auto px-10 py-3.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition">
+                Submit Application
+            </button>
+        </div>
+        
+    </form>
+</div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm">
+    <p>© 2026 Archway International & Marketing Services, Inc. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
