@@ -19,26 +19,86 @@ function renderNav(activePage) {
           </div>
       </nav>
     `;
-  }
-  
-  function renderFooter() {
+}
+
+function renderFooter() {
     return `
       <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm space-y-1">
           <p>${config.footer.copyright}</p>
           <p class="text-xs">${config.poeaLicense}</p>
       </footer>
     `;
-  }
+}
 
-  // ===== HOME PAGE =====
+// ===== JOBS DATA (mula sa Google Sheets) =====
+async function fetchJobs() {
+    try {
+        const res = await fetch(config.jobsSheetUrl);
+        const csvText = await res.text();
+        const rows = csvText.trim().split('\n').slice(1); // laktawan ang header row
+        return rows.map(row => {
+            const [id, title, type] = row.split(',').map(v => v.trim());
+            return { id, title, type };
+        }).filter(job => job.id && job.title);
+    } catch (err) {
+        console.error('Failed to fetch jobs:', err);
+        return [];
+    }
+}
+
+function renderJobTable(title, jobs) {
+    return `
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div class="p-6 border-b border-slate-100">
+              <h3 class="text-xl font-bold text-slate-900">${title}</h3>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+              <table class="w-full text-sm">
+                  <thead class="bg-slate-50 sticky top-0">
+                      <tr>
+                          <th class="text-left px-4 py-2 font-semibold text-slate-600">Job Title</th>
+                          <th class="text-right px-4 py-2 font-semibold text-slate-600">Apply</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      ${jobs.length === 0 ? `
+                          <tr><td colspan="2" class="px-4 py-6 text-center text-slate-400">No openings right now.</td></tr>
+                      ` : jobs.map(job => `
+                          <tr class="border-t border-slate-100 hover:bg-slate-50">
+                              <td class="px-4 py-3 text-slate-700">${job.title}</td>
+                              <td class="px-4 py-3 text-right">
+                                  <a href="applicants.html?job=${encodeURIComponent(job.title)}&type=${encodeURIComponent(job.type)}" class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition">Apply</a>
+                              </td>
+                          </tr>
+                      `).join('')}
+                  </tbody>
+              </table>
+          </div>
+      </div>
+    `;
+}
+
+// ===== HOME PAGE =====
+function renderJobsLoading(title) {
+    return `
+      <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+          <div class="p-6 border-b border-slate-100">
+              <h3 class="text-xl font-bold text-slate-900">${title}</h3>
+          </div>
+          <div class="p-10 text-center text-slate-400 text-sm">Loading job listings...</div>
+      </div>
+    `;
+}
+
 function renderHomePage() {
     const app = document.getElementById('app');
     const c = config;
-  
+    
     app.innerHTML = `
-      ${renderNav('index.html')}
-  
-      <section class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden" id="home">
+    ${renderNav('index.html')}
+    
+    <div class="fade-in-content">
+    <section class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden" id="home">
           <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark"></div>
           <div class="absolute inset-0 opacity-20" style="background-image:url('${c.hero.image}'); background-size:cover; background-position:center;"></div>
           <div class="relative max-w-7xl mx-auto px-6">
@@ -73,23 +133,9 @@ function renderHomePage() {
                   <h2 class="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-4">${c.jobs.title}</h2>
                   <p class="text-slate-500 max-w-xl mx-auto">Explore current opportunities for Filipino professionals and skilled workers.</p>
               </div>
-              <div class="grid md:grid-cols-2 gap-8">
-                  <div class="group bg-white rounded-2xl border border-slate-200 p-8 hover:border-primary/30 hover:shadow-xl transition duration-300">
-                      <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-                          <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                      </div>
-                      <h3 class="text-xl font-bold text-slate-900 mb-3">${c.jobs.local.title}</h3>
-                      <p class="text-slate-500 mb-6 leading-relaxed">${c.jobs.local.description}</p>
-                      <a href="applicants.html" class="inline-flex items-center gap-1 text-primary font-semibold group-hover:gap-2 transition-all">${c.jobs.local.button} →</a>
-                  </div>
-                  <div class="group bg-white rounded-2xl border border-slate-200 p-8 hover:border-primary/30 hover:shadow-xl transition duration-300">
-                      <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6">
-                          <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                      </div>
-                      <h3 class="text-xl font-bold text-slate-900 mb-3">${c.jobs.overseas.title}</h3>
-                      <p class="text-slate-500 mb-6 leading-relaxed">${c.jobs.overseas.description}</p>
-                      <a href="applicants.html" class="inline-flex items-center gap-1 text-primary font-semibold group-hover:gap-2 transition-all">${c.jobs.overseas.button} →</a>
-                  </div>
+              <div class="grid md:grid-cols-2 gap-8" id="jobsGrid">
+                  ${renderJobsLoading(c.jobs.local.title)}
+                  ${renderJobsLoading(c.jobs.overseas.title)}
               </div>
           </div>
       </section>
@@ -164,36 +210,46 @@ function renderHomePage() {
           </div>
       </section>
   
-      ${renderFooter()}
+            ${renderFooter()}
+      </div>
     `;
-  
+    
     // Mobile menu (demo)
     const btn = document.getElementById('mobile-menu-btn');
     if (btn) {
-      btn.addEventListener('click', () => {
-        alert('Mobile menu – for demo lang. Pwede nating gawing full dropdown later.');
-      });
+        btn.addEventListener('click', () => {
+            alert('Mobile menu – for demo lang. Pwede nating gawing full dropdown later.');
+        });
     }
-  
+    
     initScrollReveal();
-  }
-  
-  // ===== SCROLL REVEAL  =====
-  function initScrollReveal() {
+    
+    fetchJobs().then(jobs => {
+        const localJobs = jobs.filter(j => j.type === 'Local');
+        const overseasJobs = jobs.filter(j => j.type === 'Overseas');
+        const grid = document.getElementById('jobsGrid');
+        if (grid) {
+            grid.innerHTML = renderJobTable(c.jobs.local.title, localJobs) + renderJobTable(c.jobs.overseas.title, overseasJobs);
+        }
+    });
+}
+
+// ===== SCROLL REVEAL  =====
+function initScrollReveal() {
     const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -40px 0px" };
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('active');
-      });
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+        });
     }, observerOptions);
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  }
-  
-  // ===== ABOUT PAGE =====
-  function renderAboutPage() {
+}
+
+// ===== ABOUT PAGE =====
+function renderAboutPage() {
     const app = document.getElementById('app');
     const p = config.aboutPage;
-  
+    
     app.innerHTML = `
       ${renderNav('about.html')}
   
@@ -223,36 +279,36 @@ function renderHomePage() {
   
       ${renderFooter()}
     `;
-  }
-  
-   // ===== EMPLOYERS PAGE =====
-   function renderEmployersPage() {
+}
+
+// ===== EMPLOYERS PAGE =====
+function renderEmployersPage() {
     const app = document.getElementById('app');
     const p = config.employersPage;
-
+    
     app.innerHTML = `
       ${renderNav('employers.html')}
-
+    
       <div class="bg-primary text-white py-12">
           <div class="max-w-4xl mx-auto px-4 text-center">
               <h1 class="text-3xl md:text-4xl font-bold mb-3">${p.headerTitle}</h1>
               <p class="text-white/90">${p.headerSubtitle}</p>
           </div>
       </div>
-
+    
       <div class="max-w-4xl mx-auto px-4 py-12">
           <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10 space-y-10">
               <div>
                   <h2 class="text-xl font-bold text-primary mb-4">${p.reqTitle}</h2>
                   ${p.reqIntro.map(para => `<p class="text-slate-600 leading-relaxed mb-4">${para}</p>`).join('')}
               </div>
-
+    
               <div>
                   <ol class="space-y-4 text-slate-600 list-decimal list-inside">
                       ${p.requirements.map(req => `<li>${req}</li>`).join('')}
                   </ol>
               </div>
-
+    
               <div class="bg-slate-50 rounded-xl p-5 text-slate-600 text-sm leading-relaxed">
                   <p class="mb-3">${p.note}</p>
                   <p>
@@ -261,7 +317,7 @@ function renderHomePage() {
                       We'll be happy to hear from you.
                   </p>
               </div>
-
+    
               <div class="pt-2">
                   <a href="index.html#contact" class="inline-flex items-center px-7 py-3.5 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition">
                       Contact Us / Partner With Us
@@ -269,11 +325,346 @@ function renderHomePage() {
               </div>
           </div>
       </div>
-
+    
       ${renderFooter()}
     `;
-  }
+}
 
-  // ===== APPLICANTS PAGE (susunod natin gagawin) =====
-  // function renderApplicantsPage() { ... }
-  
+// ===== APPLICANTS PAGE =====
+let applicantJobsData = [];
+
+function renderJobTypeOptions(jobs, selectedType) {
+    const types = [...new Set(jobs.map(j => j.type).filter(Boolean))];
+    return `<option value="">Select...</option>` +
+        types.map(t => `<option value="${t}" ${t === selectedType ? 'selected' : ''}>${t}</option>`).join('');
+}
+
+function renderJobTitleOptions(jobs, type, selectedTitle) {
+    if (!type) {
+        return `<option value="">Piliin muna ang Job Type</option>`;
+    }
+    const filtered = jobs.filter(j => j.type === type);
+    if (filtered.length === 0) {
+        return `<option value="">Walang bakanteng posisyon sa ngayon</option>`;
+    }
+    return `<option value="">Select...</option>` +
+        filtered.map(j => `<option value="${j.title}" ${j.title === selectedTitle ? 'selected' : ''}>${j.title}</option>`).join('');
+}
+
+function onJobTypeChange() {
+    const type = document.getElementById('jobTypeSelect').value;
+    const titleSelect = document.getElementById('jobTitleSelect');
+    titleSelect.innerHTML = renderJobTitleOptions(applicantJobsData, type, '');
+}
+
+function renderApplicantsPage() {
+    const app = document.getElementById('app');
+    const p = config.applicantsPage;
+    
+    // Ang ?job= at ?type= mula sa URL (galing sa "Apply" click sa homepage)
+    const urlParams = new URLSearchParams(window.location.search);
+    const preselectedType = urlParams.get('type') || '';
+    const preselectedJobTitle = urlParams.get('job') || '';
+    
+    const languageOptions = [
+        "English-fluent", "English-mediocre",
+        "Spanish-fluent", "Spanish-mediocre",
+        "French-fluent", "French-mediocre",
+        "Arabic-fluent", "Arabic-mediocre",
+        "Mandarin-fluent", "Mandarin-mediocre",
+        "Russian-fluent", "Russian-mediocre",
+        "not applicable"
+    ];
+    
+    const renderLanguageDropdown = (num) => `
+      <select name="Language ${num}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+          <option value=""></option>
+          ${languageOptions.map(opt => `<option>${opt}</option>`).join('')}
+      </select>
+    `;
+    
+    app.innerHTML = `
+    ${renderNav('applicants.html')}
+    <div class="fade-in-content">
+    
+    <div class="bg-primary text-white py-12">
+              <div class="max-w-4xl mx-auto px-4 text-center">
+                  <h1 class="text-3xl md:text-4xl font-bold mb-3">${p.headerTitle}</h1>
+                  <p class="text-white/90">${p.headerSubtitle}</p>
+              </div>
+          </div>
+    
+          <div class="max-w-4xl mx-auto px-4 py-12">
+              <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+                  <form action="${p.formEndpoint}" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
+                      <input type="hidden" name="_subject" value="New Job Application - Archway">
+                      <input type="hidden" name="_captcha" value="false">
+                      <input type="hidden" name="_template" value="table">
+    
+                      <div>
+                          <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Job Preference</h2>
+                              <div class="grid md:grid-cols-2 gap-4">
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Job Type *</label>
+                                  <select id="jobTypeSelect" name="Job Type" required onchange="onJobTypeChange()" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Loading job types...</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Job Applying For *</label>
+                                  <select id="jobTitleSelect" name="Job Applying For" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Piliin muna ang Job Type</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Expected Monthly Salary</label>
+                                  <input type="text" name="Expected Monthly Salary" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                              </div>
+                          </div>
+                      </div>
+    
+                      <div>
+                          <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Personal Information</h2>
+                          <div class="grid md:grid-cols-2 gap-4">
+                              <div><label class="block text-sm font-medium mb-1">First Name *</label><input type="text" name="First Name" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Middle Name</label><input type="text" name="Middle Name" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Last Name *</label><input type="text" name="Last Name" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Gender *</label>
+                                  <select name="Gender" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Male</option>
+                                      <option>Female</option>
+                                  </select>
+                              </div>
+                              <div><label class="block text-sm font-medium mb-1">Birthdate *</label><input type="date" name="Birthdate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Birthplace</label><input type="text" name="Birthplace" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Citizenship *</label><input type="text" name="Citizenship" value="Filipino" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Civil Status *</label>
+                                  <select name="Civil Status" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Single</option>
+                                      <option>Married</option>
+                                      <option>Widowed</option>
+                                      <option>Separated</option>
+                                  </select>
+                              </div>
+                              <div class="md:col-span-2"><label class="block text-sm font-medium mb-1">Address *</label><input type="text" name="Address" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">City *</label><input type="text" name="City" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Zip Code</label><input type="text" name="Zip Code" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Country *</label><input type="text" name="Country" value="Philippines" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Mobile Phone *</label><input type="tel" name="Mobile Phone" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Email *</label><input type="email" name="Email" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">SSS No.</label><input type="text" name="SSS No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">PhilHealth No.</label><input type="text" name="PhilHealth No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Pag-IBIG No.</label><input type="text" name="Pag-IBIG No" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">TIN</label><input type="text" name="TIN" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                          </div>
+                      </div>
+    
+                      <div>
+                          <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">In Case of Emergency</h2>
+                          <div class="grid md:grid-cols-2 gap-4">
+                              <div><label class="block text-sm font-medium mb-1">Contact Person *</label><input type="text" name="Emergency Contact Person" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Relationship</label><input type="text" name="Emergency Relationship" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Phone *</label><input type="tel" name="Emergency Phone" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                              <div><label class="block text-sm font-medium mb-1">Address</label><input type="text" name="Emergency Address" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                          </div>
+                      </div>
+    
+                                        <div>
+                      <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Academic Information</h2>
+                      <div class="space-y-4">
+                          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">High School Graduate? *</label>
+                                  <select name="High School Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Yes</option>
+                                      <option>No</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">College Graduate? *</label>
+                                  <select name="College Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Yes</option>
+                                      <option>No</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">Masteral Graduate?</label>
+                                  <select name="Masteral Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Yes</option>
+                                      <option>No</option>
+                                  </select>
+                              </div>
+                              <div>
+                                  <label class="block text-sm font-medium mb-1">PhD Graduate?</label>
+                                  <select name="PhD Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                                      <option value="">Select...</option>
+                                      <option>Yes</option>
+                                      <option>No</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div>
+                              <label class="block text-sm font-medium mb-1">College & Post-Graduate Education</label>
+                              <textarea name="College and Post-Graduate Education" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="If applicable, write here the course taken, degree obtained, the name of the school, year graduated"></textarea>
+                          </div>
+                          <div>
+                              <label class="block text-sm font-medium mb-1">High School & Elementary Education</label>
+                              <textarea name="High School and Elementary" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="Write here the highest grade completed, the name of school, year graduated"></textarea>
+                          </div>
+                          <div>
+                              <label class="block text-sm font-medium mb-1">Professional Licenses</label>
+                              <input type="text" name="Professional Licenses" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                          </div>
+                      </div>
+                  </div>
+    
+                                        <div>
+                      <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Skills</h2>
+                      <div class="space-y-4">
+                          <div>
+                              <label class="block text-sm font-medium mb-1">Languages Spoken</label>
+                              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                  <div>
+                                      <span class="text-xs text-slate-500">1.</span>
+                                      ${renderLanguageDropdown(1)}
+                                  </div>
+                                  <div>
+                                      <span class="text-xs text-slate-500">2.</span>
+                                      ${renderLanguageDropdown(2)}
+                                  </div>
+                                  <div>
+                                      <span class="text-xs text-slate-500">3.</span>
+                                      ${renderLanguageDropdown(3)}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="grid md:grid-cols-2 gap-4">
+                              <div><label class="block text-sm font-medium mb-1">Knowledge of Software / Tools</label><input type="text" name="Software Tools" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="MS Word, Excel, Photoshop, etc."></div>
+                              <div><label class="block text-sm font-medium mb-1">Other Special Skills</label><input type="text" name="Special Skills" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"></div>
+                          </div>
+                          <div>
+                              <label class="block text-sm font-medium mb-1">Seminars Attended</label>
+                              <textarea name="Seminars Attended" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="Title of seminars & dates attended"></textarea>
+                          </div>
+                      </div>
+                  </div>
+    
+                      <div>
+                          <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Previous Employments</h2>
+                          <textarea name="Previous Employments" rows="4" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="Previous employers, dates employed, position held, & tasks performed"></textarea>
+                      </div>
+    
+                      <div>
+                          <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Resume / CV Upload</h2>
+                          <div>
+                              <label class="block text-sm font-medium mb-1">Upload your Resume (PDF or Word) *</label>
+                              <input type="file" name="Resume" accept=".pdf,.doc,.docx" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                              <p class="text-xs text-slate-500 mt-1">Accepted: PDF, DOC, DOCX • Max recommended size: 5MB</p>
+                          </div>
+                      </div>
+    
+                      <div class="bg-slate-50 p-4 rounded-lg text-sm text-slate-600">
+                          <label class="flex items-start gap-3">
+                              <input type="checkbox" name="Consent" required class="mt-1">
+                              <span>I certify that the information provided is true and correct. I understand that any false statement may result in the rejection of my application. I also consent to the processing of my personal data in accordance with the Data Privacy Act of 2012.</span>
+                          </label>
+                      </div>
+    
+                      <div class="pt-4">
+                          <button type="submit" class="w-full md:w-auto px-10 py-3.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition">Submit Application</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+    
+          <div class="max-w-4xl mx-auto px-4 pb-16 space-y-6">
+              <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden reveal">
+                  <button onclick="toggleSection('protocols')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
+                      <h2 class="text-lg font-bold text-primary">${p.protocols.title}</h2>
+                      <span id="icon-protocols" class="text-2xl text-primary transition-transform duration-300">+</span>
+                  </button>
+                  <div id="protocols" class="accordion-content px-5 md:px-6 text-slate-600 leading-relaxed space-y-3 text-sm">
+                      <div class="pb-6">
+                          ${p.protocols.intro.map(para => `<p>${para}</p>`).join('')}
+                          <ol class="list-decimal list-inside space-y-2 ml-1">
+                              ${p.protocols.tips.map(tip => `<li>${tip}</li>`).join('')}
+                          </ol>
+                      </div>
+                  </div>
+              </div>
+    
+              <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden reveal">
+                  <button onclick="toggleSection('docs')" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-slate-50 transition">
+                      <h2 class="text-lg font-bold text-primary">${p.docs.title}</h2>
+                      <span id="icon-docs" class="text-2xl text-primary transition-transform duration-300">+</span>
+                  </button>
+                  <div id="docs" class="accordion-content px-5 md:px-6 text-slate-600 leading-relaxed text-sm">
+                      <div class="pb-6 space-y-6">
+                          <div>
+                              <h3 class="font-semibold text-slate-800 mb-2">${p.docs.overseas.title}</h3>
+                              <ul class="list-disc list-inside space-y-1 ml-1">${p.docs.overseas.items.map(i => `<li>${i}</li>`).join('')}</ul>
+                          </div>
+                          <div>
+                              <h3 class="font-semibold text-slate-800 mb-2">${p.docs.local.title}</h3>
+                              <ul class="list-disc list-inside space-y-1 ml-1">${p.docs.local.items.map(i => `<li>${i}</li>`).join('')}</ul>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+    
+              <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10">
+                  <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2">${p.process.title}</h2>
+                  <p class="text-center text-slate-500 mb-12 text-sm">${p.process.subtitle}</p>
+                  <div class="relative max-w-2xl mx-auto">
+                      <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-primary/20"></div>
+                      <div class="space-y-10">
+                          ${p.process.steps.map((step, i) => `
+                              <div class="relative flex gap-6">
+                                  <div class="w-12 h-12 rounded-full bg-primary text-white font-bold text-lg flex items-center justify-center shrink-0 z-10 shadow-md">${i + 1}</div>
+                                  <div class="pt-1">
+                                      <h3 class="font-semibold text-slate-800 text-lg mb-1">${step.title}</h3>
+                                      <p class="text-sm text-slate-500 leading-relaxed">${step.desc}</p>
+                                  </div>
+                              </div>
+                          `).join('')}
+                      </div>
+                  </div>
+              </div>
+          </div>
+    
+                  ${renderFooter()}
+          </div>
+        `;
+    
+        initScrollReveal();
+
+        fetchJobs().then(jobs => {
+            applicantJobsData = jobs;
+            const typeSelect = document.getElementById('jobTypeSelect');
+            const titleSelect = document.getElementById('jobTitleSelect');
+            if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
+            if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
+        });
+    }
+
+// ===== ACCORDION TOGGLE =====
+function toggleSection(id) {
+    const section = document.getElementById(id);
+    const icon = document.getElementById('icon-' + id);
+    if (section.classList.contains('open')) {
+        section.classList.remove('open');
+        icon.textContent = '+';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        section.classList.add('open');
+        icon.textContent = '−';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}

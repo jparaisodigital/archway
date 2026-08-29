@@ -49,6 +49,9 @@ const config = {
     { value: "Middle East", label: "Primary Markets" }
   ],
   
+  // Google Sheets — published CSV link ng job listings
+  jobsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pub?gid=0&single=true&output=csv",
+  
   // Jobs Section
   jobs: {
     title: "Now Hiring",
@@ -86,34 +89,101 @@ const config = {
     ],
     highlight: "We stand proud by our clean record of <strong>Zero-complaint</strong> and <strong>Zero-citation</strong> sanction from POEA."
   },
-
-    // Employers Page
-    employersPage: {
-      headerTitle: "For Employers",
-      headerSubtitle: "Partner with Archway for quality and ethical Filipino manpower solutions.",
-      reqTitle: "Documentary Requirements",
-      reqIntro: [
-        "The documentary requirements from principal employers vary depending on the host country's own set of rules and regulations pertaining to hiring foreign workers. POEA is also concerned on the state of economy, the records on human rights abuses being reported by the Philippine labor attaché back to our government. As such, additional requirements may be required by the POEA as it deems necessary in order to protect the welfare of the Filipino workers.",
-        "However, the following are the typical basic requirements that are asked of our principal employers."
+  
+  // Employers Page
+  employersPage: {
+    headerTitle: "For Employers",
+    headerSubtitle: "Partner with Archway for quality and ethical Filipino manpower solutions.",
+    reqTitle: "Documentary Requirements",
+    reqIntro: [
+      "The documentary requirements from principal employers vary depending on the host country's own set of rules and regulations pertaining to hiring foreign workers. POEA is also concerned on the state of economy, the records on human rights abuses being reported by the Philippine labor attaché back to our government. As such, additional requirements may be required by the POEA as it deems necessary in order to protect the welfare of the Filipino workers.",
+      "However, the following are the typical basic requirements that are asked of our principal employers."
+    ],
+    requirements: [
+      "Manpower Demand Letter (to the agency) – It enumerates the number of workers required, salaries & benefits and terms of employment;",
+      "Special Power of Attorney (SPA) – This is a legal document binding the principal with the designated agency, vesting authority to the agency to recruit and deploy workers on their behalf;",
+      "Master Employment Contract / Individual Contract – This is a legal document binding all parties: employer, agency and the worker, to a set of agreements concerning the job offered, salary offered, working schedules, rest days, and benefits. It also embodies terms of termination and expatriation at the end of the contract;",
+      "Recruitment Agreement;",
+      "Arabic Visa with English translation;",
+      "Visa Delegation;",
+      "Certificate of Commercial Registration;",
+      "Photocopy of sponsor's national ID;",
+      "Location map and photos of accommodation;",
+      "Letter of Commitment;",
+      "Survey Form if applicable;",
+      "Revocation if applicable;",
+      "Authorization letter of the authorized representative;",
+      "ID copy of authorized representative."
+    ],
+    note: "All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the POEA for acknowledgment and registration. It is important that these documents carry English translations."
+  },
+  
+  // Applicants Page
+  applicantsPage: {
+    headerTitle: "Application Form",
+    headerSubtitle: "Be the first to be notified of new job openings! Fill-up the form below and submit to HR.",
+    
+    // FormSubmit target
+    formEndpoint: "https://formsubmit.co/jparaiso.digital@gmail.com",
+    
+    protocols: {
+      title: "Job Interview Protocols",
+      intro: [
+        "There really is no better way to pass a personal interview than to fully prepare yourself for it. It therefore goes without saying that you should be able to defend your application for the position you applied for with total confidence.",
+        "Defending your position is knowing the basics, theories and application of your knowledge in a given field or profession. Aside from being confident about yourself, you must also keep in mind the following pointers:"
       ],
-      requirements: [
-        "Manpower Demand Letter (to the agency) – It enumerates the number of workers required, salaries & benefits and terms of employment;",
-        "Special Power of Attorney (SPA) – This is a legal document binding the principal with the designated agency, vesting authority to the agency to recruit and deploy workers on their behalf;",
-        "Master Employment Contract / Individual Contract – This is a legal document binding all parties: employer, agency and the worker, to a set of agreements concerning the job offered, salary offered, working schedules, rest days, and benefits. It also embodies terms of termination and expatriation at the end of the contract;",
-        "Recruitment Agreement;",
-        "Arabic Visa with English translation;",
-        "Visa Delegation;",
-        "Certificate of Commercial Registration;",
-        "Photocopy of sponsor's national ID;",
-        "Location map and photos of accommodation;",
-        "Letter of Commitment;",
-        "Survey Form if applicable;",
-        "Revocation if applicable;",
-        "Authorization letter of the authorized representative;",
-        "ID copy of authorized representative."
-      ],
-      note: "All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the POEA for acknowledgment and registration. It is important that these documents carry English translations."
+      tips: [
+        "Be on time. Arriving at least 30 minutes before the interview gives you enough time to freshen up, relax and compose yourself.",
+        "Look your best. Wear clean and appropriate office attire or uniform in line with your trade or profession.",
+        "Greet your interviewer with a smile of confidence. A good grip during a handshake typically conveys a feeling of confidence on your part. It is wise to ask the agency coordinator about the culture of the interviewer. If their culture is such that they do not do handshakes, simply greet your interviewer with a warm smile.",
+        "Respond to questions in a clear manner. Simple English will do as long as it is clear and in the correct grammar. It is better to be honest to say “I am sorry” if you really do not know the answer. Wait for the interviewer to finish his question before answering.",
+        "Answers to questions must be direct-to-the-point. Walang paligoy-ligoy at walang sad stories about your family. Negative comments about yourself or your family will earn you negative points only.",
+        "Maintain good eye contact. Look into the eyes and lips of your interviewer when he speaks. It tells the interviewer how attentive you are.",
+        "If you did not understand the question the first time, be polite to ask your interviewer to repeat his question: “I am sorry, could you please repeat your question?”",
+        "At the end of the interview, thank your interviewer, mentioning his/her name. Ex: “Thank you, Mr. Jones, for the interview.”"
+      ]
     },
+    
+    docs: {
+      title: "Initial Documentary Requirements",
+      overseas: {
+        title: "Initial Requirements for Overseas Jobs",
+        items: [
+          "Resume with detailed Job Description",
+          "Employment / Training Certificates",
+          "Diploma & Transcript Of Records",
+          "Board Certificates / PRC ID",
+          "NBI Clearance",
+          "Passport photos, 6 pcs. 2×2 Colored Photos (w/ collar)",
+          "2 Whole-body photos ( 4R / in business attire with white background )"
+        ]
+      },
+      local: {
+        title: "Initial Requirements for Local Jobs",
+        items: [
+          "Resume with Job Description",
+          "Employment / Training Certificates",
+          "Diploma & Transcript Of Records",
+          "NBI Clearance",
+          "2×2 Colored Photos (w/ collar)"
+        ]
+      }
+    },
+    
+    process: {
+      title: "We'll Be There Every Step of the Way",
+      subtitle: "From application to deployment — we guide you through the entire process.",
+      steps: [
+        { title: "Sourcing", desc: "We receive manpower requests from clients and begin searching for qualified candidates." },
+        { title: "Initial Interview", desc: "Candidates undergo initial screening and interview by our recruitment team." },
+        { title: "Pre-Selection", desc: "Shortlisted applicants are prepared and documents are checked for completeness." },
+        { title: "Principal Interview", desc: "Selected candidates are presented to the foreign principal for final interview." },
+        { title: "Final Selection", desc: "Successful candidates are officially selected and proceed to the next stage." },
+        { title: "Travel Clearances", desc: "We assist with POEA processing, medicals, visas, and all required clearances." },
+        { title: "Deployment", desc: "Workers are deployed to their destination. We remain available for support even after deployment." }
+      ]
+    }
+  },
   
   // Contact
   contact: {

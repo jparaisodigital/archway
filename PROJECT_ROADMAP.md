@@ -26,37 +26,37 @@
 - [x] Project setup
 - [x] Config system
 - [x] Logo
-- [ ] Shared Navbar & Footer
-- [ ] Design system (colors, spacing, typography)
+- [x] Shared Navbar & Footer
+- [x] Design system (colors, spacing, typography)
 
 ---
 
 ## Phase 2: Home Page
-- [ ] Modern Hero
-- [ ] Local & Overseas Jobs section
-- [ ] Welcome / About preview
-- [ ] CTAs
+- [x] Modern Hero
+- [x] Local & Overseas Jobs section
+- [x] Welcome / About preview
+- [x] CTAs
 
 ---
 
 ## Phase 3: Applicants Page
-- [ ] Application Form (priority – working email)
-- [ ] Job Interview Protocols
-- [ ] Documentary Requirements
-- [ ] Process Steps (“We’ll Be There Every Step of the Way”)
-- [ ] Contact section
+- [x] Application Form (priority – working email)
+- [x] Job Interview Protocols
+- [x] Documentary Requirements
+- [x] Process Steps (“We’ll Be There Every Step of the Way”)
+- [x] Contact section
 
 ---
 
 ## Phase 4: Employers Page
-- [ ] Documentary Requirements list
-- [ ] Contact / Partner form
+- [x] Documentary Requirements list
+- [x] Contact / Partner form
 
 ---
 
 ## Phase 5: About Us Page
-- [ ] Company story
-- [ ] Contact section
+- [x] Company story
+- [x] Contact section
 
 ---
 
