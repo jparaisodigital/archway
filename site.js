@@ -16,9 +16,33 @@ function renderNav(activePage) {
               <a href="index.html#contact" class="hidden md:inline-flex items-center px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition">
                   Contact Us
               </a>
+              <button onclick="toggleMobileMenu()" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-slate-700 hover:bg-slate-100 transition" aria-label="Menu">
+                  <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                  <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+          </div>
+          <div id="mobileMenu" class="md:hidden hidden border-t border-slate-200 bg-white">
+              <div class="px-6 py-4 flex flex-col gap-1">
+                  ${config.nav.map(item => `
+                      <a href="${item.href}" class="px-3 py-2.5 rounded-lg text-sm font-medium ${item.href === activePage ? 'text-primary bg-primary/5 font-semibold' : 'text-slate-600 hover:bg-slate-50'}">${item.label}</a>
+                  `).join('')}
+                  <a href="index.html#contact" class="mt-2 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition">
+                      Contact Us
+                  </a>
+              </div>
           </div>
       </nav>
     `;
+}
+
+// ===== MOBILE MENU TOGGLE =====
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobileMenu');
+    const iconOpen = document.getElementById('menu-icon-open');
+    const iconClose = document.getElementById('menu-icon-close');
+    menu.classList.toggle('hidden');
+    iconOpen.classList.toggle('hidden');
+    iconClose.classList.toggle('hidden');
 }
 
 function renderFooter() {
@@ -100,7 +124,7 @@ function renderHomePage() {
     <div class="fade-in-content">
     <section class="relative pt-28 pb-20 lg:pt-36 lg:pb-28 overflow-hidden" id="home">
           <div class="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary-dark"></div>
-          <div class="absolute inset-0 opacity-20" style="background-image:url('${c.hero.image}'); background-size:cover; background-position:center;"></div>
+          ${c.hero.images.map((img, i) => `<div class="hero-bg-image ${i === 0 ? 'active' : ''}" style="background-image:url('${img}');"></div>`).join('')}
           <div class="relative max-w-7xl mx-auto px-6">
               <div class="max-w-3xl">
                   <p class="text-accent font-semibold tracking-wide uppercase text-sm mb-4">${c.year} Year of Excellence</p>
@@ -108,7 +132,7 @@ function renderHomePage() {
                   <p class="text-lg text-white/90 leading-relaxed mb-10 max-w-2xl">${c.hero.subtitle}</p>
                   <div class="flex flex-wrap gap-4">
                       <a href="#jobs" class="inline-flex items-center px-7 py-3.5 rounded-full bg-white text-primary font-semibold shadow-lg hover:shadow-xl transition">${c.hero.ctaPrimary}</a>
-                      <a href="#employers" class="inline-flex items-center px-7 py-3.5 rounded-full border-2 border-white/40 text-white font-semibold hover:bg-white/10 transition">${c.hero.ctaSecondary}</a>
+                      <a href="employers.html" class="inline-flex items-center px-7 py-3.5 rounded-full border-2 border-white/40 text-white font-semibold hover:bg-white/10 transition">${c.hero.ctaSecondary}</a>
                   </div>
               </div>
           </div>
@@ -209,20 +233,37 @@ function renderHomePage() {
               </div>
           </div>
       </section>
+
+      <section class="reveal">
+          <iframe
+              src="${c.contact.mapEmbedUrl}"
+              width="100%"
+              height="420"
+              style="border:0; display:block;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Archway Office Location">
+          </iframe>
+      </section>
   
             ${renderFooter()}
       </div>
     `;
     
-    // Mobile menu (demo)
-    const btn = document.getElementById('mobile-menu-btn');
-    if (btn) {
-        btn.addEventListener('click', () => {
-            alert('Mobile menu – for demo lang. Pwede nating gawing full dropdown later.');
-        });
-    }
-    
     initScrollReveal();
+
+    // Hero background image carousel
+    if (c.hero.images && c.hero.images.length > 1) {
+        let heroIndex = 0;
+        const heroSlides = document.querySelectorAll('.hero-bg-image');
+        setInterval(() => {
+            heroSlides[heroIndex].classList.remove('active');
+            heroIndex = (heroIndex + 1) % heroSlides.length;
+            heroSlides[heroIndex].classList.add('active');
+        }, c.hero.slideInterval || 4000);
+    }
+
     
     fetchJobs().then(jobs => {
         const localJobs = jobs.filter(j => j.type === 'Local');
@@ -330,6 +371,69 @@ function renderEmployersPage() {
     `;
 }
 
+// ===== ADMIN / JOBS DASHBOARD PAGE (client-only) =====
+function renderAdminPage() {
+    const app = document.getElementById('app');
+    const p = config.adminPage;
+
+    app.innerHTML = `
+      ${renderNav('admin.html')}
+
+      <div class="bg-primary text-white py-12">
+          <div class="max-w-4xl mx-auto px-4 text-center">
+              <div class="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full bg-white/10 text-white/90 text-xs font-semibold uppercase tracking-wide">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                  Client Access Only
+              </div>
+              <h1 class="text-3xl md:text-4xl font-bold mb-3">${p.headerTitle}</h1>
+              <p class="text-white/90">${p.headerSubtitle}</p>
+          </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 py-12">
+          <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10 space-y-8">
+
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 rounded-xl p-6">
+                  <div>
+                      <h2 class="text-lg font-bold text-slate-900 mb-1">Jobs Sheet</h2>
+                      <p class="text-sm text-slate-500">Open your spreadsheet to add, edit, or remove job openings.</p>
+                  </div>
+                  <a href="${p.sheetEditUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition shrink-0">
+                      Open Jobs Sheet
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </a>
+              </div>
+
+              <div>
+                  <h2 class="text-xl font-bold text-primary mb-6">${p.instructions.title}</h2>
+                  <div class="relative">
+                      <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-primary/20"></div>
+                      <div class="space-y-8">
+                          ${p.instructions.steps.map((step, i) => `
+                              <div class="relative flex gap-5">
+                                  <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center shrink-0 z-10 shadow-md text-sm">${i + 1}</div>
+                                  <div class="pt-1.5">
+                                      <h3 class="font-semibold text-slate-800 mb-1">${step.title}</h3>
+                                      <p class="text-sm text-slate-500 leading-relaxed">${step.desc}</p>
+                                  </div>
+                              </div>
+                          `).join('')}
+                      </div>
+                  </div>
+              </div>
+
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-800 leading-relaxed flex gap-3">
+                  <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <p>This page is not listed on the public menu — it's meant for internal use only. Keep this link private and only share it with authorized staff.</p>
+              </div>
+
+          </div>
+      </div>
+
+      ${renderFooter()}
+    `;
+}
+
 // ===== APPLICANTS PAGE =====
 let applicantJobsData = [];
 
@@ -341,11 +445,11 @@ function renderJobTypeOptions(jobs, selectedType) {
 
 function renderJobTitleOptions(jobs, type, selectedTitle) {
     if (!type) {
-        return `<option value="">Piliin muna ang Job Type</option>`;
+        return `<option value="">Please select a Job Type first</option>`;
     }
     const filtered = jobs.filter(j => j.type === type);
     if (filtered.length === 0) {
-        return `<option value="">Walang bakanteng posisyon sa ngayon</option>`;
+        return `<option value="">Select a Position...</option>`;
     }
     return `<option value="">Select...</option>` +
         filtered.map(j => `<option value="${j.title}" ${j.title === selectedTitle ? 'selected' : ''}>${j.title}</option>`).join('');
@@ -413,7 +517,7 @@ function renderApplicantsPage() {
                               <div>
                                   <label class="block text-sm font-medium mb-1">Job Applying For *</label>
                                   <select id="jobTitleSelect" name="Job Applying For" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
-                                      <option value="">Piliin muna ang Job Type</option>
+                                      <option value="">Please select a Job Type first</option>
                                   </select>
                               </div>
                               <div>

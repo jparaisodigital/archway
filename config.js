@@ -38,7 +38,12 @@ const config = {
     subtitle: `Now on its ${"20th"} year of operation, Archway has given thousands of deserving Filipinos stable local and overseas employment as nurses, doctors, laboratory technicians, accountants, office clerks, food service workers, programmers, computer engineers, domestic helpers, construction workers, teachers, carpenters, masons, and maintenance crew.`,
     ctaPrimary: "Browse Open Positions",
     ctaSecondary: "For Employers",
-    image: "assets/hero.png" 
+    images: [
+      "assets/hero.png",
+      "assets/hero2.png",
+      "assets/hero3.png"
+    ],
+    slideInterval: 4000
   },
   
   // Stats
@@ -185,10 +190,52 @@ const config = {
     }
   },
   
+  // Admin / Jobs Dashboard Page (client-only, not linked in public nav)
+  adminPage: {
+    headerTitle: "Jobs Dashboard",
+    headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
+
+    // TODO: Palitan ito ng actual "edit" link ng Google Sheet mo (yung link pag binuksan mo
+    // ang sheet mismo sa browser). HUWAG ilagay dito yung published CSV link — magkaiba yun
+    // sa jobsSheetUrl sa taas.
+    sheetEditUrl: "PASTE_YOUR_GOOGLE_SHEET_EDIT_LINK_HERE",
+
+    instructions: {
+      title: "How to Add or Update a Job Posting",
+      steps: [
+        {
+          title: "Open the Jobs Sheet",
+          desc: "Click the button below to open the spreadsheet in a new tab."
+        },
+        {
+          title: "Add a new row",
+          desc: "Fill in 3 columns: id (any unique number), title (the job title, e.g. \"Registered Nurse\"), and type."
+        },
+        {
+          title: "Type must be exact",
+          desc: "For the \"type\" column, type it exactly as Local or Overseas (capital L, capital O). This is how the website sorts the jobs correctly."
+        },
+        {
+          title: "Avoid commas",
+          desc: "Do not use commas (,) inside the job title or type — it can break how the list is read. Use a dash (–) instead if needed."
+        },
+        {
+          title: "To remove a job",
+          desc: "Simply delete that row from the sheet."
+        },
+        {
+          title: "Give it a minute",
+          desc: "Updates usually appear on the website within a minute or two. If not, try refreshing the page."
+        }
+      ]
+    }
+  },
+
   // Contact
   contact: {
     title: "Get in Touch",
     address: "3rd Flr., SKK Building, 63-65 Sen. Gil Puyat Ave., Pasay City, Metro Manila, Philippines 1304",
+    mapEmbedUrl: "https://maps.google.com/maps?q=Archway%20Multi-Services%20Corporation%2C%2063-65%20Sen.%20Gil%20Puyat%20Ave%2C%20Pasay%20City%2C%20Metro%20Manila&output=embed",
     phones: [
       "Trunk Lines: (02) 8551-1035 / 8551-1037",
       "HR: +63 920 949 7844",

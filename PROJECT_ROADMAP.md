@@ -61,10 +61,10 @@
 ---
 
 ## Phase 6: Jobs Management (Simplified)
-- [ ] Use **Google Sheets** as the source of jobs
-- [ ] Display Local & Overseas jobs from the Sheet
-- [ ] Client can edit jobs directly in Google Sheets (no custom admin needed)
-- [ ] Optional: Simple “Edit Jobs” button that opens the Sheet
+- [x] Use **Google Sheets** as the source of jobs
+- [x] Display Local & Overseas jobs from the Sheet
+- [x] Client can edit jobs directly in Google Sheets (no custom admin needed)
+- [x] Optional: Simple “Edit Jobs” button that opens the Sheet
 
 ---
 

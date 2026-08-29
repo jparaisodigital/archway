@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Applicants | Archway</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Jobs Dashboard | Archway</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -19,26 +20,6 @@
         a, button { transition: all 0.25s ease; }
         button:hover, a[class*="bg-primary"]:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, opacity 0.3s ease; opacity: 0; }
-        .accordion-content.open { max-height: 1000px; opacity: 1; }
-        .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .fade-in-content { animation: fadeIn 0.4s ease-out; }
-        
-        details[open] {
-            box-shadow: none !important;
-        }
-        
-        details[open] > summary {
-            box-shadow: none !important;
-        }
-        
-        details[open]:focus,
-        details[open] > summary:focus {
-            outline: none !important;
-            box-shadow: none !important;
-        }
-        
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800">
@@ -46,7 +27,7 @@
     <script src="config.js"></script>
     <script src="site.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', renderApplicantsPage);
+        document.addEventListener('DOMContentLoaded', renderAdminPage);
     </script>
 </body>
 </html>
