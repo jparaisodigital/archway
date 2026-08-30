@@ -59,18 +59,18 @@ async function fetchJobs() {
     try {
         const res = await fetch(config.jobsSheetUrl);
         const csvText = await res.text();
-
+        
         // Proper CSV parser that handles quoted fields + newlines
         function parseCSV(text) {
             const rows = [];
             let currentRow = [];
             let currentValue = '';
             let insideQuotes = false;
-
+            
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
                 const nextChar = text[i + 1];
-
+                
                 if (char === '"' && insideQuotes && nextChar === '"') {
                     // Escaped quote ("")
                     currentValue += '"';
@@ -93,21 +93,21 @@ async function fetchJobs() {
                     currentValue += char;
                 }
             }
-
+            
             // last value
             if (currentValue || currentRow.length > 0) {
                 currentRow.push(currentValue.trim());
                 rows.push(currentRow);
             }
-
+            
             return rows;
         }
-
+        
         const allRows = parseCSV(csvText);
         if (allRows.length < 2) return [];
-
+        
         const cols = config.jobsConfig.columns;
-
+        
         return allRows.slice(1).map(values => {
             const job = {
                 id: values[cols.id] || '',
@@ -123,7 +123,7 @@ async function fetchJobs() {
             };
             return job;
         }).filter(job => job.id && job.title && job.is_active);
-
+        
     } catch (err) {
         console.error('Failed to fetch jobs:', err);
         return [];
@@ -282,17 +282,45 @@ function renderHomePage() {
                   </div>
                   <div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
                       <h3 class="text-xl font-bold mb-6">Send a Message</h3>
-                      <form class="space-y-4" onsubmit="event.preventDefault(); alert('Thank you! This is a demo form.');">
-                          <input type="text" placeholder="Your Name" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
-                          <input type="email" placeholder="Email Address" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
-                          <select class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:border-accent">
-                              <option value="" class="text-slate-900">I am a...</option>
-                              <option value="applicant" class="text-slate-900">Job Applicant</option>
-                              <option value="employer" class="text-slate-900">Employer / Client</option>
-                          </select>
-                          <textarea rows="4" placeholder="Your Message" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required></textarea>
-                          <button type="submit" class="w-full py-3.5 rounded-xl bg-white text-primary font-semibold hover:bg-slate-100 transition">Send Message</button>
-                      </form>
+                      <form id="contactForm" class="space-y-4">
+    <!-- FormSubmit Settings -->
+    <input type="hidden" name="_subject" value="New Message from Archway Website">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+
+    <input type="text" name="Name" placeholder="Your Name" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
+    
+    <input type="email" name="Email" placeholder="Email Address" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
+    
+    <select name="Role" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:border-accent" required>
+        <option value="" class="text-slate-900">I am a...</option>
+        <option value="Job Applicant" class="text-slate-900">Job Applicant</option>
+        <option value="Employer / Client" class="text-slate-900">Employer / Client</option>
+    </select>
+    
+    <textarea name="Message" rows="4" placeholder="Your Message" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required></textarea>
+    
+    <button type="submit" id="contactSubmitBtn" class="w-full py-3.5 rounded-xl bg-white text-primary font-semibold hover:bg-slate-100 transition flex items-center justify-center gap-2">
+        <span>Send Message</span>
+        <!-- Loading Spinner (hidden by default) -->
+        <svg id="contactSpinner" class="hidden animate-spin h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </button>
+
+    <!-- Success Message (hidden by default) -->
+    <div id="contactSuccess" class="hidden mt-4 p-4 rounded-xl bg-green-500/20 border border-green-400/30 text-center">
+        <p class="text-green-300 font-medium">✓ Message sent successfully!</p>
+        <p class="text-green-200/80 text-sm mt-1">We'll get back to you soon.</p>
+    </div>
+    
+    <!-- Error Message (hidden by default) -->
+    <div id="contactError" class="hidden mt-4 p-4 rounded-xl bg-red-500/20 border border-red-400/30 text-center">
+        <p class="text-red-300 font-medium">✗ Failed to send message.</p>
+        <p class="text-red-200/80 text-sm mt-1">Please try again later.</p>
+    </div>
+</form>
                   </div>
               </div>
           </div>
@@ -335,7 +363,6 @@ function renderHomePage() {
         }, c.hero.slideInterval || 4000);
     }
     
-    
     fetchJobs().then(jobs => {
         window._allJobs = jobs;
         const localJobs = jobs.filter(j => j.type === 'Local');
@@ -345,7 +372,58 @@ function renderHomePage() {
             grid.innerHTML = renderJobTable(c.jobs.local.title, localJobs) + renderJobTable(c.jobs.overseas.title, overseasJobs);
         }
     });
-}
+
+    // ===== CONTACT FORM HANDLER  =====
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('contactSubmitBtn');
+            const successMsg = document.getElementById('contactSuccess');
+            const errorMsg = document.getElementById('contactError');
+            const spinner = document.getElementById('contactSpinner');
+            
+            // Reset messages
+            successMsg.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+
+            // Loading state
+            btn.disabled = true;
+            btn.querySelector('span').textContent = 'Sending...';
+            if (spinner) spinner.classList.remove('hidden');
+            btn.classList.add('opacity-70');
+
+            try {
+                const formData = new FormData(contactForm);
+                
+                const response = await fetch('https://formsubmit.co/ajax/jparaiso.digital@gmail.com', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    contactForm.reset();
+                    successMsg.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        successMsg.classList.add('hidden');
+                    }, 5000);
+                } else {
+                    errorMsg.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('span').textContent = 'Send Message';
+                if (spinner) spinner.classList.add('hidden');
+                btn.classList.remove('opacity-70');
+            }
+        });
+    }
+}  
 
 // ===== SCROLL REVEAL  =====
 function initScrollReveal() {
@@ -585,7 +663,7 @@ function renderApplicantsPage() {
             Please complete the form below. Your selected job is already pre-filled.
         </div>
     </div>
-
+    
               <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                   <form action="${p.formEndpoint}" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
                       <input type="hidden" name="_subject" value="New Job Application - Archway">
@@ -842,7 +920,7 @@ function renderApplicantsPage() {
         const titleSelect = document.getElementById('jobTitleSelect');
         if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
         if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
-    
+        
         // Show Job Summary Card if coming from popup / URL
         if (preselectedJobTitle) {
             const card = document.getElementById('jobSummaryCard');
@@ -877,11 +955,11 @@ function toggleSection(id) {
 function openJobPopup(id, title, type) {
     // Find the full job object so we can show extra details
     const job = (window._allJobs || []).find(j => j.id === id) || { id, title, type };
-
+    
     // Remove existing modal if any
     const existing = document.getElementById('jobModal');
     if (existing) existing.remove();
-
+    
     // Helper: only show a field if it has value
     const field = (label, value) => {
         if (!value) return '';
@@ -892,10 +970,10 @@ function openJobPopup(id, title, type) {
             </div>
         `;
     };
-
+    
     const hasExtraDetails = job.specialization || job.location || job.experience || 
-                            job.certifications || job.description || job.requirements;
-
+    job.certifications || job.description || job.requirements;
+    
     const modal = document.createElement('div');
     modal.id = 'jobModal';
     modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
@@ -911,7 +989,7 @@ function openJobPopup(id, title, type) {
                     <button onclick="closeJobPopup()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
                 </div>
             </div>
-
+    
             <div class="p-6 space-y-5">
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     ${field('Type', job.type)}
@@ -921,28 +999,28 @@ function openJobPopup(id, title, type) {
                     ${field('Years Experience', job.experience)}
                     ${field('Certifications', job.certifications)}
                 </div>
-
+    
                 ${job.description ? `
                     <div>
                         <p class="text-slate-500 text-xs mb-1">Job Description (Responsibilities)</p>
                         <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.description}</p>
                     </div>
                 ` : ''}
-
+    
                 ${job.requirements ? `
                     <div>
                         <p class="text-slate-500 text-xs mb-1">Requirements (Qualifications)</p>
                         <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.requirements}</p>
                     </div>
                 ` : ''}
-
+    
                 ${!hasExtraDetails ? `
                     <div class="bg-slate-50 rounded-xl p-4 text-sm text-slate-500">
                         ${config.jobsConfig.popup.noDetails}
                     </div>
                 ` : ''}
             </div>
-
+    
             <div class="p-6 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
                 <button onclick="closeJobPopup()" 
                     class="flex-1 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition">
@@ -955,7 +1033,7 @@ function openJobPopup(id, title, type) {
             </div>
         </div>
     `;
-
+    
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 }
