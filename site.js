@@ -40,11 +40,13 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     const iconOpen = document.getElementById('menu-icon-open');
     const iconClose = document.getElementById('menu-icon-close');
+
     menu.classList.toggle('hidden');
     iconOpen.classList.toggle('hidden');
     iconClose.classList.toggle('hidden');
 }
 
+// ===== FOOTER =====
 function renderFooter() {
     return `
       <footer class="bg-slate-900 text-slate-400 py-8 text-center text-sm space-y-1">
@@ -153,7 +155,9 @@ function renderJobTable(title, jobs) {
                               <td class="px-4 py-3 text-right">
                                   <button 
                                       onclick="openJobPopup('${job.id}', '${job.title.replace(/'/g, "\\'")}', '${job.type}')"
-                                      class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition">
+                                      class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold 
+                                             hover:bg-primary-dark hover:shadow-md hover:-translate-y-0.5 
+                                             active:translate-y-0 transition-all duration-200">
                                       Apply
                                   </button>
                               </td>
@@ -287,7 +291,7 @@ function renderHomePage() {
     <input type="hidden" name="_subject" value="New Message from Archway Website">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
-
+    
     <input type="text" name="Name" placeholder="Your Name" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
     
     <input type="email" name="Email" placeholder="Email Address" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
@@ -308,7 +312,7 @@ function renderHomePage() {
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
     </button>
-
+    
     <!-- Success Message (hidden by default) -->
     <div id="contactSuccess" class="hidden mt-4 p-4 rounded-xl bg-green-500/20 border border-green-400/30 text-center">
         <p class="text-green-300 font-medium">✓ Message sent successfully!</p>
@@ -372,13 +376,13 @@ function renderHomePage() {
             grid.innerHTML = renderJobTable(c.jobs.local.title, localJobs) + renderJobTable(c.jobs.overseas.title, overseasJobs);
         }
     });
-
+    
     // ===== CONTACT FORM HANDLER  =====
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
             const btn = document.getElementById('contactSubmitBtn');
             const successMsg = document.getElementById('contactSuccess');
             const errorMsg = document.getElementById('contactError');
@@ -387,13 +391,13 @@ function renderHomePage() {
             // Reset messages
             successMsg.classList.add('hidden');
             errorMsg.classList.add('hidden');
-
+            
             // Loading state
             btn.disabled = true;
             btn.querySelector('span').textContent = 'Sending...';
             if (spinner) spinner.classList.remove('hidden');
             btn.classList.add('opacity-70');
-
+            
             try {
                 const formData = new FormData(contactForm);
                 
@@ -401,7 +405,7 @@ function renderHomePage() {
                     method: 'POST',
                     body: formData
                 });
-
+                
                 if (response.ok) {
                     contactForm.reset();
                     successMsg.classList.remove('hidden');
@@ -745,40 +749,40 @@ function renderApplicantsPage() {
                                         <div>
                       <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Academic Information</h2>
                       <div class="space-y-4">
-                          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                              <div>
-                                  <label class="block text-sm font-medium mb-1">High School Graduate? *</label>
-                                  <select name="High School Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
-                                      <option value="">Select...</option>
-                                      <option>Yes</option>
-                                      <option>No</option>
-                                  </select>
-                              </div>
-                              <div>
-                                  <label class="block text-sm font-medium mb-1">College Graduate? *</label>
-                                  <select name="College Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
-                                      <option value="">Select...</option>
-                                      <option>Yes</option>
-                                      <option>No</option>
-                                  </select>
-                              </div>
-                              <div>
-                                  <label class="block text-sm font-medium mb-1">Masteral Graduate?</label>
-                                  <select name="Masteral Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
-                                      <option value="">Select...</option>
-                                      <option>Yes</option>
-                                      <option>No</option>
-                                  </select>
-                              </div>
-                              <div>
-                                  <label class="block text-sm font-medium mb-1">PhD Graduate?</label>
-                                  <select name="PhD Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
-                                      <option value="">Select...</option>
-                                      <option>Yes</option>
-                                      <option>No</option>
-                                  </select>
-                              </div>
-                          </div>
+                          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+        <label class="block text-sm font-medium mb-1">High School Graduate? *</label>
+        <select name="High School Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Select...</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">College Graduate? *</label>
+        <select name="College Graduate" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Select...</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">Masteral Graduate?</label>
+        <select name="Masteral Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Select...</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+    </div>
+    <div>
+        <label class="block text-sm font-medium mb-1">PhD Graduate?</label>
+        <select name="PhD Graduate" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+            <option value="">Select...</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+    </div>
+</div>
                           <div>
                               <label class="block text-sm font-medium mb-1">College & Post-Graduate Education</label>
                               <textarea name="College and Post-Graduate Education" rows="2" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none" placeholder="If applicable, write here the course taken, degree obtained, the name of the school, year graduated"></textarea>
