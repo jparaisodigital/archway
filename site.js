@@ -59,11 +59,32 @@ async function fetchJobs() {
     try {
         const res = await fetch(config.jobsSheetUrl);
         const csvText = await res.text();
-        const rows = csvText.trim().split('\n').slice(1); // laktawan ang header row
+        const rows = csvText.trim().split('\n').slice(1); // skip header
+
+        const cols = config.jobsConfig.columns;
+
         return rows.map(row => {
-            const [id, title, type] = row.split(',').map(v => v.trim());
-            return { id, title, type };
-        }).filter(job => job.id && job.title);
+            // Simple CSV split (Phase 1 – no commas inside fields yet)
+            const values = row.split(',').map(v => v.trim());
+
+            const job = {
+                id: values[cols.id] || '',
+                title: values[cols.title] || '',
+                type: values[cols.type] || '',
+                is_active: (values[cols.is_active] || 'TRUE').toUpperCase() === 'TRUE'
+            };
+
+            // Phase 2 fields (ready na, kahit wala pa sa Sheet)
+            // job.specialization = values[cols.specialization] || '';
+            // job.location = values[cols.location] || '';
+            // job.experience = values[cols.experience] || '';
+            // job.certifications = values[cols.certifications] || '';
+            // job.description = values[cols.description] || '';
+            // job.requirements = values[cols.requirements] || '';
+
+            return job;
+        }).filter(job => job.id && job.title && job.is_active);
+
     } catch (err) {
         console.error('Failed to fetch jobs:', err);
         return [];
@@ -91,7 +112,11 @@ function renderJobTable(title, jobs) {
                           <tr class="border-t border-slate-100 hover:bg-slate-50">
                               <td class="px-4 py-3 text-slate-700">${job.title}</td>
                               <td class="px-4 py-3 text-right">
-                                  <a href="applicants.html?job=${encodeURIComponent(job.title)}&type=${encodeURIComponent(job.type)}" class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition">Apply</a>
+                                  <button 
+                                      onclick="openJobPopup('${job.id}', '${job.title.replace(/'/g, "\\'")}', '${job.type}')"
+                                      class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition">
+                                      Apply
+                                  </button>
                               </td>
                           </tr>
                       `).join('')}
@@ -252,6 +277,13 @@ function renderHomePage() {
     `;
     
     initScrollReveal();
+
+    if (window.location.hash) {
+        setTimeout(() => {
+            const target = document.querySelector(window.location.hash);
+            if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        }, 0);
+    }
 
     // Hero background image carousel
     if (c.hero.images && c.hero.images.length > 1) {
@@ -770,5 +802,70 @@ function toggleSection(id) {
         section.classList.add('open');
         icon.textContent = '−';
         icon.style.transform = 'rotate(180deg)';
+    }
+}
+
+// ===== JOB POPUP / MODAL =====
+function openJobPopup(id, title, type) {
+    // Remove existing modal if any
+    const existing = document.getElementById('jobModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'jobModal';
+    modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
+    modal.innerHTML = `
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeJobPopup()"></div>
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b border-slate-100">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <p class="text-xs font-semibold text-primary uppercase tracking-wide mb-1">${config.jobsConfig.popup.title}</p>
+                        <h3 class="text-xl font-bold text-slate-900">${title}</h3>
+                    </div>
+                    <button onclick="closeJobPopup()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+                </div>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-slate-500 text-xs mb-1">Type</p>
+                        <p class="font-medium text-slate-800">${type}</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-500 text-xs mb-1">Job ID</p>
+                        <p class="font-medium text-slate-800">${id}</p>
+                    </div>
+                </div>
+
+                <!-- Phase 2: Description & Requirements will appear here later -->
+                <div class="bg-slate-50 rounded-xl p-4 text-sm text-slate-500">
+                    ${config.jobsConfig.popup.noDetails}
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+                <button onclick="closeJobPopup()" 
+                    class="flex-1 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition">
+                    ${config.jobsConfig.popup.closeBtn}
+                </button>
+                <a href="applicants.html?job=${encodeURIComponent(title)}&type=${encodeURIComponent(type)}" 
+                    class="flex-1 px-5 py-2.5 rounded-xl bg-primary text-white font-semibold text-center hover:bg-primary-dark transition">
+                    ${config.jobsConfig.popup.continueBtn}
+                </a>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeJobPopup() {
+    const modal = document.getElementById('jobModal');
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
     }
 }

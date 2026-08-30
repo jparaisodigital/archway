@@ -57,6 +57,32 @@ const config = {
   // Google Sheets — published CSV link ng job listings
   jobsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pub?gid=0&single=true&output=csv",
   
+  // Jobs settings (config-driven)
+  jobsConfig: {
+    // Column mapping (order sa Google Sheet)
+    columns: {
+      id: 0,
+      title: 1,
+      type: 2,
+      is_active: 3,
+      // Phase 2 columns (uncomment later)
+      // specialization: 4,
+      // location: 5,
+      // experience: 6,
+      // certifications: 7,
+      // description: 8,
+      // requirements: 9
+    },
+    
+    // Popup texts
+    popup: {
+      title: "Job Details",
+      continueBtn: "Continue to Application",
+      closeBtn: "Close",
+      noDetails: "No additional details available for this job yet."
+    }
+  },
+  
   // Jobs Section
   jobs: {
     title: "Now Hiring",
@@ -194,12 +220,12 @@ const config = {
   adminPage: {
     headerTitle: "Jobs Dashboard",
     headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
-
+    
     // TODO: Palitan ito ng actual "edit" link ng Google Sheet mo (yung link pag binuksan mo
     // ang sheet mismo sa browser). HUWAG ilagay dito yung published CSV link — magkaiba yun
     // sa jobsSheetUrl sa taas.
     sheetEditUrl: "PASTE_YOUR_GOOGLE_SHEET_EDIT_LINK_HERE",
-
+    
     instructions: {
       title: "How to Add or Update a Job Posting",
       steps: [
@@ -230,7 +256,7 @@ const config = {
       ]
     }
   },
-
+  
   // Contact
   contact: {
     title: "Get in Touch",
