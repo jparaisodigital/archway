@@ -59,29 +59,68 @@ async function fetchJobs() {
     try {
         const res = await fetch(config.jobsSheetUrl);
         const csvText = await res.text();
-        const rows = csvText.trim().split('\n').slice(1); // skip header
+
+        // Proper CSV parser that handles quoted fields + newlines
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentValue = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (char === '"' && insideQuotes && nextChar === '"') {
+                    // Escaped quote ("")
+                    currentValue += '"';
+                    i++;
+                } else if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    currentRow.push(currentValue.trim());
+                    currentValue = '';
+                } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+                    if (currentValue || currentRow.length > 0) {
+                        currentRow.push(currentValue.trim());
+                        rows.push(currentRow);
+                        currentRow = [];
+                        currentValue = '';
+                    }
+                    // skip \r\n
+                    if (char === '\r' && nextChar === '\n') i++;
+                } else {
+                    currentValue += char;
+                }
+            }
+
+            // last value
+            if (currentValue || currentRow.length > 0) {
+                currentRow.push(currentValue.trim());
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        const allRows = parseCSV(csvText);
+        if (allRows.length < 2) return [];
 
         const cols = config.jobsConfig.columns;
 
-        return rows.map(row => {
-            // Simple CSV split (Phase 1 – no commas inside fields yet)
-            const values = row.split(',').map(v => v.trim());
-
+        return allRows.slice(1).map(values => {
             const job = {
                 id: values[cols.id] || '',
                 title: values[cols.title] || '',
                 type: values[cols.type] || '',
-                is_active: (values[cols.is_active] || 'TRUE').toUpperCase() === 'TRUE'
+                is_active: (values[cols.is_active] || 'TRUE').toUpperCase() === 'TRUE',
+                specialization: values[cols.specialization] || '',
+                location: values[cols.location] || '',
+                experience: values[cols.experience] || '',
+                certifications: values[cols.certifications] || '',
+                description: values[cols.description] || '',
+                requirements: values[cols.requirements] || ''
             };
-
-            // Phase 2 fields (ready na, kahit wala pa sa Sheet)
-            // job.specialization = values[cols.specialization] || '';
-            // job.location = values[cols.location] || '';
-            // job.experience = values[cols.experience] || '';
-            // job.certifications = values[cols.certifications] || '';
-            // job.description = values[cols.description] || '';
-            // job.requirements = values[cols.requirements] || '';
-
             return job;
         }).filter(job => job.id && job.title && job.is_active);
 
@@ -258,7 +297,7 @@ function renderHomePage() {
               </div>
           </div>
       </section>
-
+    
       <section class="reveal">
           <iframe
               src="${c.contact.mapEmbedUrl}"
@@ -277,14 +316,14 @@ function renderHomePage() {
     `;
     
     initScrollReveal();
-
+    
     if (window.location.hash) {
         setTimeout(() => {
             const target = document.querySelector(window.location.hash);
             if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
         }, 0);
     }
-
+    
     // Hero background image carousel
     if (c.hero.images && c.hero.images.length > 1) {
         let heroIndex = 0;
@@ -295,9 +334,10 @@ function renderHomePage() {
             heroSlides[heroIndex].classList.add('active');
         }, c.hero.slideInterval || 4000);
     }
-
+    
     
     fetchJobs().then(jobs => {
+        window._allJobs = jobs;
         const localJobs = jobs.filter(j => j.type === 'Local');
         const overseasJobs = jobs.filter(j => j.type === 'Overseas');
         const grid = document.getElementById('jobsGrid');
@@ -407,10 +447,10 @@ function renderEmployersPage() {
 function renderAdminPage() {
     const app = document.getElementById('app');
     const p = config.adminPage;
-
+    
     app.innerHTML = `
       ${renderNav('admin.html')}
-
+    
       <div class="bg-primary text-white py-12">
           <div class="max-w-4xl mx-auto px-4 text-center">
               <div class="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full bg-white/10 text-white/90 text-xs font-semibold uppercase tracking-wide">
@@ -421,10 +461,10 @@ function renderAdminPage() {
               <p class="text-white/90">${p.headerSubtitle}</p>
           </div>
       </div>
-
+    
       <div class="max-w-4xl mx-auto px-4 py-12">
           <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10 space-y-8">
-
+    
               <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 rounded-xl p-6">
                   <div>
                       <h2 class="text-lg font-bold text-slate-900 mb-1">Jobs Sheet</h2>
@@ -435,7 +475,7 @@ function renderAdminPage() {
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                   </a>
               </div>
-
+    
               <div>
                   <h2 class="text-xl font-bold text-primary mb-6">${p.instructions.title}</h2>
                   <div class="relative">
@@ -453,15 +493,15 @@ function renderAdminPage() {
                       </div>
                   </div>
               </div>
-
+    
               <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-800 leading-relaxed flex gap-3">
                   <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   <p>This page is not listed on the public menu — it's meant for internal use only. Keep this link private and only share it with authorized staff.</p>
               </div>
-
+    
           </div>
       </div>
-
+    
       ${renderFooter()}
     `;
 }
@@ -472,7 +512,7 @@ let applicantJobsData = [];
 function renderJobTypeOptions(jobs, selectedType) {
     const types = [...new Set(jobs.map(j => j.type).filter(Boolean))];
     return `<option value="">Select...</option>` +
-        types.map(t => `<option value="${t}" ${t === selectedType ? 'selected' : ''}>${t}</option>`).join('');
+    types.map(t => `<option value="${t}" ${t === selectedType ? 'selected' : ''}>${t}</option>`).join('');
 }
 
 function renderJobTitleOptions(jobs, type, selectedTitle) {
@@ -484,7 +524,7 @@ function renderJobTitleOptions(jobs, type, selectedTitle) {
         return `<option value="">Select a Position...</option>`;
     }
     return `<option value="">Select...</option>` +
-        filtered.map(j => `<option value="${j.title}" ${j.title === selectedTitle ? 'selected' : ''}>${j.title}</option>`).join('');
+    filtered.map(j => `<option value="${j.title}" ${j.title === selectedTitle ? 'selected' : ''}>${j.title}</option>`).join('');
 }
 
 function onJobTypeChange() {
@@ -531,6 +571,21 @@ function renderApplicantsPage() {
           </div>
     
           <div class="max-w-4xl mx-auto px-4 py-12">
+    
+          <!-- JOB SUMMARY CARD (lalabas lang kapag may pre-selected job) -->
+    <div id="jobSummaryCard" class="hidden mb-6 bg-white rounded-2xl shadow-lg border border-primary/20 overflow-hidden">
+        <div class="bg-primary/5 px-6 py-4 border-b border-primary/10 flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-primary uppercase tracking-wide">You are applying for</p>
+                <h2 id="summaryJobTitle" class="text-xl font-bold text-slate-900 mt-0.5"></h2>
+            </div>
+            <span id="summaryJobType" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary text-white"></span>
+        </div>
+        <div class="px-6 py-3 text-sm text-slate-500">
+            Please complete the form below. Your selected job is already pre-filled.
+        </div>
+    </div>
+
               <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                   <form action="${p.formEndpoint}" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
                       <input type="hidden" name="_subject" value="New Job Application - Archway">
@@ -779,16 +834,29 @@ function renderApplicantsPage() {
           </div>
         `;
     
-        initScrollReveal();
-
-        fetchJobs().then(jobs => {
-            applicantJobsData = jobs;
-            const typeSelect = document.getElementById('jobTypeSelect');
-            const titleSelect = document.getElementById('jobTitleSelect');
-            if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
-            if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
-        });
-    }
+    initScrollReveal();
+    
+    fetchJobs().then(jobs => {
+        applicantJobsData = jobs;
+        const typeSelect = document.getElementById('jobTypeSelect');
+        const titleSelect = document.getElementById('jobTitleSelect');
+        if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
+        if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
+    
+        // Show Job Summary Card if coming from popup / URL
+        if (preselectedJobTitle) {
+            const card = document.getElementById('jobSummaryCard');
+            const titleEl = document.getElementById('summaryJobTitle');
+            const typeEl = document.getElementById('summaryJobType');
+            
+            if (card && titleEl && typeEl) {
+                titleEl.textContent = preselectedJobTitle;
+                typeEl.textContent = preselectedType || 'Job';
+                card.classList.remove('hidden');
+            }
+        }
+    });
+}
 
 // ===== ACCORDION TOGGLE =====
 function toggleSection(id) {
@@ -807,9 +875,26 @@ function toggleSection(id) {
 
 // ===== JOB POPUP / MODAL =====
 function openJobPopup(id, title, type) {
+    // Find the full job object so we can show extra details
+    const job = (window._allJobs || []).find(j => j.id === id) || { id, title, type };
+
     // Remove existing modal if any
     const existing = document.getElementById('jobModal');
     if (existing) existing.remove();
+
+    // Helper: only show a field if it has value
+    const field = (label, value) => {
+        if (!value) return '';
+        return `
+            <div>
+                <p class="text-slate-500 text-xs mb-1">${label}</p>
+                <p class="font-medium text-slate-800 whitespace-pre-line">${value}</p>
+            </div>
+        `;
+    };
+
+    const hasExtraDetails = job.specialization || job.location || job.experience || 
+                            job.certifications || job.description || job.requirements;
 
     const modal = document.createElement('div');
     modal.id = 'jobModal';
@@ -821,28 +906,41 @@ function openJobPopup(id, title, type) {
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-xs font-semibold text-primary uppercase tracking-wide mb-1">${config.jobsConfig.popup.title}</p>
-                        <h3 class="text-xl font-bold text-slate-900">${title}</h3>
+                        <h3 class="text-xl font-bold text-slate-900">${job.title}</h3>
                     </div>
                     <button onclick="closeJobPopup()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
                 </div>
             </div>
 
-            <div class="p-6 space-y-4">
+            <div class="p-6 space-y-5">
                 <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                        <p class="text-slate-500 text-xs mb-1">Type</p>
-                        <p class="font-medium text-slate-800">${type}</p>
-                    </div>
-                    <div>
-                        <p class="text-slate-500 text-xs mb-1">Job ID</p>
-                        <p class="font-medium text-slate-800">${id}</p>
-                    </div>
+                    ${field('Type', job.type)}
+                    ${field('Job ID', job.id)}
+                    ${field('Specialization', job.specialization)}
+                    ${field('Location', job.location)}
+                    ${field('Years Experience', job.experience)}
+                    ${field('Certifications', job.certifications)}
                 </div>
 
-                <!-- Phase 2: Description & Requirements will appear here later -->
-                <div class="bg-slate-50 rounded-xl p-4 text-sm text-slate-500">
-                    ${config.jobsConfig.popup.noDetails}
-                </div>
+                ${job.description ? `
+                    <div>
+                        <p class="text-slate-500 text-xs mb-1">Job Description (Responsibilities)</p>
+                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.description}</p>
+                    </div>
+                ` : ''}
+
+                ${job.requirements ? `
+                    <div>
+                        <p class="text-slate-500 text-xs mb-1">Requirements (Qualifications)</p>
+                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.requirements}</p>
+                    </div>
+                ` : ''}
+
+                ${!hasExtraDetails ? `
+                    <div class="bg-slate-50 rounded-xl p-4 text-sm text-slate-500">
+                        ${config.jobsConfig.popup.noDetails}
+                    </div>
+                ` : ''}
             </div>
 
             <div class="p-6 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
@@ -850,7 +948,7 @@ function openJobPopup(id, title, type) {
                     class="flex-1 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition">
                     ${config.jobsConfig.popup.closeBtn}
                 </button>
-                <a href="applicants.html?job=${encodeURIComponent(title)}&type=${encodeURIComponent(type)}" 
+                <a href="applicants.html?job=${encodeURIComponent(job.title)}&type=${encodeURIComponent(job.type)}" 
                     class="flex-1 px-5 py-2.5 rounded-xl bg-primary text-white font-semibold text-center hover:bg-primary-dark transition">
                     ${config.jobsConfig.popup.continueBtn}
                 </a>

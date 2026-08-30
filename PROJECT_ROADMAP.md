@@ -3,7 +3,7 @@
 **Client:** Archway International & Marketing Services, Inc.  
 **Fee:** ₱15,000  
 **Stack:** Vanilla JS + Tailwind CSS (CDN) + Config-driven  
-**Application Email:** hr@archwayintl.com.ph (currently FormSubmit → jparaiso.digital@gmail.com for testing)  
+**Application Email:** hr@archwayintl.com.ph (FormSubmit currently points to jparaiso.digital@gmail.com for testing)  
 **Realistic Timeline:** 5–7 days
 
 ---
@@ -47,6 +47,7 @@
 - [x] Documentary Requirements (accordion)
 - [x] Process Steps (“We’ll Be There Every Step of the Way”)
 - [x] Pre-fill Job Type + Job Title from URL params / popup
+- [x] Job Summary Card when coming from popup
 
 ---
 
@@ -65,7 +66,7 @@
 
 ## Phase 6: Jobs Management (Simplified + Future-proof)
 
-### Current Status (Phase 1 – Basic Jobs)
+### Status
 - [x] Use **Google Sheets** as the source of jobs
 - [x] Display Local & Overseas jobs from the Sheet
 - [x] Client can edit jobs directly in Google Sheets (no custom admin needed)
@@ -73,41 +74,41 @@
 - [x] **Job Details Popup / Modal** on Apply click (resemblance to old site)
 - [x] Filter by `is_active = TRUE`
 - [x] Config-driven column mapping + popup texts (`config.jobsConfig`)
+- [x] **Phase 2 ready** – description, requirements, location, specialization, experience, certifications automatically appear in popup when filled
 
-### Google Sheet Structure (Phase 1 – Current)
+### Google Sheet Structure (Current)
 
-| Column     | Required | Notes                          |
-|------------|----------|--------------------------------|
-| id         | Yes      | Simple sequential (1, 2, 3...) |
-| title      | Yes      | Job Title                      |
-| type       | Yes      | `Local` or `Overseas` only     |
-| is_active  | Yes      | `TRUE` / `FALSE`               |
-
-### Planned Phase 2 Columns (add later when details are ready)
-- specialization
-- location
-- experience
-- certifications
-- description
-- requirements
+| Column          | Required | Notes                          |
+|-----------------|----------|--------------------------------|
+| id              | Yes      | Simple sequential (1, 2, 3...) |
+| title           | Yes      | Job Title                      |
+| type            | Yes      | `Local` or `Overseas` only     |
+| is_active       | Yes      | `TRUE` / `FALSE`               |
+| specialization  | No       | Optional                       |
+| location        | No       | Optional                       |
+| experience      | No       | Optional                       |
+| certifications  | No       | Optional                       |
+| description     | No       | Job Description / Responsibilities (multi-line supported) |
+| requirements    | No       | Qualifications (multi-line supported) |
 
 ### Key Decisions
 - **Old Job IDs** (AMSC-034, ALHIJRAH101, etc.) → **dropped**. Not needed.
 - **ID generation** → simple sequential now. Supabase will auto-generate UUID later.
-- **Popup** → shows Job Title + Type for now. Will auto-show description/requirements when Phase 2 columns are filled.
+- **Popup** → shows all available details. Empty fields are hidden.
+- **CSV Parser** → handles multi-line + quoted fields.
 - **Future Supabase ready** → same field names will be used as table columns. Minimal code change needed.
 
 ### User Flow
 1. Home → Local / Overseas tables (Title + Apply)
 2. Click Apply → **Popup** with job details
-3. Click “Continue to Application” → Applicants page (pre-filled)
+3. Click “Continue to Application” → Applicants page (pre-filled + Job Summary Card)
 4. Long form + resume upload
 
 ---
 
 ## Phase 7: Polish & Handover
 - [ ] Responsive testing
-- [ ] Form testing (actual HR email)
+- [ ] Form testing (switch FormSubmit to real HR email)
 - [ ] 1–2 revision rounds
 - [ ] Handover files + instructions
 - [ ] Final payment
@@ -129,7 +130,7 @@
 - Multi-page (Home, Applicants, Employers, About Us + admin.html)
 - Vanilla JS + Tailwind CDN
 - **Config-driven** everything (`config.js`)
-- Form → FormSubmit / Web3Forms / Getform (file upload supported)
+- Form → FormSubmit (file upload supported) – currently testing email
 - Jobs → Google Sheets (simple & future-proof)
 - **Future-ready for Supabase** (same field structure)
 - No backend / no database in current scope
@@ -141,10 +142,14 @@
 
 1. **All content & behavior** should stay in `config.js` as much as possible.
 2. Jobs data comes from published Google Sheets CSV.
-3. `fetchJobs()` already prepared for Phase 2 columns (just uncomment).
+3. `fetchJobs()` uses a proper CSV parser that supports multi-line fields.
 4. Popup is in `site.js` → `openJobPopup()` / `closeJobPopup()`.
 5. When moving to Supabase later:
    - Create `jobs` table with same column names
    - Replace `fetchJobs()` with Supabase client query
    - Frontend logic (popup, tables, pre-fill) stays almost the same.
-6. Current FormSubmit endpoint is temporary (jparaiso.digital@gmail.com). Change to `hr@archwayintl.com.ph` before handover.
+6. FormSubmit endpoint is currently `jparaiso.digital@gmail.com` for testing.  
+   Change to `hr@archwayintl.com.ph` before final handover.
+7. Contact emails displayed on site:
+   - inquiry@archwayintl.com.ph
+   - hr@archwayintl.com.ph
