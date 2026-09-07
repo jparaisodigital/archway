@@ -40,7 +40,7 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobileMenu');
     const iconOpen = document.getElementById('menu-icon-open');
     const iconClose = document.getElementById('menu-icon-close');
-
+    
     menu.classList.toggle('hidden');
     iconOpen.classList.toggle('hidden');
     iconClose.classList.toggle('hidden');
@@ -56,10 +56,29 @@ function renderFooter() {
     `;
 }
 
+// ===== SECURITY: ESCAPE UNTRUSTED TEXT =====
+function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => {
+        const entities = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        
+        return entities[char];
+    });
+}
+
 // ===== JOBS DATA (mula sa Google Sheets) =====
 async function fetchJobs() {
     try {
-        const res = await fetch(config.jobsSheetUrl);
+        const url = `${config.jobsSheetUrl}&_=${Date.now()}`;
+        
+        const res = await fetch(url, {
+            cache: 'no-store'
+        });
         const csvText = await res.text();
         
         // Proper CSV parser that handles quoted fields + newlines
@@ -136,7 +155,7 @@ function renderJobTable(title, jobs) {
     return `
       <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
           <div class="p-6 border-b border-slate-100">
-              <h3 class="text-xl font-bold text-slate-900">${title}</h3>
+              <h3 class="text-xl font-bold text-slate-900">${escapeHTML(title)}</h3>
           </div>
           <div class="max-h-96 overflow-y-auto">
               <table class="w-full text-sm">
@@ -148,15 +167,23 @@ function renderJobTable(title, jobs) {
                   </thead>
                   <tbody>
                       ${jobs.length === 0 ? `
-                          <tr><td colspan="2" class="px-4 py-6 text-center text-slate-400">No openings right now.</td></tr>
+                          <tr>
+                              <td colspan="2" class="px-4 py-6 text-center text-slate-400">
+                                  No openings right now.
+                              </td>
+                          </tr>
                       ` : jobs.map(job => `
                           <tr class="border-t border-slate-100 hover:bg-slate-50">
-                              <td class="px-4 py-3 text-slate-700">${job.title}</td>
+                              <td class="px-4 py-3 text-slate-700">
+                                  ${escapeHTML(job.title)}
+                              </td>
                               <td class="px-4 py-3 text-right">
-                                  <button 
-                                      onclick="openJobPopup('${job.id}', '${job.title.replace(/'/g, "\\'")}', '${job.type}')"
-                                      class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold 
-                                             hover:bg-primary-dark hover:shadow-md hover:-translate-y-0.5 
+                                  <button
+                                      type="button"
+                                      data-job-id="${escapeHTML(job.id)}"
+                                      onclick="openJobPopupFromButton(this)"
+                                      class="inline-block px-4 py-1.5 rounded-full bg-primary text-white text-xs font-semibold
+                                             hover:bg-primary-dark hover:shadow-md hover:-translate-y-0.5
                                              active:translate-y-0 transition-all duration-200">
                                       Apply
                                   </button>
@@ -241,10 +268,13 @@ function renderHomePage() {
                   ${c.about.paragraphs.map(p => `<p>${p}</p>`).join('')}
               </div>
               <div class="mt-12 text-center">
-                  <span class="inline-flex items-center px-4 py-2 rounded-full bg-green-50 text-green-700 text-sm font-medium">
-                      ✓ Zero-complaint & Zero-citation sanction from POEA
-                  </span>
-              </div>
+    <img 
+        src="${c.poeaBadge.src}" 
+        alt="${c.poeaBadge.alt}" 
+        style="height: ${c.poeaBadge.height}px; width: auto;"
+        class="${c.poeaBadge.className}"
+    >
+</div>
           </div>
       </section>
   
@@ -401,7 +431,7 @@ function renderHomePage() {
             try {
                 const formData = new FormData(contactForm);
                 
-                const response = await fetch('https://formsubmit.co/ajax/jparaiso.digital@gmail.com', {
+                const response = await fetch('https://formsubmit.co/6c213c1fd74de18cd454728c423c499f', {
                     method: 'POST',
                     body: formData
                 });
@@ -593,20 +623,36 @@ let applicantJobsData = [];
 
 function renderJobTypeOptions(jobs, selectedType) {
     const types = [...new Set(jobs.map(j => j.type).filter(Boolean))];
+
     return `<option value="">Select...</option>` +
-    types.map(t => `<option value="${t}" ${t === selectedType ? 'selected' : ''}>${t}</option>`).join('');
+        types.map(t => `
+            <option
+                value="${escapeHTML(t)}"
+                ${t === selectedType ? 'selected' : ''}>
+                ${escapeHTML(t)}
+            </option>
+        `).join('');
 }
 
 function renderJobTitleOptions(jobs, type, selectedTitle) {
     if (!type) {
         return `<option value="">Please select a Job Type first</option>`;
     }
+
     const filtered = jobs.filter(j => j.type === type);
+
     if (filtered.length === 0) {
         return `<option value="">Select a Position...</option>`;
     }
+
     return `<option value="">Select...</option>` +
-    filtered.map(j => `<option value="${j.title}" ${j.title === selectedTitle ? 'selected' : ''}>${j.title}</option>`).join('');
+        filtered.map(j => `
+            <option
+                value="${escapeHTML(j.title)}"
+                ${j.title === selectedTitle ? 'selected' : ''}>
+                ${escapeHTML(j.title)}
+            </option>
+        `).join('');
 }
 
 function onJobTypeChange() {
@@ -671,8 +717,8 @@ function renderApplicantsPage() {
               <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                   <form action="${p.formEndpoint}" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
                       <input type="hidden" name="_subject" value="New Job Application - Archway">
-                      <input type="hidden" name="_captcha" value="false">
                       <input type="hidden" name="_template" value="table">
+                      <input type="text" name="_honey" style="display:none">
     
                       <div>
                           <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Job Preference</h2>
@@ -956,9 +1002,18 @@ function toggleSection(id) {
 }
 
 // ===== JOB POPUP / MODAL =====
-function openJobPopup(id, title, type) {
+function openJobPopupFromButton(button) {
+    const id = button.dataset.jobId;
+    openJobPopup(id);
+}
+function openJobPopup(id) {
     // Find the full job object so we can show extra details
-    const job = (window._allJobs || []).find(j => j.id === id) || { id, title, type };
+    const job = (window._allJobs || []).find(j => j.id === id);
+    
+    if (!job) {
+        console.warn('Job not found.');
+        return;
+    }
     
     // Remove existing modal if any
     const existing = document.getElementById('jobModal');
@@ -969,8 +1024,8 @@ function openJobPopup(id, title, type) {
         if (!value) return '';
         return `
             <div>
-                <p class="text-slate-500 text-xs mb-1">${label}</p>
-                <p class="font-medium text-slate-800 whitespace-pre-line">${value}</p>
+                <p class="text-slate-500 text-xs mb-1">${escapeHTML(label)}</p>
+                <p class="font-medium text-slate-800 whitespace-pre-line">${escapeHTML(value)}</p>
             </div>
         `;
     };
@@ -988,7 +1043,7 @@ function openJobPopup(id, title, type) {
                 <div class="flex items-start justify-between gap-4">
                     <div>
                         <p class="text-xs font-semibold text-primary uppercase tracking-wide mb-1">${config.jobsConfig.popup.title}</p>
-                        <h3 class="text-xl font-bold text-slate-900">${job.title}</h3>
+                        <h3 class="text-xl font-bold text-slate-900">${escapeHTML(job.title)}</h3>
                     </div>
                     <button onclick="closeJobPopup()" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
                 </div>
@@ -1007,14 +1062,14 @@ function openJobPopup(id, title, type) {
                 ${job.description ? `
                     <div>
                         <p class="text-slate-500 text-xs mb-1">Job Description (Responsibilities)</p>
-                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.description}</p>
+                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${escapeHTML(job.description)}</p>
                     </div>
                 ` : ''}
     
                 ${job.requirements ? `
                     <div>
                         <p class="text-slate-500 text-xs mb-1">Requirements (Qualifications)</p>
-                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${job.requirements}</p>
+                        <p class="text-sm text-slate-700 whitespace-pre-line leading-relaxed">${escapeHTML(job.requirements)}</p>
                     </div>
                 ` : ''}
     

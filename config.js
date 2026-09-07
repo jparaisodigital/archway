@@ -13,6 +13,14 @@ const config = {
     height: 40                 
   },
   
+  // POEA Badge (config-driven)
+  poeaBadge: {
+    src: "assets/POEA.png",        
+    alt: "POEA Licensed - Zero Complaint & Zero Citation Record",
+    height: 180,
+    className: "mx-auto object-contain drop-shadow-md"
+  },
+  
   // Colors (premium refined blue)
   colors: {
     primary: "#0B6E99",
@@ -72,7 +80,7 @@ const config = {
       description: 8,
       requirements: 9
     },
-  
+    
     // Popup texts
     popup: {
       title: "Job Details",
@@ -81,7 +89,7 @@ const config = {
       noDetails: "No additional details available for this job yet."
     }
   },
-
+  
   // Jobs Section
   jobs: {
     title: "Now Hiring",
@@ -216,46 +224,46 @@ const config = {
   },
   
   adminPage: {
-  headerTitle: "Jobs Dashboard",
-  headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
-
-  // TODO: Palitan ito ng actual "edit" link ng Google Sheet mo
-  sheetEditUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pubhtml?gid=0&single=true",
-
-  instructions: {
-    title: "How to Add or Update a Job Posting",
-    steps: [
-      {
-        title: "Open the Jobs Sheet",
-        desc: "Click the button below to open the spreadsheet in a new tab."
-      },
-      {
-        title: "Add a new row",
-        desc: "Fill in these columns: id (any unique number, e.g. 17), title (the job title), type, and is_active."
-      },
-      {
-        title: "Type must be exact",
-        desc: "For the \"type\" column, type it exactly as Local or Overseas (capital L, capital O). This is how the website sorts the jobs correctly."
-      },
-      {
-        title: "is_active column",
-        desc: "Type TRUE to show the job on the website, or FALSE to hide it without deleting."
-      },
-      {
-        title: "Avoid commas",
-        desc: "Do not use commas (,) inside the job title — it can break how the list is read. Use a dash (–) instead if needed."
-      },
-      {
-        title: "To remove a job",
-        desc: "Either delete the row, or set is_active to FALSE."
-      },
-      {
-        title: "Give it a minute",
-        desc: "Updates usually appear on the website within a minute or two. If not, try refreshing the page."
-      }
-    ]
-  }
-},
+    headerTitle: "Jobs Dashboard",
+    headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
+    
+    // TODO: Palitan ito ng actual "edit" link ng Google Sheet mo
+    sheetEditUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pubhtml?gid=0&single=true",
+    
+    instructions: {
+      title: "How to Add or Update a Job Posting",
+      steps: [
+        {
+          title: "Open the Jobs Sheet",
+          desc: "Click the button below to open the spreadsheet in a new tab."
+        },
+        {
+          title: "Add a new row",
+          desc: "Fill in these columns: id (any unique number, e.g. 17), title (the job title), type, and is_active."
+        },
+        {
+          title: "Type must be exact",
+          desc: "For the \"type\" column, type it exactly as Local or Overseas (capital L, capital O). This is how the website sorts the jobs correctly."
+        },
+        {
+          title: "is_active column",
+          desc: "Type TRUE to show the job on the website, or FALSE to hide it without deleting."
+        },
+        {
+          title: "Avoid commas",
+          desc: "Do not use commas (,) inside the job title — it can break how the list is read. Use a dash (–) instead if needed."
+        },
+        {
+          title: "To remove a job",
+          desc: "Either delete the row, or set is_active to FALSE."
+        },
+        {
+          title: "Give it a minute",
+          desc: "Updates usually appear on the website within a minute or two. If not, try refreshing the page."
+        }
+      ]
+    }
+  },
   
   // Contact
   contact: {
