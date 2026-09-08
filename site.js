@@ -317,10 +317,11 @@ function renderHomePage() {
                   <div class="bg-white/10 backdrop-blur rounded-2xl p-8 border border-white/20">
                       <h3 class="text-xl font-bold mb-6">Send a Message</h3>
                       <form id="contactForm" class="space-y-4">
-    <!-- FormSubmit Settings -->
-    <input type="hidden" name="_subject" value="New Message from Archway Website">
-    <input type="hidden" name="_template" value="table">
-    <input type="hidden" name="_captcha" value="false">
+    <!-- Temporary FormSubmit settings — replace during Web3Forms migration -->
+<input type="hidden" name="_subject" value="New Message from Archway Website">
+<input type="hidden" name="_template" value="table">
+<input type="hidden" name="_captcha" value="false">
+<input type="text" name="_honey" style="display:none">
     
     <input type="text" name="Name" placeholder="Your Name" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-accent" required>
     
@@ -407,7 +408,7 @@ function renderHomePage() {
         }
     });
     
-    // ===== CONTACT FORM HANDLER  =====
+    // ===== CONTACT FORM HANDLER =====
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
@@ -623,29 +624,29 @@ let applicantJobsData = [];
 
 function renderJobTypeOptions(jobs, selectedType) {
     const types = [...new Set(jobs.map(j => j.type).filter(Boolean))];
-
+    
     return `<option value="">Select...</option>` +
-        types.map(t => `
+    types.map(t => `
             <option
                 value="${escapeHTML(t)}"
                 ${t === selectedType ? 'selected' : ''}>
                 ${escapeHTML(t)}
             </option>
         `).join('');
-}
-
-function renderJobTitleOptions(jobs, type, selectedTitle) {
-    if (!type) {
-        return `<option value="">Please select a Job Type first</option>`;
     }
-
-    const filtered = jobs.filter(j => j.type === type);
-
-    if (filtered.length === 0) {
-        return `<option value="">Select a Position...</option>`;
-    }
-
-    return `<option value="">Select...</option>` +
+    
+    function renderJobTitleOptions(jobs, type, selectedTitle) {
+        if (!type) {
+            return `<option value="">Please select a Job Type first</option>`;
+        }
+        
+        const filtered = jobs.filter(j => j.type === type);
+        
+        if (filtered.length === 0) {
+            return `<option value="">Select a Position...</option>`;
+        }
+        
+        return `<option value="">Select...</option>` +
         filtered.map(j => `
             <option
                 value="${escapeHTML(j.title)}"
@@ -653,41 +654,70 @@ function renderJobTitleOptions(jobs, type, selectedTitle) {
                 ${escapeHTML(j.title)}
             </option>
         `).join('');
-}
-
-function onJobTypeChange() {
-    const type = document.getElementById('jobTypeSelect').value;
-    const titleSelect = document.getElementById('jobTitleSelect');
-    titleSelect.innerHTML = renderJobTitleOptions(applicantJobsData, type, '');
-}
-
-function renderApplicantsPage() {
-    const app = document.getElementById('app');
-    const p = config.applicantsPage;
-    
-    // Ang ?job= at ?type= mula sa URL (galing sa "Apply" click sa homepage)
-    const urlParams = new URLSearchParams(window.location.search);
-    const preselectedType = urlParams.get('type') || '';
-    const preselectedJobTitle = urlParams.get('job') || '';
-    
-    const languageOptions = [
-        "English-fluent", "English-mediocre",
-        "Spanish-fluent", "Spanish-mediocre",
-        "French-fluent", "French-mediocre",
-        "Arabic-fluent", "Arabic-mediocre",
-        "Mandarin-fluent", "Mandarin-mediocre",
-        "Russian-fluent", "Russian-mediocre",
-        "not applicable"
-    ];
-    
-    const renderLanguageDropdown = (num) => `
+        }
+        
+        function onJobTypeChange() {
+            const type = document.getElementById('jobTypeSelect').value;
+            const titleSelect = document.getElementById('jobTitleSelect');
+            titleSelect.innerHTML = renderJobTitleOptions(applicantJobsData, type, '');
+        }
+        
+        function validateResumeFile() {
+            const input = document.getElementById('resumeInput');
+            
+            if (!input || !input.files || input.files.length === 0) {
+                return true;
+            }
+            
+            const file = input.files[0];
+            
+            const allowedExtensions = ['pdf', 'doc', 'docx'];
+            const extension = file.name.split('.').pop().toLowerCase();
+            
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            
+            if (!allowedExtensions.includes(extension)) {
+                alert('Please upload a PDF, DOC, or DOCX file only.');
+                input.value = '';
+                return false;
+            }
+            
+            if (file.size > maxSize) {
+                alert('Resume file must not exceed 5MB.');
+                input.value = '';
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function renderApplicantsPage() {
+            const app = document.getElementById('app');
+            const p = config.applicantsPage;
+            
+            // Read preselected job details from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const preselectedType = urlParams.get('type') || '';
+            const preselectedJobTitle = urlParams.get('job') || '';
+            
+            const languageOptions = [
+                "English-fluent", "English-mediocre",
+                "Spanish-fluent", "Spanish-mediocre",
+                "French-fluent", "French-mediocre",
+                "Arabic-fluent", "Arabic-mediocre",
+                "Mandarin-fluent", "Mandarin-mediocre",
+                "Russian-fluent", "Russian-mediocre",
+                "not applicable"
+            ];
+            
+            const renderLanguageDropdown = (num) => `
       <select name="Language ${num}" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
           <option value=""></option>
           ${languageOptions.map(opt => `<option>${opt}</option>`).join('')}
       </select>
     `;
-    
-    app.innerHTML = `
+            
+            app.innerHTML = `
     ${renderNav('applicants.html')}
     <div class="fade-in-content">
     
@@ -715,7 +745,12 @@ function renderApplicantsPage() {
     </div>
     
               <div class="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-                  <form action="${p.formEndpoint}" method="POST" enctype="multipart/form-data" class="p-6 md:p-10 space-y-8">
+                  <form
+    action="${p.formEndpoint}"
+    method="POST"
+    enctype="multipart/form-data"
+    class="p-6 md:p-10 space-y-8"
+>
                       <input type="hidden" name="_subject" value="New Job Application - Archway">
                       <input type="hidden" name="_template" value="table">
                       <input type="text" name="_honey" style="display:none">
@@ -739,6 +774,31 @@ function renderApplicantsPage() {
                                   <label class="block text-sm font-medium mb-1">Expected Monthly Salary</label>
                                   <input type="text" name="Expected Monthly Salary" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
                               </div>
+            
+                              <div>
+    <label class="block text-sm font-medium mb-1">
+        Preferred Application Branch *
+    </label>
+            
+    <select
+    id="applicationBranchSelect"
+    name="Preferred Application Branch"
+    required
+    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+>
+    <option value="">Select a Branch...</option>
+
+    ${p.branches.map(branch => `
+        <option value="${escapeHTML(branch.value)}">
+            ${escapeHTML(branch.label)}
+        </option>
+    `).join('')}
+</select>
+            
+    <p class="text-xs text-slate-500 mt-1">
+        Select the Archway branch where you prefer your application to be processed.
+    </p>
+</div>
                           </div>
                       </div>
     
@@ -884,7 +944,15 @@ function renderApplicantsPage() {
                           <h2 class="text-lg font-bold text-primary mb-4 border-b pb-2">Resume / CV Upload</h2>
                           <div>
                               <label class="block text-sm font-medium mb-1">Upload your Resume (PDF or Word) *</label>
-                              <input type="file" name="Resume" accept=".pdf,.doc,.docx" required class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none">
+                              <input
+    id="resumeInput"
+    type="file"
+    name="Resume"
+    accept=".pdf,.doc,.docx"
+    required
+    onchange="validateResumeFile()"
+    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary outline-none"
+>
                               <p class="text-xs text-slate-500 mt-1">Accepted: PDF, DOC, DOCX • Max recommended size: 5MB</p>
                           </div>
                       </div>
@@ -961,82 +1029,82 @@ function renderApplicantsPage() {
                   ${renderFooter()}
           </div>
         `;
-    
-    initScrollReveal();
-    
-    fetchJobs().then(jobs => {
-        applicantJobsData = jobs;
-        const typeSelect = document.getElementById('jobTypeSelect');
-        const titleSelect = document.getElementById('jobTitleSelect');
-        if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
-        if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
-        
-        // Show Job Summary Card if coming from popup / URL
-        if (preselectedJobTitle) {
-            const card = document.getElementById('jobSummaryCard');
-            const titleEl = document.getElementById('summaryJobTitle');
-            const typeEl = document.getElementById('summaryJobType');
             
-            if (card && titleEl && typeEl) {
-                titleEl.textContent = preselectedJobTitle;
-                typeEl.textContent = preselectedType || 'Job';
-                card.classList.remove('hidden');
+            initScrollReveal();
+            
+            fetchJobs().then(jobs => {
+                applicantJobsData = jobs;
+                const typeSelect = document.getElementById('jobTypeSelect');
+                const titleSelect = document.getElementById('jobTitleSelect');
+                if (typeSelect) typeSelect.innerHTML = renderJobTypeOptions(jobs, preselectedType);
+                if (titleSelect) titleSelect.innerHTML = renderJobTitleOptions(jobs, preselectedType, preselectedJobTitle);
+                
+                // Show Job Summary Card if coming from popup / URL
+                if (preselectedJobTitle) {
+                    const card = document.getElementById('jobSummaryCard');
+                    const titleEl = document.getElementById('summaryJobTitle');
+                    const typeEl = document.getElementById('summaryJobType');
+                    
+                    if (card && titleEl && typeEl) {
+                        titleEl.textContent = preselectedJobTitle;
+                        typeEl.textContent = preselectedType || 'Job';
+                        card.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+        
+        // ===== ACCORDION TOGGLE =====
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (section.classList.contains('open')) {
+                section.classList.remove('open');
+                icon.textContent = '+';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                section.classList.add('open');
+                icon.textContent = '−';
+                icon.style.transform = 'rotate(180deg)';
             }
         }
-    });
-}
-
-// ===== ACCORDION TOGGLE =====
-function toggleSection(id) {
-    const section = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (section.classList.contains('open')) {
-        section.classList.remove('open');
-        icon.textContent = '+';
-        icon.style.transform = 'rotate(0deg)';
-    } else {
-        section.classList.add('open');
-        icon.textContent = '−';
-        icon.style.transform = 'rotate(180deg)';
-    }
-}
-
-// ===== JOB POPUP / MODAL =====
-function openJobPopupFromButton(button) {
-    const id = button.dataset.jobId;
-    openJobPopup(id);
-}
-function openJobPopup(id) {
-    // Find the full job object so we can show extra details
-    const job = (window._allJobs || []).find(j => j.id === id);
-    
-    if (!job) {
-        console.warn('Job not found.');
-        return;
-    }
-    
-    // Remove existing modal if any
-    const existing = document.getElementById('jobModal');
-    if (existing) existing.remove();
-    
-    // Helper: only show a field if it has value
-    const field = (label, value) => {
-        if (!value) return '';
-        return `
+        
+        // ===== JOB POPUP / MODAL =====
+        function openJobPopupFromButton(button) {
+            const id = button.dataset.jobId;
+            openJobPopup(id);
+        }
+        function openJobPopup(id) {
+            // Find the full job object so we can show extra details
+            const job = (window._allJobs || []).find(j => j.id === id);
+            
+            if (!job) {
+                console.warn('Job not found.');
+                return;
+            }
+            
+            // Remove existing modal if any
+            const existing = document.getElementById('jobModal');
+            if (existing) existing.remove();
+            
+            // Helper: only show a field if it has value
+            const field = (label, value) => {
+                if (!value) return '';
+                return `
             <div>
                 <p class="text-slate-500 text-xs mb-1">${escapeHTML(label)}</p>
                 <p class="font-medium text-slate-800 whitespace-pre-line">${escapeHTML(value)}</p>
             </div>
         `;
-    };
-    
-    const hasExtraDetails = job.specialization || job.location || job.experience || 
-    job.certifications || job.description || job.requirements;
-    
-    const modal = document.createElement('div');
-    modal.id = 'jobModal';
-    modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
-    modal.innerHTML = `
+            };
+            
+            const hasExtraDetails = job.specialization || job.location || job.experience || 
+            job.certifications || job.description || job.requirements;
+            
+            const modal = document.createElement('div');
+            modal.id = 'jobModal';
+            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
+            modal.innerHTML = `
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeJobPopup()"></div>
         <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b border-slate-100">
@@ -1092,15 +1160,15 @@ function openJobPopup(id) {
             </div>
         </div>
     `;
-    
-    document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-}
-
-function closeJobPopup() {
-    const modal = document.getElementById('jobModal');
-    if (modal) {
-        modal.remove();
-        document.body.style.overflow = '';
-    }
-}
+            
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeJobPopup() {
+            const modal = document.getElementById('jobModal');
+            if (modal) {
+                modal.remove();
+                document.body.style.overflow = '';
+            }
+        }

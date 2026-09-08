@@ -1,10 +1,7 @@
 const config = {
-  // Brand
-  companyName: "Archway International & Marketing Services, Inc.",
-  shortName: "Archway",
-  tagline: "We Recruit the Best Filipino Workers",
-  year: "20th",
-  poeaLicense: "POEA License No. 047-LB-10317-R",
+// Brand
+year: "20th",
+poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Logo (config-driven)
   logo: {
@@ -21,17 +18,6 @@ const config = {
     className: "mx-auto object-contain drop-shadow-md"
   },
   
-  // Colors (premium refined blue)
-  colors: {
-    primary: "#0B6E99",
-    primaryDark: "#084F6F",
-    accent: "#00C2CB",
-    dark: "#0F172A",
-    light: "#F8FAFC",
-    white: "#FFFFFF",
-    muted: "#64748B"
-  },
-  
   // Navigation
   nav: [
     { label: "Home", href: "index.html" },
@@ -43,7 +29,7 @@ const config = {
   // Hero
   hero: {
     title: "We Recruit the Best Filipino Workers",
-    subtitle: `Now on its ${"20th"} year of operation, Archway has given thousands of deserving Filipinos stable local and overseas employment as nurses, doctors, laboratory technicians, accountants, office clerks, food service workers, programmers, computer engineers, domestic helpers, construction workers, teachers, carpenters, masons, and maintenance crew.`,
+    subtitle: "Now on its 20th year of operation, Archway has given thousands of deserving Filipinos stable local and overseas employment as nurses, doctors, laboratory technicians, accountants, office clerks, food service workers, programmers, computer engineers, domestic helpers, construction workers, teachers, carpenters, masons, and maintenance crew.",
     ctaPrimary: "Browse Open Positions",
     ctaSecondary: "For Employers",
     images: [
@@ -92,18 +78,14 @@ const config = {
   
   // Jobs Section
   jobs: {
-    title: "Now Hiring",
-    local: {
-      title: "Local Jobs",
-      description: "Opportunities within the Philippines for skilled and professional workers.",
-      button: "View Local Positions"
-    },
-    overseas: {
-      title: "Overseas Jobs",
-      description: "Deployments to the Middle East, especially Kingdom of Saudi Arabia.",
-      button: "View Overseas Positions"
-    }
+  title: "Now Hiring",
+  local: {
+    title: "Local Jobs"
   },
+  overseas: {
+    title: "Overseas Jobs"
+  }
+},
   
   // About
   about: {
@@ -160,6 +142,17 @@ const config = {
   applicantsPage: {
     headerTitle: "Application Form",
     headerSubtitle: "Be the first to be notified of new job openings! Fill-up the form below and submit to HR.",
+
+    branches: [
+      { value: "pasay", label: "Pasay / Main HR" },
+      { value: "bulacan", label: "Bulacan" },
+      { value: "pampanga", label: "Pampanga" },
+      { value: "la-union", label: "La Union" },
+      { value: "laguna", label: "Laguna" },
+      { value: "batangas", label: "Batangas" },
+      { value: "cavite", label: "Cavite" },
+      { value: "local", label: "Local" }
+    ],
     
     // FormSubmit target
     formEndpoint: "https://formsubmit.co/jparaiso.digital@gmail.com",
@@ -227,7 +220,7 @@ const config = {
     headerTitle: "Jobs Dashboard",
     headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
     
-    // TODO: Palitan ito ng actual "edit" link ng Google Sheet mo
+    // Client Google Sheet link — replace with final client-owned Sheet before handover
     sheetEditUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pubhtml?gid=0&single=true",
     
     instructions: {
@@ -278,7 +271,7 @@ const config = {
     ],
     emails: [
       "inquiry@archwayintl.com.ph",
-      "hr@archwayintl.com.ph"
+      "Hr@Archway.com.ph"
     ]
   },
   
