@@ -19,18 +19,31 @@
   <style>
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', system-ui, sans-serif; animation: fadeIn 0.4s ease-out; }
-    a, button { transition: all 0.25s ease; }
-    button:hover, a[class*="bg-primary"]:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(11, 110, 153, 0.25); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
     .reveal.active { opacity: 1; transform: translateY(0); }
     .fade-in-content { animation: fadeIn 0.4s ease-out; }
-    .hero-bg-image { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-    .hero-bg-image.active { opacity: 0.2; }
+    .hero-bg-image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transform: scale(1.03);
+      transition:
+      opacity 1.6s ease-in-out,
+      transform 5s ease-out;
+      will-change: opacity, transform;
+    }
+    
+    .hero-bg-image.active {
+      opacity: 1;
+      transform: scale(1);
+    }
     
     #mobileMenu {
-    transition: all 0.3s ease;
-}
+      transition: all 0.3s ease;
+    }
     
   </style>
 </head>

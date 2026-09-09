@@ -1,7 +1,7 @@
 const config = {
-// Brand
-year: "20th",
-poeaLicense: "POEA License No. 047-LB-10317-R",
+  // Brand
+  year: "20th",
+  poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Logo (config-driven)
   logo: {
@@ -21,23 +21,31 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
   // Navigation
   nav: [
     { label: "Home", href: "index.html" },
-    { label: "Applicants", href: "applicants.html" },
+    { label: "How to Apply", href: "applicants.html" },
     { label: "Employers", href: "employers.html" },
     { label: "About Us", href: "about.html" }
   ],
   
-  // Hero
   hero: {
+    eyebrow: "20+ YEARS OF RECRUITMENT EXCELLENCE",
     title: "We Recruit the Best Filipino Workers",
-    subtitle: "Now on its 20th year of operation, Archway has given thousands of deserving Filipinos stable local and overseas employment as nurses, doctors, laboratory technicians, accountants, office clerks, food service workers, programmers, computer engineers, domestic helpers, construction workers, teachers, carpenters, masons, and maintenance crew.",
-    ctaPrimary: "Browse Open Positions",
-    ctaSecondary: "For Employers",
+    subtitle: "Connecting qualified Filipino talent with trusted local and overseas employers.",
+    ctaPrimary: "View Job Openings",
+    ctaSecondary: "How to Apply",
+  
+    trustItems: [
+      "20+ Years of Service",
+      "POEA Licensed",
+      "Zero Complaint Record"
+    ],
+  
     images: [
       "assets/hero.png",
       "assets/hero2.png",
       "assets/hero3.png"
     ],
-    slideInterval: 4000
+  
+    slideInterval: 4500
   },
   
   // Stats
@@ -45,7 +53,7 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
     { value: "20+", label: "Years of Excellence" },
     { value: "1000+", label: "Workers Deployed" },
     { value: "Zero", label: "POEA Complaints" },
-    { value: "Middle East", label: "Primary Markets" }
+    { value: "Local + Overseas", label: "Opportunities" }
   ],
   
   // Google Sheets — published CSV link ng job listings
@@ -70,7 +78,7 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
     // Popup texts
     popup: {
       title: "Job Details",
-      continueBtn: "Continue to Application",
+      applyBtn: "How to Apply",
       closeBtn: "Close",
       noDetails: "No additional details available for this job yet."
     }
@@ -78,22 +86,48 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Jobs Section
   jobs: {
-  title: "Now Hiring",
-  local: {
-    title: "Local Jobs"
+    title: "Now Hiring",
+    local: {
+      title: "Local Jobs"
+    },
+    overseas: {
+      title: "Overseas Jobs"
+    }
   },
-  overseas: {
-    title: "Overseas Jobs"
-  }
-},
+
+  homeApply: {
+    eyebrow: "How to Apply",
+    title: "Start Your Application in Three Steps",
+    subtitle: "Browse an opening, review the details, then contact the branch nearest you.",
+  
+    steps: [
+      {
+        number: "01",
+        title: "Find an Opening",
+        desc: "Browse available Local or Overseas positions."
+      },
+      {
+        number: "02",
+        title: "Review the Job",
+        desc: "Check the position details, qualifications, and requirements."
+      },
+      {
+        number: "03",
+        title: "Contact the Right Branch",
+        desc: "Select the branch nearest you and send your resume by email."
+      }
+    ],
+  
+    cta: "View Full Application Guide"
+  },
   
   // About
   about: {
     title: "Welcome to Archway",
     paragraphs: [
-      "Archway International & Marketing Services, Inc. was officially registered with the Philippine SEC on October 25, 2006 and began its operations in January 2007. Since then it has deployed close to a thousand skilled, non-skilled and professional workers to the Middle East countries, especially to the Kingdom of Saudi Arabia.",
+      "Archway Multi-Services Corporation began its operations serving Filipino jobseekers and has since deployed close to a thousand skilled, non-skilled and professional workers to the Middle East countries, especially to the Kingdom of Saudi Arabia.",
       "Its key mission is two-pronged: To provide our dedicated and hardworking countrymen decent job opportunities abroad, helping them achieve their lifelong dream of prosperity on the one hand, while providing fully-qualified workmen and professionals to clients of high ethical and moral standards, helping them in turn achieve their business goals on the other.",
-      "Our agency draws its strength from a group of young and dynamic associates and staff, leveraging its solid experience in the field of local contractual manpower-providing services in the Philippines through its mother company, Archway Multi-Services Corporation.",
+      "Our agency draws its strength from a group of young and dynamic associates and staff, leveraging its solid experience in the field of local contractual manpower-providing services in the Philippines.",
       "We stand proud by our clean record of Zero-complaint sanction and Zero-citation sanction from POEA."
     ]
   },
@@ -104,7 +138,7 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
     headerSubtitle: "We Create Opportunities for Candidates & Businesses",
     whoWeAreTitle: "Who We Are",
     whoWeAreParagraphs: [
-      "Archway is a licensed, privately-owned recruitment and placement company based in Pasay City, Metro Manila, Philippines. Since 2001, Archway has successfully deployed many highly-qualified Filipino professionals, skilled workers and non-skilled workforce throughout the Middle East. Aside from overseas, likewise, we have provided thousands of local jobs to Filipinos.",
+      "Archway Multi-Services Corporation is a licensed, privately-owned recruitment and placement company based in Pasay City, Metro Manila, Philippines. Archway has successfully deployed many highly-qualified Filipino professionals, skilled workers and non-skilled workforce throughout the Middle East. Aside from overseas, likewise, we have provided thousands of local jobs to Filipinos.",
       "In our 20 years of service, we have witnessed the versatility and industry of the Filipinos and the desire to uplift the lives of their families, are the very important goals of our organization. Our quality assurance is borne by our appreciation of the importance of a systematic program of selection and placement of human resources allowing us to get down to the vital details of our clients' manpower demands and letting us customize our services to each of the clients' needs."
     ],
     highlight: "We stand proud by our clean record of <strong>Zero-complaint</strong> and <strong>Zero-citation</strong> sanction from POEA."
@@ -140,22 +174,31 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Applicants Page
   applicantsPage: {
-    headerTitle: "Application Form",
-    headerSubtitle: "Be the first to be notified of new job openings! Fill-up the form below and submit to HR.",
-
+    headerTitle: "How to Apply",
+    headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and choose the branch nearest you for the right email to send your application to.",
+    
     branches: [
-      { value: "pasay", label: "Pasay / Main HR" },
-      { value: "bulacan", label: "Bulacan" },
-      { value: "pampanga", label: "Pampanga" },
-      { value: "la-union", label: "La Union" },
-      { value: "laguna", label: "Laguna" },
-      { value: "batangas", label: "Batangas" },
-      { value: "cavite", label: "Cavite" },
-      { value: "local", label: "Local" }
+      { value: "pasay", label: "Pasay / Main HR", email: "Hr@Archway.com.ph" },
+      { value: "bulacan", label: "Bulacan", email: "Archway.bulacan@intl.com.ph" },
+      { value: "pampanga", label: "Pampanga", email: "Archway.pampanga@intl.com.ph" },
+      { value: "la-union", label: "La Union", email: "Archway.launion@intl.com.ph" },
+      { value: "laguna", label: "Laguna", email: "Archway.laguna@intl.com.ph" },
+      { value: "batangas", label: "Batangas", email: "Archway.batangas@intl.com.ph" },
+      { value: "cavite", label: "Cavite", email: "Archway.cavite@intl.com.ph" },
+      { value: "local", label: "Local", email: "Archway.local@intl.com.ph" }
     ],
     
-    // FormSubmit target
-    formEndpoint: "https://formsubmit.co/jparaiso.digital@gmail.com",
+    // Branch Selector Modal (replaces the old Application Form)
+    branchSelector: {
+      title: "How to Apply",
+      subtitle: "Select the branch nearest you. We'll show you the email address to send your resume and application to.",
+      selectLabel: "Preferred Branch",
+      placeholder: "Select a branch...",
+      instruction: "Send your resume and application documents to this email address:",
+      copyBtn: "Copy Email",
+      copiedLabel: "Copied!",
+      closeBtn: "Close"
+    },
     
     protocols: {
       title: "Job Interview Protocols",
@@ -261,13 +304,10 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
   // Contact
   contact: {
     title: "Get in Touch",
-    address: "3rd Flr., SKK Building, 63-65 Sen. Gil Puyat Ave., Pasay City, Metro Manila, Philippines 1304",
-    mapEmbedUrl: "https://maps.google.com/maps?q=Archway%20Multi-Services%20Corporation%2C%2063-65%20Sen.%20Gil%20Puyat%20Ave%2C%20Pasay%20City%2C%20Metro%20Manila&output=embed",
+    address: "7F Unit 708A, Philflex Bay Center, Coral Way Drive, Pasay City",
+    mapEmbedUrl: "https://maps.google.com/maps?q=Philflex%20Bay%20Center%2C%20Coral%20Way%20Drive%2C%20Pasay%20City&output=embed",
     phones: [
-      "Trunk Lines: (02) 8551-1035 / 8551-1037",
-      "HR: +63 920 949 7844",
-      "+63 917 871 6794",
-      "+63 920 949 7845"
+      "Tel: (02) 863-11088 loc. 109"
     ],
     emails: [
       "inquiry@archwayintl.com.ph",
@@ -277,7 +317,7 @@ poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Footer
   footer: {
-    copyright: `© ${new Date().getFullYear()} Archway International & Marketing Services, Inc. All rights reserved.`
+    copyright: `© ${new Date().getFullYear()} Archway Multi-Services Corporation. All rights reserved.`
   }
   
 };
