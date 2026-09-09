@@ -54,8 +54,8 @@ const config = {
   ],
   
   // Google Sheets — published CSV link ng job listings
-  jobsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pub?gid=0&single=true&output=csv",
-  
+  jobsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=0&single=true&output=csv",
+  siteSettingsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=2131700161&single=true&output=csv",
   // Jobs settings (config-driven)
   jobsConfig: {
     // Column mapping (order sa Google Sheet)

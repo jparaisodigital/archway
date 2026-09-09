@@ -107,8 +107,12 @@
     <script src="site.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', renderHomePage);
-    </script>
+      document.addEventListener('DOMContentLoaded', async () => {
+          const settings = await fetchSiteSettings();
+          applySiteSettings(settings);
+          renderHomePage();
+      });
+  </script>
 
 </body>
 

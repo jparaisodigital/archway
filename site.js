@@ -233,6 +233,89 @@ function escapeHTML(value) {
     });
 }
 
+// ===== SITE SETTINGS DATA (GOOGLE SHEETS) =====
+async function fetchSiteSettings() {
+    try {
+        const url = `${config.siteSettingsSheetUrl}&_=${Date.now()}`;
+        
+        const res = await fetch(url, {
+            cache: 'no-store'
+        });
+        
+        const csvText = await res.text();
+        
+        const rows = csvText
+        .split(/\r?\n/)
+        .map(row => row.trim())
+        .filter(Boolean);
+        
+        const settings = {};
+        
+        rows.slice(1).forEach(row => {
+            const firstComma = row.indexOf(',');
+            
+            if (firstComma === -1) return;
+            
+            const key = row.slice(0, firstComma).trim();
+            
+            let value = row.slice(firstComma + 1).trim();
+            
+            if (value.startsWith('"') && value.endsWith('"')) {
+                value = value
+                .slice(1, -1)
+                .replace(/""/g, '"');
+            }
+            
+            if (key) {
+                settings[key] = value;
+            }
+        });
+        
+        return settings;
+    } catch (err) {
+        console.error('Failed to fetch site settings:', err);
+        return {};
+    }
+}
+
+// ===== APPLY SITE SETTINGS =====
+function applySiteSettings(settings) {
+    if (!settings || Object.keys(settings).length === 0) return;
+
+    if (settings.address) {
+        config.contact.address = settings.address;
+    }
+
+    if (settings.telephone) {
+        config.contact.phones = [settings.telephone];
+    }
+
+    if (settings.inquiry_email) {
+        config.contact.emails[0] = settings.inquiry_email;
+    }
+
+    if (settings.hr_email) {
+        config.contact.emails[1] = settings.hr_email;
+
+        const mainBranch = config.applicantsPage.branches.find(
+            branch => branch.value === 'pasay'
+        );
+
+        if (mainBranch) {
+            mainBranch.email = settings.hr_email;
+        }
+    }
+
+    if (settings.map_location) {
+        config.contact.mapEmbedUrl =
+            `https://maps.google.com/maps?q=${encodeURIComponent(settings.map_location)}&output=embed`;
+    }
+
+    if (settings.poea_license) {
+        config.poeaLicense = settings.poea_license;
+    }
+}
+
 // ===== JOBS DATA (GOOGLE SHEETS) =====
 async function fetchJobs() {
     try {
@@ -1787,7 +1870,7 @@ function renderApplicantsPage() {
 function toggleSection(id) {
     const section = document.getElementById(id);
     const icon = document.getElementById('icon-' + id);
-
+    
     if (section.classList.contains('open')) {
         section.classList.remove('open');
         icon.textContent = '+';
@@ -1808,18 +1891,18 @@ function openJobPopupFromButton(button) {
 
 function openJobPopup(id) {
     const job = (window._allJobs || []).find(j => j.id === id);
-
+    
     if (!job) {
         console.warn('Job not found.');
         return;
     }
-
+    
     const existing = document.getElementById('jobModal');
     if (existing) existing.remove();
-
+    
     const field = (label, value) => {
         if (!value) return '';
-
+        
         return `
             <div>
                 <p
@@ -1828,7 +1911,7 @@ function openJobPopup(id) {
                 >
                     ${escapeHTML(label)}
                 </p>
-
+        
                 <p
                     class="text-sm sm:text-base
                            font-medium text-slate-800
@@ -1839,27 +1922,27 @@ function openJobPopup(id) {
             </div>
         `;
     };
-
+    
     const hasExtraDetails =
-        job.specialization ||
-        job.location ||
-        job.experience ||
-        job.certifications ||
-        job.description ||
-        job.requirements;
-
+    job.specialization ||
+    job.location ||
+    job.experience ||
+    job.certifications ||
+    job.description ||
+    job.requirements;
+    
     const modal = document.createElement('div');
-
+    
     modal.id = 'jobModal';
     modal.className =
-        'fixed inset-0 z-[100] flex items-center justify-center p-4';
-
+    'fixed inset-0 z-[100] flex items-center justify-center p-4';
+    
     modal.innerHTML = `
         <div
             class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
             onclick="closeJobPopup()"
         ></div>
-
+    
         <div
             class="relative bg-white
                    w-full max-w-2xl max-h-[90vh]
@@ -1867,14 +1950,14 @@ function openJobPopup(id) {
                    rounded-xl border border-slate-200
                    shadow-xl"
         >
-
+    
             <!-- Modal Header -->
             <div
                 class="px-6 py-6 sm:px-8 sm:py-7
                        border-b border-slate-200"
             >
                 <div class="flex items-start justify-between gap-6">
-
+    
                     <div class="min-w-0">
                         <p
                             class="text-xs font-bold uppercase
@@ -1883,7 +1966,7 @@ function openJobPopup(id) {
                         >
                             ${escapeHTML(config.jobsConfig.popup.title)}
                         </p>
-
+    
                         <h3
                             class="text-2xl sm:text-3xl
                                    font-bold tracking-tight
@@ -1892,7 +1975,7 @@ function openJobPopup(id) {
                             ${escapeHTML(job.title)}
                         </h3>
                     </div>
-
+    
                     <button
                         type="button"
                         onclick="closeJobPopup()"
@@ -1906,14 +1989,14 @@ function openJobPopup(id) {
                     >
                         <span class="text-2xl leading-none">&times;</span>
                     </button>
-
+    
                 </div>
             </div>
-
-
+    
+    
             <!-- Modal Body -->
             <div class="px-6 py-6 sm:px-8 sm:py-8">
-
+    
                 <div class="grid sm:grid-cols-2 gap-x-10 gap-y-6">
                     ${field('Employment Type', job.type)}
                     ${field('Location', job.location)}
@@ -1921,17 +2004,17 @@ function openJobPopup(id) {
                     ${field('Experience', job.experience)}
                     ${field('Certifications', job.certifications)}
                 </div>
-
+    
                 ${job.description ? `
                     <div class="mt-8 pt-8 border-t border-slate-200">
-
+    
                         <h4
                             class="text-base font-bold
                                    tracking-tight text-slate-900 mb-3"
                         >
                             Job Description
                         </h4>
-
+    
                         <p
                             class="text-sm sm:text-base
                                    text-slate-600 leading-7
@@ -1939,20 +2022,20 @@ function openJobPopup(id) {
                         >
                             ${escapeHTML(job.description)}
                         </p>
-
+    
                     </div>
                 ` : ''}
-
+    
                 ${job.requirements ? `
                     <div class="mt-8 pt-8 border-t border-slate-200">
-
+    
                         <h4
                             class="text-base font-bold
                                    tracking-tight text-slate-900 mb-3"
                         >
                             Qualifications & Requirements
                         </h4>
-
+    
                         <p
                             class="text-sm sm:text-base
                                    text-slate-600 leading-7
@@ -1960,10 +2043,10 @@ function openJobPopup(id) {
                         >
                             ${escapeHTML(job.requirements)}
                         </p>
-
+    
                     </div>
                 ` : ''}
-
+    
                 ${!hasExtraDetails ? `
                     <div
                         class="mt-2
@@ -1978,10 +2061,10 @@ function openJobPopup(id) {
                         </p>
                     </div>
                 ` : ''}
-
+    
             </div>
-
-
+    
+    
             <!-- Modal Footer -->
             <div
                 class="px-6 py-5 sm:px-8
@@ -2001,7 +2084,7 @@ function openJobPopup(id) {
                 >
                     ${escapeHTML(config.jobsConfig.popup.closeBtn)}
                 </button>
-
+    
                 <button
                     type="button"
                     onclick="openBranchSelector('${escapeHTML(job.id)}')"
@@ -2015,17 +2098,17 @@ function openJobPopup(id) {
                     ${escapeHTML(config.jobsConfig.popup.applyBtn)}
                 </button>
             </div>
-
+    
         </div>
     `;
-
+    
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 }
 
 function closeJobPopup() {
     const modal = document.getElementById('jobModal');
-
+    
     if (modal) {
         modal.remove();
         document.body.style.overflow = '';
@@ -2038,24 +2121,24 @@ function openBranchSelector(jobId) {
     const job = (window._allJobs || []).find(j => j.id === jobId);
     const s = config.applicantsPage.branchSelector;
     const branches = config.applicantsPage.branches;
-
+    
     closeJobPopup();
-
+    
     const existing = document.getElementById('branchModal');
     if (existing) existing.remove();
-
+    
     const modal = document.createElement('div');
-
+    
     modal.id = 'branchModal';
     modal.className =
-        'fixed inset-0 z-[100] flex items-center justify-center p-4';
-
+    'fixed inset-0 z-[100] flex items-center justify-center p-4';
+    
     modal.innerHTML = `
         <div
             class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
             onclick="closeBranchSelector()"
         ></div>
-
+    
         <div
             class="relative bg-white
                    w-full max-w-lg max-h-[90vh]
@@ -2063,14 +2146,14 @@ function openBranchSelector(jobId) {
                    rounded-xl border border-slate-200
                    shadow-xl"
         >
-
+    
             <!-- Modal Header -->
             <div
                 class="px-6 py-6 sm:px-8 sm:py-7
                        border-b border-slate-200"
             >
                 <div class="flex items-start justify-between gap-6">
-
+    
                     <div class="min-w-0">
                         <p
                             class="text-xs font-bold uppercase
@@ -2079,7 +2162,7 @@ function openBranchSelector(jobId) {
                         >
                             ${escapeHTML(s.title)}
                         </p>
-
+    
                         ${job ? `
                             <h3
                                 class="text-xl sm:text-2xl
@@ -2090,7 +2173,7 @@ function openBranchSelector(jobId) {
                             </h3>
                         ` : ''}
                     </div>
-
+    
                     <button
                         type="button"
                         onclick="closeBranchSelector()"
@@ -2104,21 +2187,21 @@ function openBranchSelector(jobId) {
                     >
                         <span class="text-2xl leading-none">&times;</span>
                     </button>
-
+    
                 </div>
             </div>
-
-
+    
+    
             <!-- Modal Body -->
             <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
-
+    
                 <p
                     class="text-sm sm:text-base
                            text-slate-600 leading-relaxed"
                 >
                     ${escapeHTML(s.subtitle)}
                 </p>
-
+    
                 <div>
                     <label
                         for="branchSelect"
@@ -2127,7 +2210,7 @@ function openBranchSelector(jobId) {
                     >
                         ${escapeHTML(s.selectLabel)}
                     </label>
-
+    
                     <select
                         id="branchSelect"
                         onchange="onBranchSelected()"
@@ -2141,14 +2224,14 @@ function openBranchSelector(jobId) {
                         <option value="">
                             ${escapeHTML(s.placeholder)}
                         </option>
-
+    
                         ${branches.map(branch => `
                             <option value="${escapeHTML(branch.value)}">
                                 ${escapeHTML(branch.label)}
                             </option>
                         `).join('')}
                     </select>
-
+    
                     <p
                         class="mt-2 text-xs
                                text-slate-500 leading-relaxed"
@@ -2156,8 +2239,8 @@ function openBranchSelector(jobId) {
                         Choose the branch nearest to your location.
                     </p>
                 </div>
-
-
+    
+    
                 <!-- Branch Email Result -->
                 <div
                     id="branchEmailResult"
@@ -2168,13 +2251,13 @@ function openBranchSelector(jobId) {
                     >
                         ${escapeHTML(s.instruction)}
                     </p>
-
+    
                     <div
                         class="mt-4
                                border border-slate-200
                                rounded-lg overflow-hidden"
                     >
-
+    
                         <div class="px-4 py-4 bg-slate-50">
                             <p
                                 class="text-xs font-semibold uppercase
@@ -2183,7 +2266,7 @@ function openBranchSelector(jobId) {
                             >
                                 Branch Email
                             </p>
-
+    
                             <span
                                 id="branchEmailText"
                                 class="block text-sm sm:text-base
@@ -2191,7 +2274,7 @@ function openBranchSelector(jobId) {
                                        break-all"
                             ></span>
                         </div>
-
+    
                         <div
                             class="p-3
                                    border-t border-slate-200
@@ -2209,7 +2292,7 @@ function openBranchSelector(jobId) {
                             >
                                 ${escapeHTML(s.copyBtn)}
                             </button>
-
+    
                             <a
                                 id="mailtoLink"
                                 href="#"
@@ -2224,13 +2307,13 @@ function openBranchSelector(jobId) {
                                 Open in Email App
                             </a>
                         </div>
-
+    
                     </div>
                 </div>
-
+    
             </div>
-
-
+    
+    
             <!-- Modal Footer -->
             <div
                 class="px-6 py-5 sm:px-8
@@ -2249,10 +2332,10 @@ function openBranchSelector(jobId) {
                     ${escapeHTML(s.closeBtn)}
                 </button>
             </div>
-
+    
         </div>
     `;
-
+    
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 }
@@ -2261,53 +2344,53 @@ function onBranchSelected() {
     const select = document.getElementById('branchSelect');
     const branches = config.applicantsPage.branches;
     const branch = branches.find(b => b.value === select.value);
-
+    
     const result = document.getElementById('branchEmailResult');
     const emailText = document.getElementById('branchEmailText');
     const mailtoLink = document.getElementById('mailtoLink');
     const copyBtn = document.getElementById('copyEmailBtn');
-
+    
     if (!branch) {
         result.classList.add('hidden');
         return;
     }
-
+    
     emailText.textContent = branch.email;
-
+    
     mailtoLink.href =
-        `mailto:${branch.email}?subject=${encodeURIComponent('Job Application')}`;
-
+    `mailto:${branch.email}?subject=${encodeURIComponent('Job Application')}`;
+    
     copyBtn.textContent =
-        config.applicantsPage.branchSelector.copyBtn;
-
+    config.applicantsPage.branchSelector.copyBtn;
+    
     result.classList.remove('hidden');
 }
 
 function copyBranchEmail() {
     const emailText = document.getElementById('branchEmailText');
     const copyBtn = document.getElementById('copyEmailBtn');
-
+    
     if (!emailText || !emailText.textContent) return;
-
+    
     navigator.clipboard
-        .writeText(emailText.textContent)
-        .then(() => {
+    .writeText(emailText.textContent)
+    .then(() => {
+        copyBtn.textContent =
+        config.applicantsPage.branchSelector.copiedLabel;
+        
+        setTimeout(() => {
             copyBtn.textContent =
-                config.applicantsPage.branchSelector.copiedLabel;
-
-            setTimeout(() => {
-                copyBtn.textContent =
-                    config.applicantsPage.branchSelector.copyBtn;
-            }, 2000);
-        })
-        .catch(() => {
-            console.warn('Clipboard copy failed.');
-        });
+            config.applicantsPage.branchSelector.copyBtn;
+        }, 2000);
+    })
+    .catch(() => {
+        console.warn('Clipboard copy failed.');
+    });
 }
 
 function closeBranchSelector() {
     const modal = document.getElementById('branchModal');
-
+    
     if (modal) {
         modal.remove();
         document.body.style.overflow = '';

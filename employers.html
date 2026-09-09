@@ -83,7 +83,11 @@
     <script src="site.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', renderEmployersPage);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const settings = await fetchSiteSettings();
+            applySiteSettings(settings);
+            renderEmployersPage();
+        });
     </script>
 
 </body>

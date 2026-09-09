@@ -83,7 +83,11 @@
     <script src="site.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', renderAboutPage);
+        document.addEventListener('DOMContentLoaded', async () => {
+            const settings = await fetchSiteSettings();
+            applySiteSettings(settings);
+            renderAboutPage();
+        });
     </script>
 
 </body>
