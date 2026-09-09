@@ -1,37 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>About Us | Archway</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Inter Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Tailwind Theme -->
     <script>
         tailwind.config = {
-            theme: { extend: {
-                fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-                colors: { primary: '#0B6E99', 'primary-dark': '#084F6F', accent: '#00C2CB' }
-            }}
-        }
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        primary: '#0B6E99',
+                        'primary-dark': '#084F6F',
+                        accent: '#00C2CB'
+                    }
+                }
+            }
+        };
     </script>
+
     <style>
         body {
             font-family: 'Inter', system-ui, sans-serif;
             animation: fadeIn 0.4s ease-out;
         }
-    
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(8px);
             }
-    
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-    
+
         .reveal {
             opacity: 0;
             transform: translateY(20px);
@@ -39,27 +59,33 @@
                 opacity 0.4s ease-out,
                 transform 0.4s ease-out;
         }
-    
+
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
-    
+
         .fade-in-content {
             animation: fadeIn 0.4s ease-out;
         }
-    
+
         #mobileMenu {
             transition: all 0.3s ease;
         }
     </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900 antialiased">
+
     <div id="app"></div>
+
     <script src="config.js"></script>
     <script src="site.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', renderAboutPage);
     </script>
+
 </body>
+
 </html>

@@ -1,7 +1,6 @@
 // site.js
 
 // ===== SHARED =====
-// ===== SHARED =====
 function renderNav(activePage) {
     return `
         <nav
@@ -27,14 +26,14 @@ function renderNav(activePage) {
                         class="object-contain"
                     >
                 </a>
-
-
+    
+    
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center gap-8 h-full">
                     ${config.nav.map(item => {
-                        const isActive = item.href === activePage;
-
-                        return `
+    const isActive = item.href === activePage;
+    
+    return `
                             <a
                                 href="${item.href}"
                                 class="
@@ -43,9 +42,9 @@ function renderNav(activePage) {
                                     text-sm font-semibold
                                     transition-colors
                                     ${isActive
-                                        ? 'text-white'
-                                        : 'text-white/60 hover:text-white'
-                                    }
+    ? 'text-white'
+    : 'text-white/60 hover:text-white'
+}
                                 "
                             >
                                 ${escapeHTML(item.label)}
@@ -58,7 +57,7 @@ function renderNav(activePage) {
                                 ` : ''}
                             </a>
                         `;
-                    }).join('')}
+}).join('')}
                 </div>
 
 
@@ -136,9 +135,9 @@ function renderNav(activePage) {
 
                     <div class="flex flex-col">
                         ${config.nav.map(item => {
-                            const isActive = item.href === activePage;
+const isActive = item.href === activePage;
 
-                            return `
+return `
                                 <a
                                     href="${item.href}"
                                     class="
@@ -147,15 +146,15 @@ function renderNav(activePage) {
                                         text-sm font-semibold
                                         transition-colors
                                         ${isActive
-                                            ? 'text-white'
-                                            : 'text-white/60 hover:text-white'
-                                        }
+? 'text-white'
+: 'text-white/60 hover:text-white'
+}
                                     "
                                 >
                                     ${escapeHTML(item.label)}
                                 </a>
                             `;
-                        }).join('')}
+}).join('')}
                     </div>
 
                     <a
@@ -210,7 +209,7 @@ function renderFooter() {
                 <p>
                     ${escapeHTML(config.footer.copyright)}
                 </p>
-
+    
                 <p class="text-xs text-slate-500 sm:text-right">
                     ${escapeHTML(config.poeaLicense)}
                 </p>
@@ -316,23 +315,23 @@ async function fetchJobs() {
 
 function renderJobTable(title, jobs) {
     const openingLabel =
-        jobs.length === 1
-            ? '1 current opening'
-            : `${jobs.length} current openings`;
-
+    jobs.length === 1
+    ? '1 current opening'
+    : `${jobs.length} current openings`;
+    
     return `
         <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-
+    
             <div class="px-6 py-5 border-b border-slate-200">
                 <h3 class="text-xl font-bold tracking-tight text-slate-900">
                     ${escapeHTML(title)}
                 </h3>
-
+    
                 <p class="mt-1 text-sm text-slate-500">
                     ${openingLabel}
                 </p>
             </div>
-
+    
             <div>
                 ${jobs.length === 0 ? `
                     <div class="px-6 py-10 text-sm text-slate-500">
@@ -351,7 +350,7 @@ function renderJobTable(title, jobs) {
                                 ${escapeHTML(job.title)}
                             </p>
                         </div>
-
+    
                         <button
                             type="button"
                             data-job-id="${escapeHTML(job.id)}"
@@ -368,7 +367,7 @@ function renderJobTable(title, jobs) {
                     </div>
                 `).join('')}
             </div>
-
+    
         </div>
     `;
 }
@@ -377,17 +376,17 @@ function renderJobTable(title, jobs) {
 function renderJobsLoading(title) {
     return `
         <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
-
+    
             <div class="px-6 py-5 border-b border-slate-200">
                 <h3 class="text-xl font-bold tracking-tight text-slate-900">
                     ${escapeHTML(title)}
                 </h3>
-
+    
                 <p class="mt-1 text-sm text-slate-500">
                     Checking current openings...
                 </p>
             </div>
-
+    
             <div
                 class="min-h-[60px] px-6 py-5
                        flex items-center
@@ -395,7 +394,7 @@ function renderJobsLoading(title) {
             >
                 Loading job listings...
             </div>
-
+    
         </div>
     `;
 }
@@ -413,26 +412,26 @@ function renderHomePage() {
     id="home"
 >
     <div class="absolute inset-0 bg-primary"></div>
-
+    
     ${c.hero.images.map((img, i) => `
         <div
             class="hero-bg-image ${i === 0 ? 'active' : ''}"
             style="background-image:url('${img}');"
         ></div>
     `).join('')}
-
-    <!-- Premium left-heavy gradient overlay -->
+    
+    <!-- Hero gradient overlay -->
     <div
         class="absolute inset-0 bg-gradient-to-r
                from-slate-950/90
                via-primary-dark/80
                to-primary/20">
     </div>
-
+    
     <div class="relative z-10 w-full">
         <div class="max-w-7xl mx-auto px-6 py-24 lg:py-32">
             <div class="max-w-3xl">
-
+    
                 <p
                     class="text-accent text-xs sm:text-sm
                            font-bold tracking-[0.22em]
@@ -440,7 +439,7 @@ function renderHomePage() {
                 >
                     ${c.hero.eyebrow}
                 </p>
-
+    
                 <h1
                     class="text-4xl sm:text-5xl lg:text-6xl
                            font-extrabold text-white
@@ -448,7 +447,7 @@ function renderHomePage() {
                 >
                     ${c.hero.title}
                 </h1>
-
+    
                 <p
                     class="text-lg sm:text-xl
                            text-white/85 leading-relaxed
@@ -456,36 +455,35 @@ function renderHomePage() {
                 >
                     ${c.hero.subtitle}
                 </p>
-
+    
                 <div class="flex flex-wrap gap-4 mb-8">
-
+    
                     <a
                         href="#jobs"
                         class="inline-flex items-center justify-center
-                               px-7 py-3.5 rounded-full
-                               bg-white text-primary
-                               font-semibold shadow-lg
-                               hover:shadow-xl hover:-translate-y-0.5
-                               transition-all duration-200"
+       px-7 py-3.5 rounded-lg
+       bg-white text-primary
+       font-semibold
+       hover:bg-slate-100
+       transition-colors duration-200"
                     >
                         ${c.hero.ctaPrimary}
                     </a>
-
-                    <a
-                        href="applicants.html"
-                        class="inline-flex items-center justify-center
-                               px-7 py-3.5 rounded-full
-                               border border-white/60
-                               text-white font-semibold
-                               hover:bg-white/10
-                               hover:-translate-y-0.5
-                               transition-all duration-200"
-                    >
-                        ${c.hero.ctaSecondary}
-                    </a>
-
+    
+                    <a 
+    href="applicants.html" 
+    class="inline-flex items-center justify-center 
+           px-7 py-3.5 rounded-lg 
+           border border-white/60 
+           text-white font-semibold 
+           hover:bg-white/10 
+           transition-colors duration-200" 
+> 
+    ${c.hero.ctaSecondary} 
+</a>
+    
                 </div>
-
+    
                 <div
                     class="flex flex-wrap gap-x-6 gap-y-3
                            text-sm text-white/80"
@@ -500,12 +498,12 @@ function renderHomePage() {
                             >
                                 ✓
                             </span>
-
+    
                             <span>${item}</span>
                         </div>
                     `).join('')}
                 </div>
-
+    
             </div>
         </div>
     </div>
@@ -514,7 +512,7 @@ function renderHomePage() {
       <section class="relative z-10 border-b border-slate-200 bg-white reveal">
     <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-2 lg:grid-cols-4">
-
+    
             ${c.stats.map((s, i) => `
                 <div
                     class="
@@ -531,7 +529,7 @@ function renderHomePage() {
                     >
                         ${s.value}
                     </div>
-
+    
                     <div
                         class="mt-1.5 text-sm
                                font-medium text-slate-500"
@@ -540,14 +538,14 @@ function renderHomePage() {
                     </div>
                 </div>
             `).join('')}
-
+    
         </div>
     </div>
 </section>
   
       <section class="py-16 lg:py-24 bg-slate-50 reveal" id="jobs">
     <div class="max-w-7xl mx-auto px-6">
-
+    
         <div class="max-w-2xl mb-12 lg:mb-14">
             <p
                 class="text-xs sm:text-sm font-bold
@@ -556,7 +554,7 @@ function renderHomePage() {
             >
                 Current Opportunities
             </p>
-
+    
             <h2
                 class="text-3xl sm:text-4xl lg:text-5xl
                        font-extrabold tracking-tight
@@ -564,7 +562,7 @@ function renderHomePage() {
             >
                 ${c.jobs.title}
             </h2>
-
+    
             <p
                 class="mt-4 text-base sm:text-lg
                        text-slate-600 leading-relaxed"
@@ -573,18 +571,18 @@ function renderHomePage() {
                 for Filipino professionals and skilled workers.
             </p>
         </div>
-
+    
         <div class="grid md:grid-cols-2 gap-6 lg:gap-8" id="jobsGrid">
             ${renderJobsLoading(c.jobs.local.title)}
             ${renderJobsLoading(c.jobs.overseas.title)}
         </div>
-
+    
     </div>
 </section>
-
+    
 <section class="py-16 lg:py-24 bg-white reveal" id="how-to-apply">
     <div class="max-w-7xl mx-auto px-6">
-
+    
         <div class="max-w-2xl mb-12 lg:mb-14">
             <p
                 class="text-xs sm:text-sm font-bold
@@ -593,7 +591,7 @@ function renderHomePage() {
             >
                 ${c.homeApply.eyebrow}
             </p>
-
+    
             <h2
                 class="text-3xl sm:text-4xl lg:text-5xl
                        font-extrabold tracking-tight
@@ -601,7 +599,7 @@ function renderHomePage() {
             >
                 ${c.homeApply.title}
             </h2>
-
+    
             <p
                 class="mt-4 text-base sm:text-lg
                        text-slate-600 leading-relaxed"
@@ -609,7 +607,7 @@ function renderHomePage() {
                 ${c.homeApply.subtitle}
             </p>
         </div>
-
+    
         <div
             class="grid lg:grid-cols-3
                    border-y border-slate-200
@@ -630,14 +628,14 @@ function renderHomePage() {
                     >
                         ${escapeHTML(step.number)}
                     </div>
-
+    
                     <h3
                         class="text-xl font-bold
                                tracking-tight text-slate-900 mb-3"
                     >
                         ${escapeHTML(step.title)}
                     </h3>
-
+    
                     <p
                         class="text-sm sm:text-base
                                text-slate-600 leading-relaxed
@@ -648,7 +646,7 @@ function renderHomePage() {
                 </div>
             `).join('')}
         </div>
-
+    
         <div class="mt-9">
             <a
                 href="applicants.html"
@@ -662,15 +660,15 @@ function renderHomePage() {
                 ${escapeHTML(c.homeApply.cta)}
             </a>
         </div>
-
+    
     </div>
 </section>
   
       <section class="py-16 lg:py-24 bg-slate-50 reveal" id="about">
     <div class="max-w-7xl mx-auto px-6">
-
+    
         <div class="grid lg:grid-cols-[0.8fr_1.4fr] gap-12 lg:gap-20 items-start">
-
+    
             <!-- Section anchor -->
             <div>
                 <p
@@ -680,7 +678,7 @@ function renderHomePage() {
                 >
                     About Archway
                 </p>
-
+    
                 <h2
                     class="text-3xl sm:text-4xl lg:text-5xl
                            font-extrabold tracking-tight
@@ -689,7 +687,7 @@ function renderHomePage() {
                     ${c.about.title}
                 </h2>
             </div>
-
+    
             <!-- Company story -->
             <div>
                 <div class="space-y-5 text-base text-slate-600 leading-7">
@@ -697,7 +695,7 @@ function renderHomePage() {
                         <p>${escapeHTML(p)}</p>
                     `).join('')}
                 </div>
-
+    
                 <a
                     href="about.html"
                     class="inline-flex items-center
@@ -709,7 +707,7 @@ function renderHomePage() {
                     Learn More About Archway
                     <span class="ml-2" aria-hidden="true">&rarr;</span>
                 </a>
-
+    
                 <!-- Credibility row -->
                 <div
                     class="mt-10 pt-8
@@ -722,7 +720,7 @@ function renderHomePage() {
                         alt="${escapeHTML(c.poeaBadge.alt)}"
                         class="w-auto h-24 object-contain self-start"
                     >
-
+    
                     <div>
                         <p
                             class="text-xs font-bold uppercase
@@ -730,29 +728,29 @@ function renderHomePage() {
                         >
                             Licensed Recruitment Agency
                         </p>
-
+    
                         <p class="font-semibold text-slate-900">
                             POEA Licensed • Zero Complaint Record
                         </p>
-
+    
                         <p class="mt-1 text-sm text-slate-500">
                             ${escapeHTML(c.poeaLicense)}
                         </p>
                     </div>
                 </div>
-
+    
             </div>
-
+    
         </div>
-
+    
     </div>
 </section>
   
       <section class="py-16 lg:py-24 bg-slate-950 text-white reveal" id="contact">
     <div class="max-w-7xl mx-auto px-6">
-
+    
         <div class="grid lg:grid-cols-[0.9fr_1.1fr] gap-12 lg:gap-20 items-start">
-
+    
             <!-- Contact information -->
             <div>
                 <p
@@ -762,7 +760,7 @@ function renderHomePage() {
                 >
                     Contact Archway
                 </p>
-
+    
                 <h2
                     class="text-3xl sm:text-4xl lg:text-5xl
                            font-extrabold tracking-tight
@@ -770,7 +768,7 @@ function renderHomePage() {
                 >
                     ${escapeHTML(c.contact.title)}
                 </h2>
-
+    
                 <p
                     class="mt-5 text-base sm:text-lg
                            text-white/65 leading-relaxed
@@ -779,9 +777,9 @@ function renderHomePage() {
                     For applicant guidance, employer inquiries, or office concerns,
                     reach us through the contact information below.
                 </p>
-
+    
                 <div class="mt-10 border-y border-white/15">
-
+    
                     <div class="py-5">
                         <p
                             class="text-xs font-bold uppercase
@@ -790,12 +788,12 @@ function renderHomePage() {
                         >
                             Address
                         </p>
-
+    
                         <p class="text-sm sm:text-base text-white/85 leading-relaxed">
                             ${escapeHTML(c.contact.address)}
                         </p>
                     </div>
-
+    
                     <div class="py-5 border-t border-white/15">
                         <p
                             class="text-xs font-bold uppercase
@@ -804,14 +802,14 @@ function renderHomePage() {
                         >
                             Phone
                         </p>
-
+    
                         <div class="space-y-1 text-sm sm:text-base text-white/85">
                             ${c.contact.phones.map(phone => `
                                 <p>${escapeHTML(phone)}</p>
                             `).join('')}
                         </div>
                     </div>
-
+    
                     <div class="py-5 border-t border-white/15">
                         <p
                             class="text-xs font-bold uppercase
@@ -820,7 +818,7 @@ function renderHomePage() {
                         >
                             Email
                         </p>
-
+    
                         <div class="space-y-2 text-sm sm:text-base">
                             ${c.contact.emails.map(email => `
                                 <a
@@ -835,9 +833,9 @@ function renderHomePage() {
                             `).join('')}
                         </div>
                     </div>
-
+    
                 </div>
-
+    
                 <!-- Audience pathways -->
                 <div class="mt-8 flex flex-wrap gap-3">
                     <a
@@ -851,7 +849,7 @@ function renderHomePage() {
                     >
                         How to Apply
                     </a>
-
+    
                     <a
                         href="employers.html"
                         class="inline-flex items-center justify-center
@@ -866,7 +864,7 @@ function renderHomePage() {
                     </a>
                 </div>
             </div>
-
+    
             <!-- Office map -->
             <div>
                 <p
@@ -876,7 +874,7 @@ function renderHomePage() {
                 >
                     Office Location
                 </p>
-
+    
                 <div
                     class="overflow-hidden rounded-xl
                            border border-white/15
@@ -895,9 +893,9 @@ function renderHomePage() {
 </iframe>
                 </div>
             </div>
-
+    
         </div>
-
+    
     </div>
 </section>
   
@@ -927,55 +925,55 @@ function renderHomePage() {
     
     fetchJobs().then(jobs => {
         window._allJobs = jobs;
-    
+        
         const localJobs = jobs.filter(j => j.type === 'Local');
         const overseasJobs = jobs.filter(j => j.type === 'Overseas');
-    
+        
         const grid = document.getElementById('jobsGrid');
-    
+        
         if (grid) {
             grid.innerHTML =
-                renderJobTable(c.jobs.local.title, localJobs) +
-                renderJobTable(c.jobs.overseas.title, overseasJobs);
+            renderJobTable(c.jobs.local.title, localJobs) +
+            renderJobTable(c.jobs.overseas.title, overseasJobs);
         }
     });
     
-    }
+}
+
+// ===== SCROLL REVEAL =====
+function initScrollReveal() {
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -40px 0px"
+    };
     
-    // ===== SCROLL REVEAL =====
-    function initScrollReveal() {
-        const observerOptions = {
-            threshold: 0.15,
-            rootMargin: "0px 0px -40px 0px"
-        };
-    
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-    
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
         });
-    }
+    }, observerOptions);
+    
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+}
 
 // ===== ABOUT PAGE =====
 function renderAboutPage() {
     const app = document.getElementById('app');
     const p = config.aboutPage;
-
+    
     app.innerHTML = `
         ${renderNav('about.html')}
-
+    
         <div class="fade-in-content">
-
+    
             <!-- Editorial Header -->
             <header class="bg-white border-b border-slate-200">
                 <div class="max-w-7xl mx-auto px-6 py-16 lg:py-20">
-
+    
                     <div
                         class="grid lg:grid-cols-[1fr_0.9fr]
                                gap-8 lg:gap-20
@@ -989,7 +987,7 @@ function renderAboutPage() {
                             >
                                 About Archway
                             </p>
-
+    
                             <h1
                                 class="text-4xl sm:text-5xl lg:text-6xl
                                        font-extrabold tracking-tight
@@ -998,7 +996,7 @@ function renderAboutPage() {
                                 ${escapeHTML(p.headerTitle)}
                             </h1>
                         </div>
-
+    
                         <p
                             class="text-base sm:text-lg
                                    text-slate-600 leading-relaxed"
@@ -1006,21 +1004,21 @@ function renderAboutPage() {
                             ${escapeHTML(p.headerSubtitle)}
                         </p>
                     </div>
-
+    
                 </div>
             </header>
-
-
+    
+    
             <!-- Who We Are -->
             <section class="py-16 lg:py-24 bg-white">
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="grid lg:grid-cols-[0.75fr_1.25fr]
                                gap-12 lg:gap-20
                                items-start"
                     >
-
+    
                         <div class="lg:sticky lg:top-28">
                             <p
                                 class="text-xs sm:text-sm font-bold
@@ -1029,7 +1027,7 @@ function renderAboutPage() {
                             >
                                 Company Profile
                             </p>
-
+    
                             <h2
                                 class="text-3xl sm:text-4xl lg:text-5xl
                                        font-extrabold tracking-tight
@@ -1037,7 +1035,7 @@ function renderAboutPage() {
                             >
                                 ${escapeHTML(p.whoWeAreTitle)}
                             </h2>
-
+    
                             <p
                                 class="mt-5 max-w-md
                                        text-base text-slate-500
@@ -1048,8 +1046,8 @@ function renderAboutPage() {
                                 recruitment and placement services.
                             </p>
                         </div>
-
-
+    
+    
                         <div
                             class="space-y-6
                                    text-base sm:text-lg
@@ -1060,12 +1058,12 @@ function renderAboutPage() {
                                 <p>${escapeHTML(para)}</p>
                             `).join('')}
                         </div>
-
+    
                     </div>
                 </div>
             </section>
-
-
+    
+    
             <!-- Credibility -->
             <section
                 class="py-12 lg:py-16
@@ -1073,7 +1071,7 @@ function renderAboutPage() {
                        border-y border-slate-200"
             >
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="grid sm:grid-cols-[auto_1fr]
                                gap-8 sm:gap-10
@@ -1086,7 +1084,7 @@ function renderAboutPage() {
                             class="h-24 sm:h-28
                                    w-auto object-contain"
                         >
-
+    
                         <div>
                             <p
                                 class="text-xs font-bold uppercase
@@ -1095,7 +1093,7 @@ function renderAboutPage() {
                             >
                                 Licensed Recruitment Agency
                             </p>
-
+    
                             <p
                                 class="text-lg sm:text-xl
                                        font-bold tracking-tight
@@ -1103,14 +1101,14 @@ function renderAboutPage() {
                             >
                                 POEA Licensed
                             </p>
-
+    
                             <p
                                 class="mt-1
                                        text-sm text-slate-500"
                             >
                                 ${escapeHTML(config.poeaLicense)}
                             </p>
-
+    
                             <div
                                 class="mt-5 pt-5
                                        border-t border-slate-200
@@ -1121,16 +1119,16 @@ function renderAboutPage() {
                                 ${p.highlight}
                             </div>
                         </div>
-
+    
                     </div>
                 </div>
             </section>
-
-
+    
+    
             <!-- Closing CTA -->
             <section class="py-12 lg:py-14 bg-white">
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="flex flex-col lg:flex-row
                                lg:items-center
@@ -1145,7 +1143,7 @@ function renderAboutPage() {
                             >
                                 Looking for opportunities or manpower solutions?
                             </p>
-
+    
                             <p
                                 class="mt-2
                                        text-sm sm:text-base
@@ -1155,7 +1153,7 @@ function renderAboutPage() {
                                 Archway can support your manpower requirements.
                             </p>
                         </div>
-
+    
                         <div class="flex flex-wrap gap-3">
                             <a
                                 href="index.html#jobs"
@@ -1168,7 +1166,7 @@ function renderAboutPage() {
                             >
                                 View Job Openings
                             </a>
-
+    
                             <a
                                 href="employers.html"
                                 class="inline-flex items-center justify-center
@@ -1183,32 +1181,32 @@ function renderAboutPage() {
                             </a>
                         </div>
                     </div>
-
+    
                 </div>
             </section>
-
-
+    
+    
             ${renderFooter()}
-
+    
         </div>
     `;
-
+    
     initScrollReveal();
 }
 // ===== EMPLOYERS PAGE =====
 function renderEmployersPage() {
     const app = document.getElementById('app');
     const p = config.employersPage;
-
+    
     app.innerHTML = `
         ${renderNav('employers.html')}
-
+    
         <div class="fade-in-content">
-
+    
             <!-- Editorial Header -->
             <header class="bg-white border-b border-slate-200">
                 <div class="max-w-7xl mx-auto px-6 py-16 lg:py-20">
-
+    
                     <div
                         class="grid lg:grid-cols-[1fr_0.9fr]
                                gap-8 lg:gap-20
@@ -1222,7 +1220,7 @@ function renderEmployersPage() {
                             >
                                 For Employers
                             </p>
-
+    
                             <h1
                                 class="text-4xl sm:text-5xl lg:text-6xl
                                        font-extrabold tracking-tight
@@ -1231,7 +1229,7 @@ function renderEmployersPage() {
                                 ${escapeHTML(p.headerTitle)}
                             </h1>
                         </div>
-
+    
                         <p
                             class="text-base sm:text-lg
                                    text-slate-600 leading-relaxed"
@@ -1239,21 +1237,21 @@ function renderEmployersPage() {
                             ${escapeHTML(p.headerSubtitle)}
                         </p>
                     </div>
-
+    
                 </div>
             </header>
-
-
+    
+    
             <!-- Documentary Requirements -->
             <section class="py-16 lg:py-24 bg-white">
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="grid lg:grid-cols-[0.72fr_1.28fr]
                                gap-12 lg:gap-20
                                items-start"
                     >
-
+    
                         <!-- Introduction -->
                         <div class="lg:sticky lg:top-28">
                             <p
@@ -1263,7 +1261,7 @@ function renderEmployersPage() {
                             >
                                 Employer Requirements
                             </p>
-
+    
                             <h2
                                 class="text-3xl sm:text-4xl
                                        lg:text-5xl
@@ -1272,7 +1270,7 @@ function renderEmployersPage() {
                             >
                                 ${escapeHTML(p.reqTitle)}
                             </h2>
-
+    
                             <div
                                 class="mt-6 space-y-5
                                        text-sm sm:text-base
@@ -1283,12 +1281,12 @@ function renderEmployersPage() {
                                 `).join('')}
                             </div>
                         </div>
-
-
+    
+    
                         <!-- Requirements List -->
                         <div>
                             <div class="border-t border-slate-200">
-
+    
                                 ${p.requirements.map((req, i) => `
                                     <div
                                         class="grid
@@ -1307,7 +1305,7 @@ function renderEmployersPage() {
                                         >
                                             ${String(i + 1).padStart(2, '0')}
                                         </div>
-
+    
                                         <p
                                             class="text-sm sm:text-base
                                                    text-slate-700
@@ -1317,10 +1315,10 @@ function renderEmployersPage() {
                                         </p>
                                     </div>
                                 `).join('')}
-
+    
                             </div>
-
-
+    
+    
                             <!-- Processing Note -->
                             <div
                                 class="mt-10
@@ -1335,7 +1333,7 @@ function renderEmployersPage() {
                                 >
                                     Important Processing Note
                                 </p>
-
+    
                                 <p
                                     class="text-sm sm:text-base
                                            text-slate-600
@@ -1344,14 +1342,14 @@ function renderEmployersPage() {
                                     ${escapeHTML(p.note)}
                                 </p>
                             </div>
-
+    
                         </div>
-
+    
                     </div>
                 </div>
             </section>
-
-
+    
+    
             <!-- Employer Contact CTA -->
             <section
                 class="py-12 lg:py-14
@@ -1359,7 +1357,7 @@ function renderEmployersPage() {
                        border-t border-slate-200"
             >
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="flex flex-col lg:flex-row
                                lg:items-center
@@ -1374,7 +1372,7 @@ function renderEmployersPage() {
                             >
                                 Have questions about manpower requirements or documentation?
                             </p>
-
+    
                             <p
                                 class="mt-2 text-sm sm:text-base
                                        text-slate-600 leading-relaxed"
@@ -1383,7 +1381,7 @@ function renderEmployersPage() {
                                 inquiries and documentation requirements.
                             </p>
                         </div>
-
+    
                         <div class="flex flex-wrap gap-3">
                             <a
                                 href="mailto:${config.contact.emails[0]}"
@@ -1396,7 +1394,7 @@ function renderEmployersPage() {
                             >
                                 Contact Archway
                             </a>
-
+    
                             <a
                                 href="index.html#contact"
                                 class="inline-flex items-center justify-center
@@ -1411,92 +1409,29 @@ function renderEmployersPage() {
                             </a>
                         </div>
                     </div>
-
+    
                 </div>
             </section>
-
-
+    
+    
             ${renderFooter()}
-
+    
         </div>
     `;
-
+    
     initScrollReveal();
-}
-
-// ===== ADMIN / JOBS DASHBOARD PAGE (client-only) =====
-function renderAdminPage() {
-    const app = document.getElementById('app');
-    const p = config.adminPage;
-    
-    app.innerHTML = `
-      ${renderNav('admin.html')}
-    
-      <div class="bg-primary text-white py-12">
-          <div class="max-w-4xl mx-auto px-4 text-center">
-              <div class="inline-flex items-center gap-2 mb-3 px-4 py-1.5 rounded-full bg-white/10 text-white/90 text-xs font-semibold uppercase tracking-wide">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                  Client Access Only
-              </div>
-              <h1 class="text-3xl md:text-4xl font-bold mb-3">${p.headerTitle}</h1>
-              <p class="text-white/90">${p.headerSubtitle}</p>
-          </div>
-      </div>
-    
-      <div class="max-w-4xl mx-auto px-4 py-12">
-          <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 md:p-10 space-y-8">
-    
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 rounded-xl p-6">
-                  <div>
-                      <h2 class="text-lg font-bold text-slate-900 mb-1">Jobs Sheet</h2>
-                      <p class="text-sm text-slate-500">Open your spreadsheet to add, edit, or remove job openings.</p>
-                  </div>
-                  <a href="${p.sheetEditUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-white font-semibold hover:bg-primary-dark transition shrink-0">
-                      Open Jobs Sheet
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                  </a>
-              </div>
-    
-              <div>
-                  <h2 class="text-xl font-bold text-primary mb-6">${p.instructions.title}</h2>
-                  <div class="relative">
-                      <div class="absolute left-5 top-0 bottom-0 w-0.5 bg-primary/20"></div>
-                      <div class="space-y-8">
-                          ${p.instructions.steps.map((step, i) => `
-                              <div class="relative flex gap-5">
-                                  <div class="w-10 h-10 rounded-full bg-primary text-white font-bold flex items-center justify-center shrink-0 z-10 shadow-md text-sm">${i + 1}</div>
-                                  <div class="pt-1.5">
-                                      <h3 class="font-semibold text-slate-800 mb-1">${step.title}</h3>
-                                      <p class="text-sm text-slate-500 leading-relaxed">${step.desc}</p>
-                                  </div>
-                              </div>
-                          `).join('')}
-                      </div>
-                  </div>
-              </div>
-    
-              <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-sm text-amber-800 leading-relaxed flex gap-3">
-                  <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  <p>This page is not listed on the public menu — it's meant for internal use only. Keep this link private and only share it with authorized staff.</p>
-              </div>
-    
-          </div>
-      </div>
-    
-      ${renderFooter()}
-    `;
 }
 
 // ===== APPLICANTS PAGE (info-only "How to Apply" guide) =====
 function renderApplicantsPage() {
     const app = document.getElementById('app');
     const p = config.applicantsPage;
-
+    
     app.innerHTML = `
         ${renderNav('applicants.html')}
-
+    
         <div class="fade-in-content">
-
+    
             <!-- Editorial Page Header -->
             <header class="bg-white border-b border-slate-200">
                 <div
@@ -1516,7 +1451,7 @@ function renderApplicantsPage() {
                             >
                                 Applicant Guide
                             </p>
-
+    
                             <h1
                                 class="text-4xl sm:text-5xl lg:text-6xl
                                        font-extrabold tracking-tight
@@ -1525,7 +1460,7 @@ function renderApplicantsPage() {
                                 ${escapeHTML(p.headerTitle)}
                             </h1>
                         </div>
-
+    
                         <div>
                             <p
                                 class="text-base sm:text-lg
@@ -1533,7 +1468,7 @@ function renderApplicantsPage() {
                             >
                                 ${escapeHTML(p.headerSubtitle)}
                             </p>
-
+    
                             <a
                                 href="index.html#jobs"
                                 class="mt-6 inline-flex
@@ -1550,12 +1485,12 @@ function renderApplicantsPage() {
                     </div>
                 </div>
             </header>
-
-
+    
+    
             <!-- Applicant Resources -->
             <section class="py-16 lg:py-24 bg-slate-50">
                 <div class="max-w-5xl mx-auto px-6">
-
+    
                     <div class="max-w-2xl mb-10 lg:mb-12">
                         <p
                             class="text-xs sm:text-sm font-bold
@@ -1564,7 +1499,7 @@ function renderApplicantsPage() {
                         >
                             Before You Apply
                         </p>
-
+    
                         <h2
                             class="text-3xl sm:text-4xl
                                    font-extrabold tracking-tight
@@ -1572,7 +1507,7 @@ function renderApplicantsPage() {
                         >
                             Prepare for Your Application
                         </h2>
-
+    
                         <p
                             class="mt-4 text-base
                                    text-slate-600 leading-relaxed"
@@ -1581,8 +1516,8 @@ function renderApplicantsPage() {
                             documentary requirements before applying.
                         </p>
                     </div>
-
-
+    
+    
                     <!-- Protocols Accordion -->
                     <div
                         class="border-y border-slate-200
@@ -1606,7 +1541,7 @@ function renderApplicantsPage() {
                             >
                                 ${escapeHTML(p.protocols.title)}
                             </h3>
-
+    
                             <span
                                 id="icon-protocols"
                                 class="shrink-0
@@ -1618,7 +1553,7 @@ function renderApplicantsPage() {
                                 +
                             </span>
                         </button>
-
+    
                         <div
                             id="protocols"
                             class="accordion-content
@@ -1635,7 +1570,7 @@ function renderApplicantsPage() {
                                         <p>${escapeHTML(para)}</p>
                                     `).join('')}
                                 </div>
-
+    
                                 <ol
                                     class="mt-7
                                            space-y-4
@@ -1654,8 +1589,8 @@ function renderApplicantsPage() {
                             </div>
                         </div>
                     </div>
-
-
+    
+    
                     <!-- Documents Accordion -->
                     <div
                         class="border-b border-slate-200
@@ -1679,7 +1614,7 @@ function renderApplicantsPage() {
                             >
                                 ${escapeHTML(p.docs.title)}
                             </h3>
-
+    
                             <span
                                 id="icon-docs"
                                 class="shrink-0
@@ -1691,7 +1626,7 @@ function renderApplicantsPage() {
                                 +
                             </span>
                         </button>
-
+    
                         <div
                             id="docs"
                             class="accordion-content
@@ -1712,7 +1647,7 @@ function renderApplicantsPage() {
                                     >
                                         ${escapeHTML(p.docs.overseas.title)}
                                     </h4>
-
+    
                                     <ul
                                         class="space-y-3
                                                list-disc pl-5
@@ -1726,7 +1661,7 @@ function renderApplicantsPage() {
                                         `).join('')}
                                     </ul>
                                 </div>
-
+    
                                 <div>
                                     <h4
                                         class="font-bold
@@ -1734,7 +1669,7 @@ function renderApplicantsPage() {
                                     >
                                         ${escapeHTML(p.docs.local.title)}
                                     </h4>
-
+    
                                     <ul
                                         class="space-y-3
                                                list-disc pl-5
@@ -1751,15 +1686,15 @@ function renderApplicantsPage() {
                             </div>
                         </div>
                     </div>
-
+    
                 </div>
             </section>
-
-
+    
+    
             <!-- Recruitment Process -->
             <section class="py-16 lg:py-24 bg-white">
                 <div class="max-w-7xl mx-auto px-6">
-
+    
                     <div
                         class="grid lg:grid-cols-[0.75fr_1.25fr]
                                gap-12 lg:gap-20
@@ -1774,7 +1709,7 @@ function renderApplicantsPage() {
                             >
                                 Recruitment Process
                             </p>
-
+    
                             <h2
                                 class="text-3xl sm:text-4xl
                                        lg:text-5xl
@@ -1783,7 +1718,7 @@ function renderApplicantsPage() {
                             >
                                 ${escapeHTML(p.process.title)}
                             </h2>
-
+    
                             <p
                                 class="mt-4
                                        text-base sm:text-lg
@@ -1792,8 +1727,8 @@ function renderApplicantsPage() {
                                 ${escapeHTML(p.process.subtitle)}
                             </p>
                         </div>
-
-
+    
+    
                         <!-- Numbered process -->
                         <div class="border-t border-slate-200">
                             ${p.process.steps.map((step, i) => `
@@ -1813,7 +1748,7 @@ function renderApplicantsPage() {
                                     >
                                         ${String(i + 1).padStart(2, '0')}
                                     </div>
-
+    
                                     <div>
                                         <h3
                                             class="text-lg sm:text-xl
@@ -1822,7 +1757,7 @@ function renderApplicantsPage() {
                                         >
                                             ${escapeHTML(step.title)}
                                         </h3>
-
+    
                                         <p
                                             class="mt-2
                                                    text-sm sm:text-base
@@ -1835,480 +1770,546 @@ function renderApplicantsPage() {
                                 </div>
                             `).join('')}
                         </div>
-
+    
                     </div>
                 </div>
             </section>
-
-
+    
+    
             ${renderFooter()}
         </div>
     `;
-
+    
     initScrollReveal();
 }
-    
-        // ===== ACCORDION TOGGLE =====
-        function toggleSection(id) {
-            const section = document.getElementById(id);
-            const icon = document.getElementById('icon-' + id);
-            if (section.classList.contains('open')) {
-                section.classList.remove('open');
-                icon.textContent = '+';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                section.classList.add('open');
-                icon.textContent = '−';
-                icon.style.transform = 'rotate(180deg)';
-            }
-        }
-        
-        // ===== JOB POPUP / MODAL =====
-        function openJobPopupFromButton(button) {
-            const id = button.dataset.jobId;
-            openJobPopup(id);
-        }
-        function openJobPopup(id) {
-            // Find the full job object so we can show extra details
-            const job = (window._allJobs || []).find(j => j.id === id);
-            
-            if (!job) {
-                console.warn('Job not found.');
-                return;
-            }
-            
-            // Remove existing modal if any
-            const existing = document.getElementById('jobModal');
-            if (existing) existing.remove();
-            
-            // Helper: only show a field if it has value
-            const field = (label, value) => {
-                if (!value) return '';
-            
-                return `
-                    <div>
-                        <p
-                            class="text-xs font-semibold uppercase
-                                   tracking-[0.12em] text-slate-400 mb-1.5"
-                        >
-                            ${escapeHTML(label)}
-                        </p>
-            
-                        <p
-                            class="text-sm sm:text-base
-                                   font-medium text-slate-800
-                                   leading-relaxed whitespace-pre-line"
-                        >
-                            ${escapeHTML(value)}
-                        </p>
-                    </div>
-                `;
-            };
-            
-            const hasExtraDetails = job.specialization || job.location || job.experience || 
-            job.certifications || job.description || job.requirements;
-            
-            const modal = document.createElement('div');
-            modal.id = 'jobModal';
-            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
-            modal.innerHTML = `
-        <div
-    class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
-    onclick="closeJobPopup()"
-></div>
 
-<div
-    class="relative bg-white
-           w-full max-w-2xl max-h-[90vh]
-           overflow-y-auto
-           rounded-xl border border-slate-200
-           shadow-xl"
->
-    <div class="px-6 py-6 sm:px-8 sm:py-7 border-b border-slate-200">
-        <div class="flex items-start justify-between gap-6">
+// ===== ACCORDION TOGGLE =====
+function toggleSection(id) {
+    const section = document.getElementById(id);
+    const icon = document.getElementById('icon-' + id);
 
-            <div class="min-w-0">
-                <p
-                    class="text-xs font-bold uppercase
-                           tracking-[0.16em] text-primary mb-2"
-                >
-                    ${escapeHTML(config.jobsConfig.popup.title)}
-                </p>
+    if (section.classList.contains('open')) {
+        section.classList.remove('open');
+        icon.textContent = '+';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        section.classList.add('open');
+        icon.textContent = '−';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
 
-                <h3
-                    class="text-2xl sm:text-3xl
-                           font-bold tracking-tight
-                           leading-tight text-slate-900"
-                >
-                    ${escapeHTML(job.title)}
-                </h3>
-            </div>
 
-            <button
-                type="button"
-                onclick="closeJobPopup()"
-                aria-label="Close job details"
-                class="shrink-0 w-10 h-10
-                       inline-flex items-center justify-center
-                       rounded-lg border border-slate-200
-                       text-slate-500
-                       hover:bg-slate-50 hover:text-slate-900
-                       transition-colors"
-            >
-                <span class="text-2xl leading-none">&times;</span>
-            </button>
+// ===== JOB POPUP / MODAL =====
+function openJobPopupFromButton(button) {
+    const id = button.dataset.jobId;
+    openJobPopup(id);
+}
 
-        </div>
-    </div>
-    
-            <div class="px-6 py-6 sm:px-8 sm:py-8">
+function openJobPopup(id) {
+    const job = (window._allJobs || []).find(j => j.id === id);
 
-    <!-- Job overview -->
-    <div class="grid sm:grid-cols-2 gap-x-10 gap-y-6">
+    if (!job) {
+        console.warn('Job not found.');
+        return;
+    }
 
-        ${field('Employment Type', job.type)}
+    const existing = document.getElementById('jobModal');
+    if (existing) existing.remove();
 
-        ${field('Location', job.location)}
+    const field = (label, value) => {
+        if (!value) return '';
 
-        ${field('Specialization', job.specialization)}
-
-        ${field('Experience', job.experience)}
-
-        ${field('Certifications', job.certifications)}
-
-    </div>
-
-    ${job.description ? `
-        <div class="mt-8 pt-8 border-t border-slate-200">
-            <h4
-                class="text-base font-bold
-                       tracking-tight text-slate-900 mb-3"
-            >
-                Job Description
-            </h4>
-
-            <p
-                class="text-sm sm:text-base
-                       text-slate-600 leading-7
-                       whitespace-pre-line"
-            >
-                ${escapeHTML(job.description)}
-            </p>
-        </div>
-    ` : ''}
-
-    ${job.requirements ? `
-        <div class="mt-8 pt-8 border-t border-slate-200">
-            <h4
-                class="text-base font-bold
-                       tracking-tight text-slate-900 mb-3"
-            >
-                Qualifications & Requirements
-            </h4>
-
-            <p
-                class="text-sm sm:text-base
-                       text-slate-600 leading-7
-                       whitespace-pre-line"
-            >
-                ${escapeHTML(job.requirements)}
-            </p>
-        </div>
-    ` : ''}
-
-    ${!hasExtraDetails ? `
-        <div
-            class="mt-2 border border-slate-200
-                   bg-slate-50 px-5 py-4 rounded-lg"
-        >
-            <p class="text-sm text-slate-600 leading-relaxed">
-                ${escapeHTML(config.jobsConfig.popup.noDetails)}
-            </p>
-        </div>
-    ` : ''}
-
-</div>
-    
-            <div
-    class="px-6 py-5 sm:px-8
-           border-t border-slate-200
-           bg-slate-50/70
-           flex flex-col-reverse sm:flex-row
-           sm:items-center sm:justify-end
-           gap-3"
->
-    <button
-        type="button"
-        onclick="closeJobPopup()"
-        class="px-5 py-2.5 rounded-lg
-               text-sm font-semibold text-slate-600
-               hover:text-slate-900 hover:bg-slate-100
-               transition-colors"
-    >
-        ${escapeHTML(config.jobsConfig.popup.closeBtn)}
-    </button>
-
-    <button
-        type="button"
-        onclick="openBranchSelector('${escapeHTML(job.id)}')"
-        class="inline-flex items-center justify-center
-               px-6 py-2.5 rounded-lg
-               bg-primary text-white
-               text-sm font-semibold
-               hover:bg-primary-dark
-               transition-colors"
-    >
-        ${escapeHTML(config.jobsConfig.popup.applyBtn)}
-    </button>
-</div>
-        </div>
-    `;
-            
-            document.body.appendChild(modal);
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeJobPopup() {
-            const modal = document.getElementById('jobModal');
-            if (modal) {
-                modal.remove();
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // ===== BRANCH SELECTOR MODAL (replaces the old Application Form) =====
-        function openBranchSelector(jobId) {
-            const job = (window._allJobs || []).find(j => j.id === jobId);
-            const s = config.applicantsPage.branchSelector;
-            const branches = config.applicantsPage.branches;
-            
-            // Close the job details popup first, if open
-            closeJobPopup();
-            
-            const existing = document.getElementById('branchModal');
-            if (existing) existing.remove();
-            
-            const modal = document.createElement('div');
-            modal.id = 'branchModal';
-            modal.className = 'fixed inset-0 z-[100] flex items-center justify-center p-4';
-            modal.innerHTML = `
-        <div
-    class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
-    onclick="closeBranchSelector()"
-></div>
-
-<div
-    class="relative bg-white
-           w-full max-w-lg max-h-[90vh]
-           overflow-y-auto
-           rounded-xl border border-slate-200
-           shadow-xl"
->
-    <div class="px-6 py-6 sm:px-8 sm:py-7 border-b border-slate-200">
-        <div class="flex items-start justify-between gap-6">
-
-            <div class="min-w-0">
-                <p
-                    class="text-xs font-bold uppercase
-                           tracking-[0.16em] text-primary mb-2"
-                >
-                    ${escapeHTML(s.title)}
-                </p>
-
-                ${job ? `
-                    <h3
-                        class="text-xl sm:text-2xl
-                               font-bold tracking-tight
-                               leading-tight text-slate-900"
-                    >
-                        ${escapeHTML(job.title)}
-                    </h3>
-                ` : ''}
-            </div>
-
-            <button
-                type="button"
-                onclick="closeBranchSelector()"
-                aria-label="Close application instructions"
-                class="shrink-0 w-10 h-10
-                       inline-flex items-center justify-center
-                       rounded-lg border border-slate-200
-                       text-slate-500
-                       hover:bg-slate-50 hover:text-slate-900
-                       transition-colors"
-            >
-                <span class="text-2xl leading-none">&times;</span>
-            </button>
-
-        </div>
-    </div>
-    
-            <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
-
-    <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
-        ${escapeHTML(s.subtitle)}
-    </p>
-
-    <div>
-        <label
-            for="branchSelect"
-            class="block text-sm font-semibold text-slate-800 mb-2"
-        >
-            ${escapeHTML(s.selectLabel)}
-        </label>
-
-        <select
-            id="branchSelect"
-            onchange="onBranchSelected()"
-            class="w-full px-4 py-3
-                   rounded-lg border border-slate-300
-                   bg-white text-sm text-slate-800
-                   focus:border-primary focus:ring-2
-                   focus:ring-primary/20
-                   outline-none transition"
-        >
-            <option value="">
-                ${escapeHTML(s.placeholder)}
-            </option>
-
-            ${branches.map(b => `
-                <option value="${escapeHTML(b.value)}">
-                    ${escapeHTML(b.label)}
-                </option>
-            `).join('')}
-        </select>
-
-        <p class="mt-2 text-xs text-slate-500 leading-relaxed">
-            Choose the branch nearest to your location.
-        </p>
-    </div>
-
-    <div
-        id="branchEmailResult"
-        class="hidden pt-6 border-t border-slate-200"
-    >
-        <p class="text-sm text-slate-600 leading-relaxed">
-            ${escapeHTML(s.instruction)}
-        </p>
-
-        <div class="mt-4 border border-slate-200 rounded-lg overflow-hidden">
-
-            <div class="px-4 py-4 bg-slate-50">
+        return `
+            <div>
                 <p
                     class="text-xs font-semibold uppercase
                            tracking-[0.12em] text-slate-400 mb-1.5"
                 >
-                    Branch Email
+                    ${escapeHTML(label)}
                 </p>
 
-                <span
-                    id="branchEmailText"
-                    class="block text-sm sm:text-base
-                           font-semibold text-primary
-                           break-all"
-                ></span>
+                <p
+                    class="text-sm sm:text-base
+                           font-medium text-slate-800
+                           leading-relaxed whitespace-pre-line"
+                >
+                    ${escapeHTML(value)}
+                </p>
+            </div>
+        `;
+    };
+
+    const hasExtraDetails =
+        job.specialization ||
+        job.location ||
+        job.experience ||
+        job.certifications ||
+        job.description ||
+        job.requirements;
+
+    const modal = document.createElement('div');
+
+    modal.id = 'jobModal';
+    modal.className =
+        'fixed inset-0 z-[100] flex items-center justify-center p-4';
+
+    modal.innerHTML = `
+        <div
+            class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            onclick="closeJobPopup()"
+        ></div>
+
+        <div
+            class="relative bg-white
+                   w-full max-w-2xl max-h-[90vh]
+                   overflow-y-auto
+                   rounded-xl border border-slate-200
+                   shadow-xl"
+        >
+
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-6 sm:px-8 sm:py-7
+                       border-b border-slate-200"
+            >
+                <div class="flex items-start justify-between gap-6">
+
+                    <div class="min-w-0">
+                        <p
+                            class="text-xs font-bold uppercase
+                                   tracking-[0.16em]
+                                   text-primary mb-2"
+                        >
+                            ${escapeHTML(config.jobsConfig.popup.title)}
+                        </p>
+
+                        <h3
+                            class="text-2xl sm:text-3xl
+                                   font-bold tracking-tight
+                                   leading-tight text-slate-900"
+                        >
+                            ${escapeHTML(job.title)}
+                        </h3>
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="closeJobPopup()"
+                        aria-label="Close job details"
+                        class="shrink-0 w-10 h-10
+                               inline-flex items-center justify-center
+                               rounded-lg border border-slate-200
+                               text-slate-500
+                               hover:bg-slate-50 hover:text-slate-900
+                               transition-colors"
+                    >
+                        <span class="text-2xl leading-none">&times;</span>
+                    </button>
+
+                </div>
             </div>
 
+
+            <!-- Modal Body -->
+            <div class="px-6 py-6 sm:px-8 sm:py-8">
+
+                <div class="grid sm:grid-cols-2 gap-x-10 gap-y-6">
+                    ${field('Employment Type', job.type)}
+                    ${field('Location', job.location)}
+                    ${field('Specialization', job.specialization)}
+                    ${field('Experience', job.experience)}
+                    ${field('Certifications', job.certifications)}
+                </div>
+
+                ${job.description ? `
+                    <div class="mt-8 pt-8 border-t border-slate-200">
+
+                        <h4
+                            class="text-base font-bold
+                                   tracking-tight text-slate-900 mb-3"
+                        >
+                            Job Description
+                        </h4>
+
+                        <p
+                            class="text-sm sm:text-base
+                                   text-slate-600 leading-7
+                                   whitespace-pre-line"
+                        >
+                            ${escapeHTML(job.description)}
+                        </p>
+
+                    </div>
+                ` : ''}
+
+                ${job.requirements ? `
+                    <div class="mt-8 pt-8 border-t border-slate-200">
+
+                        <h4
+                            class="text-base font-bold
+                                   tracking-tight text-slate-900 mb-3"
+                        >
+                            Qualifications & Requirements
+                        </h4>
+
+                        <p
+                            class="text-sm sm:text-base
+                                   text-slate-600 leading-7
+                                   whitespace-pre-line"
+                        >
+                            ${escapeHTML(job.requirements)}
+                        </p>
+
+                    </div>
+                ` : ''}
+
+                ${!hasExtraDetails ? `
+                    <div
+                        class="mt-2
+                               border border-slate-200
+                               bg-slate-50
+                               px-5 py-4 rounded-lg"
+                    >
+                        <p
+                            class="text-sm text-slate-600 leading-relaxed"
+                        >
+                            ${escapeHTML(config.jobsConfig.popup.noDetails)}
+                        </p>
+                    </div>
+                ` : ''}
+
+            </div>
+
+
+            <!-- Modal Footer -->
             <div
-                class="p-3 border-t border-slate-200
-                       flex flex-col sm:flex-row gap-2"
+                class="px-6 py-5 sm:px-8
+                       border-t border-slate-200
+                       bg-slate-50/70
+                       flex flex-col-reverse sm:flex-row
+                       sm:items-center sm:justify-end
+                       gap-3"
             >
                 <button
-                    id="copyEmailBtn"
                     type="button"
-                    onclick="copyBranchEmail()"
-                    class="px-4 py-2.5 rounded-lg
-                           border border-slate-300
-                           text-sm font-semibold text-slate-700
-                           hover:bg-slate-50
+                    onclick="closeJobPopup()"
+                    class="px-5 py-2.5 rounded-lg
+                           text-sm font-semibold text-slate-600
+                           hover:text-slate-900 hover:bg-slate-100
                            transition-colors"
                 >
-                    ${escapeHTML(s.copyBtn)}
+                    ${escapeHTML(config.jobsConfig.popup.closeBtn)}
                 </button>
 
-                <a
-                    id="mailtoLink"
-                    href="#"
-                    class="flex-1 inline-flex
-                           items-center justify-center
-                           px-5 py-2.5 rounded-lg
+                <button
+                    type="button"
+                    onclick="openBranchSelector('${escapeHTML(job.id)}')"
+                    class="inline-flex items-center justify-center
+                           px-6 py-2.5 rounded-lg
                            bg-primary text-white
                            text-sm font-semibold
                            hover:bg-primary-dark
                            transition-colors"
                 >
-                    Open in Email App
-                </a>
+                    ${escapeHTML(config.jobsConfig.popup.applyBtn)}
+                </button>
             </div>
 
         </div>
-    </div>
+    `;
 
-</div>
-    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function closeJobPopup() {
+    const modal = document.getElementById('jobModal');
+
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+}
+
+
+// ===== BRANCH SELECTOR MODAL =====
+function openBranchSelector(jobId) {
+    const job = (window._allJobs || []).find(j => j.id === jobId);
+    const s = config.applicantsPage.branchSelector;
+    const branches = config.applicantsPage.branches;
+
+    closeJobPopup();
+
+    const existing = document.getElementById('branchModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+
+    modal.id = 'branchModal';
+    modal.className =
+        'fixed inset-0 z-[100] flex items-center justify-center p-4';
+
+    modal.innerHTML = `
+        <div
+            class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+            onclick="closeBranchSelector()"
+        ></div>
+
+        <div
+            class="relative bg-white
+                   w-full max-w-lg max-h-[90vh]
+                   overflow-y-auto
+                   rounded-xl border border-slate-200
+                   shadow-xl"
+        >
+
+            <!-- Modal Header -->
             <div
-    class="px-6 py-5 sm:px-8
-           border-t border-slate-200
-           bg-slate-50/70
-           flex justify-end"
->
-    <button
-        type="button"
-        onclick="closeBranchSelector()"
-        class="px-5 py-2.5 rounded-lg
-               text-sm font-semibold text-slate-600
-               hover:text-slate-900 hover:bg-slate-100
-               transition-colors"
-    >
-        ${escapeHTML(s.closeBtn)}
-    </button>
-</div>
+                class="px-6 py-6 sm:px-8 sm:py-7
+                       border-b border-slate-200"
+            >
+                <div class="flex items-start justify-between gap-6">
+
+                    <div class="min-w-0">
+                        <p
+                            class="text-xs font-bold uppercase
+                                   tracking-[0.16em]
+                                   text-primary mb-2"
+                        >
+                            ${escapeHTML(s.title)}
+                        </p>
+
+                        ${job ? `
+                            <h3
+                                class="text-xl sm:text-2xl
+                                       font-bold tracking-tight
+                                       leading-tight text-slate-900"
+                            >
+                                ${escapeHTML(job.title)}
+                            </h3>
+                        ` : ''}
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="closeBranchSelector()"
+                        aria-label="Close application instructions"
+                        class="shrink-0 w-10 h-10
+                               inline-flex items-center justify-center
+                               rounded-lg border border-slate-200
+                               text-slate-500
+                               hover:bg-slate-50 hover:text-slate-900
+                               transition-colors"
+                    >
+                        <span class="text-2xl leading-none">&times;</span>
+                    </button>
+
+                </div>
+            </div>
+
+
+            <!-- Modal Body -->
+            <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
+
+                <p
+                    class="text-sm sm:text-base
+                           text-slate-600 leading-relaxed"
+                >
+                    ${escapeHTML(s.subtitle)}
+                </p>
+
+                <div>
+                    <label
+                        for="branchSelect"
+                        class="block text-sm font-semibold
+                               text-slate-800 mb-2"
+                    >
+                        ${escapeHTML(s.selectLabel)}
+                    </label>
+
+                    <select
+                        id="branchSelect"
+                        onchange="onBranchSelected()"
+                        class="w-full px-4 py-3
+                               rounded-lg border border-slate-300
+                               bg-white text-sm text-slate-800
+                               focus:border-primary focus:ring-2
+                               focus:ring-primary/20
+                               outline-none transition"
+                    >
+                        <option value="">
+                            ${escapeHTML(s.placeholder)}
+                        </option>
+
+                        ${branches.map(branch => `
+                            <option value="${escapeHTML(branch.value)}">
+                                ${escapeHTML(branch.label)}
+                            </option>
+                        `).join('')}
+                    </select>
+
+                    <p
+                        class="mt-2 text-xs
+                               text-slate-500 leading-relaxed"
+                    >
+                        Choose the branch nearest to your location.
+                    </p>
+                </div>
+
+
+                <!-- Branch Email Result -->
+                <div
+                    id="branchEmailResult"
+                    class="hidden pt-6 border-t border-slate-200"
+                >
+                    <p
+                        class="text-sm text-slate-600 leading-relaxed"
+                    >
+                        ${escapeHTML(s.instruction)}
+                    </p>
+
+                    <div
+                        class="mt-4
+                               border border-slate-200
+                               rounded-lg overflow-hidden"
+                    >
+
+                        <div class="px-4 py-4 bg-slate-50">
+                            <p
+                                class="text-xs font-semibold uppercase
+                                       tracking-[0.12em]
+                                       text-slate-400 mb-1.5"
+                            >
+                                Branch Email
+                            </p>
+
+                            <span
+                                id="branchEmailText"
+                                class="block text-sm sm:text-base
+                                       font-semibold text-primary
+                                       break-all"
+                            ></span>
+                        </div>
+
+                        <div
+                            class="p-3
+                                   border-t border-slate-200
+                                   flex flex-col sm:flex-row gap-2"
+                        >
+                            <button
+                                id="copyEmailBtn"
+                                type="button"
+                                onclick="copyBranchEmail()"
+                                class="px-4 py-2.5 rounded-lg
+                                       border border-slate-300
+                                       text-sm font-semibold text-slate-700
+                                       hover:bg-slate-50
+                                       transition-colors"
+                            >
+                                ${escapeHTML(s.copyBtn)}
+                            </button>
+
+                            <a
+                                id="mailtoLink"
+                                href="#"
+                                class="flex-1 inline-flex
+                                       items-center justify-center
+                                       px-5 py-2.5 rounded-lg
+                                       bg-primary text-white
+                                       text-sm font-semibold
+                                       hover:bg-primary-dark
+                                       transition-colors"
+                            >
+                                Open in Email App
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Modal Footer -->
+            <div
+                class="px-6 py-5 sm:px-8
+                       border-t border-slate-200
+                       bg-slate-50/70
+                       flex justify-end"
+            >
+                <button
+                    type="button"
+                    onclick="closeBranchSelector()"
+                    class="px-5 py-2.5 rounded-lg
+                           text-sm font-semibold text-slate-600
+                           hover:text-slate-900 hover:bg-slate-100
+                           transition-colors"
+                >
+                    ${escapeHTML(s.closeBtn)}
+                </button>
+            </div>
+
         </div>
     `;
-            
-            document.body.appendChild(modal);
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function onBranchSelected() {
-            const select = document.getElementById('branchSelect');
-            const branches = config.applicantsPage.branches;
-            const branch = branches.find(b => b.value === select.value);
-            const result = document.getElementById('branchEmailResult');
-            const emailText = document.getElementById('branchEmailText');
-            const mailtoLink = document.getElementById('mailtoLink');
-            const copyBtn = document.getElementById('copyEmailBtn');
-            
-            if (!branch) {
-                result.classList.add('hidden');
-                return;
-            }
-            
-            emailText.textContent = branch.email;
-            mailtoLink.href = `mailto:${branch.email}?subject=${encodeURIComponent('Job Application')}`;
-            copyBtn.textContent = config.applicantsPage.branchSelector.copyBtn;
-            result.classList.remove('hidden');
-        }
-        
-        function copyBranchEmail() {
-            const emailText = document.getElementById('branchEmailText');
-            const copyBtn = document.getElementById('copyEmailBtn');
-            if (!emailText || !emailText.textContent) return;
-            
-            navigator.clipboard.writeText(emailText.textContent).then(() => {
-                copyBtn.textContent = config.applicantsPage.branchSelector.copiedLabel;
-                setTimeout(() => {
-                    copyBtn.textContent = config.applicantsPage.branchSelector.copyBtn;
-                }, 2000);
-            }).catch(() => {
-                console.warn('Clipboard copy failed.');
-            });
-        }
-        
-        function closeBranchSelector() {
-            const modal = document.getElementById('branchModal');
-            if (modal) {
-                modal.remove();
-                document.body.style.overflow = '';
-            }
-        }
+
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+}
+
+function onBranchSelected() {
+    const select = document.getElementById('branchSelect');
+    const branches = config.applicantsPage.branches;
+    const branch = branches.find(b => b.value === select.value);
+
+    const result = document.getElementById('branchEmailResult');
+    const emailText = document.getElementById('branchEmailText');
+    const mailtoLink = document.getElementById('mailtoLink');
+    const copyBtn = document.getElementById('copyEmailBtn');
+
+    if (!branch) {
+        result.classList.add('hidden');
+        return;
+    }
+
+    emailText.textContent = branch.email;
+
+    mailtoLink.href =
+        `mailto:${branch.email}?subject=${encodeURIComponent('Job Application')}`;
+
+    copyBtn.textContent =
+        config.applicantsPage.branchSelector.copyBtn;
+
+    result.classList.remove('hidden');
+}
+
+function copyBranchEmail() {
+    const emailText = document.getElementById('branchEmailText');
+    const copyBtn = document.getElementById('copyEmailBtn');
+
+    if (!emailText || !emailText.textContent) return;
+
+    navigator.clipboard
+        .writeText(emailText.textContent)
+        .then(() => {
+            copyBtn.textContent =
+                config.applicantsPage.branchSelector.copiedLabel;
+
+            setTimeout(() => {
+                copyBtn.textContent =
+                    config.applicantsPage.branchSelector.copyBtn;
+            }, 2000);
+        })
+        .catch(() => {
+            console.warn('Clipboard copy failed.');
+        });
+}
+
+function closeBranchSelector() {
+    const modal = document.getElementById('branchModal');
+
+    if (modal) {
+        modal.remove();
+        document.body.style.overflow = '';
+    }
+}

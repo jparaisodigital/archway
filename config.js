@@ -1,6 +1,5 @@
 const config = {
   // Brand
-  year: "20th",
   poeaLicense: "POEA License No. 047-LB-10317-R",
   
   // Logo (config-driven)
@@ -12,10 +11,8 @@ const config = {
   
   // POEA Badge (config-driven)
   poeaBadge: {
-    src: "assets/POEA.png",        
-    alt: "POEA Licensed - Zero Complaint & Zero Citation Record",
-    height: 180,
-    className: "mx-auto object-contain drop-shadow-md"
+    src: "assets/POEA.png",
+    alt: "POEA Licensed - Zero Complaint & Zero Citation Record"
   },
   
   // Navigation
@@ -126,9 +123,7 @@ const config = {
     title: "Welcome to Archway",
     paragraphs: [
       "Archway Multi-Services Corporation began its operations serving Filipino jobseekers and has since deployed close to a thousand skilled, non-skilled and professional workers to the Middle East countries, especially to the Kingdom of Saudi Arabia.",
-      "Its key mission is two-pronged: To provide our dedicated and hardworking countrymen decent job opportunities abroad, helping them achieve their lifelong dream of prosperity on the one hand, while providing fully-qualified workmen and professionals to clients of high ethical and moral standards, helping them in turn achieve their business goals on the other.",
-      "Our agency draws its strength from a group of young and dynamic associates and staff, leveraging its solid experience in the field of local contractual manpower-providing services in the Philippines.",
-      "We stand proud by our clean record of Zero-complaint sanction and Zero-citation sanction from POEA."
+      "Its key mission is two-pronged: To provide our dedicated and hardworking countrymen decent job opportunities abroad, helping them achieve their lifelong dream of prosperity on the one hand, while providing fully-qualified workmen and professionals to clients of high ethical and moral standards, helping them in turn achieve their business goals on the other."
     ]
   },
   
@@ -188,7 +183,7 @@ const config = {
       { value: "local", label: "Local", email: "Archway.local@intl.com.ph" }
     ],
     
-    // Branch Selector Modal (replaces the old Application Form)
+    // Branch Selector Modal
     branchSelector: {
       title: "How to Apply",
       subtitle: "Select the branch nearest you. We'll show you the email address to send your resume and application to.",
@@ -255,48 +250,6 @@ const config = {
         { title: "Final Selection", desc: "Successful candidates are officially selected and proceed to the next stage." },
         { title: "Travel Clearances", desc: "We assist with POEA processing, medicals, visas, and all required clearances." },
         { title: "Deployment", desc: "Workers are deployed to their destination. We remain available for support even after deployment." }
-      ]
-    }
-  },
-  
-  adminPage: {
-    headerTitle: "Jobs Dashboard",
-    headerSubtitle: "Manage your job openings here — changes reflect on the website automatically.",
-    
-    // Client Google Sheet link — replace with final client-owned Sheet before handover
-    sheetEditUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPrhDfDncPY0424j46MYScWbs8cERFkPNIT0xY89GxowzfGkmCHZmh7BNtXh49-jR7FRm8LW9WHtxb/pubhtml?gid=0&single=true",
-    
-    instructions: {
-      title: "How to Add or Update a Job Posting",
-      steps: [
-        {
-          title: "Open the Jobs Sheet",
-          desc: "Click the button below to open the spreadsheet in a new tab."
-        },
-        {
-          title: "Add a new row",
-          desc: "Fill in these columns: id (any unique number, e.g. 17), title (the job title), type, and is_active."
-        },
-        {
-          title: "Type must be exact",
-          desc: "For the \"type\" column, type it exactly as Local or Overseas (capital L, capital O). This is how the website sorts the jobs correctly."
-        },
-        {
-          title: "is_active column",
-          desc: "Type TRUE to show the job on the website, or FALSE to hide it without deleting."
-        },
-        {
-          title: "Avoid commas",
-          desc: "Do not use commas (,) inside the job title — it can break how the list is read. Use a dash (–) instead if needed."
-        },
-        {
-          title: "To remove a job",
-          desc: "Either delete the row, or set is_active to FALSE."
-        },
-        {
-          title: "Give it a minute",
-          desc: "Updates usually appear on the website within a minute or two. If not, try refreshing the page."
-        }
       ]
     }
   },

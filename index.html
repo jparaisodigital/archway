@@ -1,58 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Archway | Filipino Recruitment</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: { extend: {
-        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-        colors: { primary: '#0B6E99', 'primary-dark': '#084F6F', accent: '#00C2CB' }
-      }}
-    }
-  </script>
-  <style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', system-ui, sans-serif; animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
-    .reveal.active { opacity: 1; transform: translateY(0); }
-    .fade-in-content { animation: fadeIn 0.4s ease-out; }
-    .hero-bg-image {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transform: scale(1.03);
-      transition:
-      opacity 1.6s ease-in-out,
-      transform 5s ease-out;
-      will-change: opacity, transform;
-    }
-    
-    .hero-bg-image.active {
-      opacity: 1;
-      transform: scale(1);
-    }
-    
-    #mobileMenu {
-      transition: all 0.3s ease;
-    }
-    
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Archway | Filipino Recruitment</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Tailwind Theme -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    colors: {
+                        primary: '#0B6E99',
+                        'primary-dark': '#084F6F',
+                        accent: '#00C2CB'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition:
+                opacity 0.4s ease-out,
+                transform 0.4s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-content {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transform: scale(1.03);
+            transition:
+                opacity 1.6s ease-in-out,
+                transform 5s ease-out;
+            will-change: opacity, transform;
+        }
+
+        .hero-bg-image.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #mobileMenu {
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
+
 <body class="bg-slate-50 text-slate-900 antialiased">
-  <div id="app"></div>
-  <script src="config.js"></script>
-  <script src="site.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', renderHomePage);
-  </script>
+
+    <div id="app"></div>
+
+    <script src="config.js"></script>
+    <script src="site.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', renderHomePage);
+    </script>
+
 </body>
+
 </html>
