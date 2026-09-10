@@ -237,47 +237,85 @@ function escapeHTML(value) {
 async function fetchSiteSettings() {
     try {
         const url = `${config.siteSettingsSheetUrl}&_=${Date.now()}`;
-        
+
         const res = await fetch(url, {
             cache: 'no-store'
         });
-        
+
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+
         const csvText = await res.text();
-        
-        const rows = csvText
-        .split(/\r?\n/)
-        .map(row => row.trim())
-        .filter(Boolean);
-        
-        const settings = {};
-        
-        rows.slice(1).forEach(row => {
-            const firstComma = row.indexOf(',');
-            
-            if (firstComma === -1) return;
-            
-            const key = row.slice(0, firstComma).trim();
-            
-            let value = row.slice(firstComma + 1).trim();
-            
-            if (value.startsWith('"') && value.endsWith('"')) {
-                value = value
-                .slice(1, -1)
-                .replace(/""/g, '"');
+
+        function parseCSV(text) {
+            const rows = [];
+            let currentRow = [];
+            let currentValue = '';
+            let insideQuotes = false;
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                const nextChar = text[i + 1];
+
+                if (char === '"' && insideQuotes && nextChar === '"') {
+                    currentValue += '"';
+                    i++;
+                } else if (char === '"') {
+                    insideQuotes = !insideQuotes;
+                } else if (char === ',' && !insideQuotes) {
+                    currentRow.push(currentValue.trim());
+                    currentValue = '';
+                } else if (
+                    (char === '\n' || char === '\r') &&
+                    !insideQuotes
+                ) {
+                    if (currentValue || currentRow.length > 0) {
+                        currentRow.push(currentValue.trim());
+                        rows.push(currentRow);
+
+                        currentRow = [];
+                        currentValue = '';
+                    }
+
+                    if (char === '\r' && nextChar === '\n') {
+                        i++;
+                    }
+                } else {
+                    currentValue += char;
+                }
             }
-            
+
+            if (currentValue || currentRow.length > 0) {
+                currentRow.push(currentValue.trim());
+                rows.push(currentRow);
+            }
+
+            return rows;
+        }
+
+        const rows = parseCSV(csvText);
+        const settings = {};
+
+        rows.slice(1).forEach(values => {
+            const key = (values[0] || '')
+                .trim()
+                .toLowerCase();
+
+            const value = (values[1] || '').trim();
+
             if (key) {
                 settings[key] = value;
             }
         });
-        
+
         return settings;
+
     } catch (err) {
         console.error('Failed to fetch site settings:', err);
         return {};
     }
 }
-
 // ===== APPLY SITE SETTINGS =====
 function applySiteSettings(settings) {
     if (!settings || Object.keys(settings).length === 0) return;
@@ -313,6 +351,24 @@ function applySiteSettings(settings) {
 
     if (settings.poea_license) {
         config.poeaLicense = settings.poea_license;
+    }
+
+    if (settings.years_experience) {
+        config.stats[0].value = settings.years_experience;
+        config.hero.eyebrow = `${settings.years_experience} YEARS OF RECRUITMENT EXCELLENCE`;
+        config.hero.trustItems[0] = `${settings.years_experience} Years of Service`;
+    }
+
+    if (settings.workers_deployed) {
+        config.stats[1].value = settings.workers_deployed;
+    }
+
+    if (settings.poea_complaints) {
+        config.stats[2].value = settings.poea_complaints;
+    }
+
+    if (settings.opportunities) {
+        config.stats[3].value = settings.opportunities;
     }
 }
 
