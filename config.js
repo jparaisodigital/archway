@@ -40,9 +40,15 @@ const config = {
       "assets/hero.png",
       "assets/hero2.png",
       "assets/hero3.png"
-    ],
+  ],
   
-    slideInterval: 4500
+  mobileImages: [
+      "assets/mobile1.png",
+      "assets/mobile2.png",
+      "assets/mobile3.png"
+  ],
+  
+  slideInterval: 4500,
   },
   
   // Stats
