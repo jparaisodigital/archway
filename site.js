@@ -88,7 +88,7 @@ function renderNav(activePage) {
                     type="button"
                     onclick="toggleMobileMenu()"
                     class="md:hidden
-                           w-10 h-10
+                           w-11 h-11
                            inline-flex items-center justify-center
                            rounded-lg
                            text-white
@@ -146,10 +146,12 @@ return `
                                     href="${item.href}"
                                     data-nav-href="${item.href}"
                                     class="
-                                        py-3
-                                        border-b border-white/10
-                                        text-sm font-semibold
-                                        transition-colors
+    min-h-11
+    flex items-center
+    py-3
+    border-b border-white/10
+    text-sm font-semibold
+    transition-colors
                                         ${isActive
 ? 'text-white'
 : 'text-white/60 hover:text-white'
@@ -165,9 +167,10 @@ return `
                     <a
                         href="${contactHref}"
                         class="mt-4
-                               inline-flex w-full
-                               items-center justify-center
-                               px-5 py-3 rounded-lg
+       inline-flex w-full
+       min-h-11
+       items-center justify-center
+       px-5 py-3 rounded-lg
                                border border-white/25
                                text-white
                                text-sm font-semibold
@@ -371,30 +374,32 @@ function renderFooter() {
         </footer>
     
         <button
-            id="backToTop"
-            type="button"
-            aria-label="Back to top"
-            class="fixed bottom-6 right-6
-       z-[90]
-       inline-flex
-       items-center justify-center
-                   w-11 h-11
-                   rounded-lg
-                   border border-slate-300
-                   bg-white
-                   text-slate-700
-                   shadow-sm
-                   hover:border-slate-400
-                   hover:text-slate-950
-                   transition-colors"
-        >
-            <span
-                aria-hidden="true"
-                class="text-lg leading-none"
-            >
-                ↑
-            </span>
-        </button>
+    id="backToTop"
+    type="button"
+    aria-label="Back to top"
+    class="fixed
+           bottom-5 right-5
+           sm:bottom-6 sm:right-6
+           z-[90]
+           inline-flex
+           items-center justify-center
+           w-11 h-11
+           rounded-lg
+           border border-slate-300
+           bg-white
+           text-slate-700
+           shadow-sm
+           hover:border-slate-400
+           hover:text-slate-950
+           transition-colors"
+>
+    <span
+        aria-hidden="true"
+        class="text-lg leading-none"
+    >
+        ↑
+    </span>
+</button>
     `;
 }
 
@@ -681,7 +686,7 @@ function renderJobTable(title, jobs) {
                             onclick="openJobPopupFromButton(this)"
                             class="shrink-0
                                    inline-flex items-center gap-2
-                                   px-4 py-2 rounded-lg
+                                   min-h-11 px-4 py-2 rounded-lg
                                    border border-slate-300
                                    text-sm font-semibold text-slate-700
                                    hover:border-primary hover:text-primary
@@ -983,7 +988,7 @@ function renderHomePage() {
             type="button"
             data-job-filter="all"
             class="job-filter-btn
-                   px-4 py-2.5 rounded-lg
+                   min-h-11 px-4 py-2.5 rounded-lg
                    bg-primary text-white
                    border border-primary
                    text-sm font-semibold
@@ -996,7 +1001,7 @@ function renderHomePage() {
             type="button"
             data-job-filter="local"
             class="job-filter-btn
-                   px-4 py-2.5 rounded-lg
+                   min-h-11 px-4 py-2.5 rounded-lg
                    bg-white text-slate-600
                    border border-slate-300
                    text-sm font-semibold
@@ -1010,7 +1015,7 @@ function renderHomePage() {
             type="button"
             data-job-filter="overseas"
             class="job-filter-btn
-                   px-4 py-2.5 rounded-lg
+                   min-h-11 px-4 py-2.5 rounded-lg
                    bg-white text-slate-600
                    border border-slate-300
                    text-sm font-semibold
@@ -1549,37 +1554,18 @@ function renderHomePage() {
                 
                 filterButtons.forEach(btn => {
                     const isActive =
-                    btn.dataset.jobFilter === activeFilter;
-                    
-                    btn.classList.toggle(
-                        'bg-primary',
-                        isActive
-                    );
-                    
-                    btn.classList.toggle(
-                        'text-white',
-                        isActive
-                    );
-                    
-                    btn.classList.toggle(
-                        'border-primary',
-                        isActive
-                    );
-                    
-                    btn.classList.toggle(
-                        'bg-white',
-                        !isActive
-                    );
-                    
-                    btn.classList.toggle(
-                        'text-slate-600',
-                        !isActive
-                    );
-                    
-                    btn.classList.toggle(
-                        'border-slate-300',
-                        !isActive
-                    );
+                        btn.dataset.jobFilter === activeFilter;
+                
+                    btn.classList.toggle('bg-primary', isActive);
+                    btn.classList.toggle('text-white', isActive);
+                    btn.classList.toggle('border-primary', isActive);
+                
+                    btn.classList.toggle('bg-white', !isActive);
+                    btn.classList.toggle('text-slate-600', !isActive);
+                    btn.classList.toggle('border-slate-300', !isActive);
+                
+                    btn.classList.toggle('hover:text-primary', !isActive);
+                    btn.classList.toggle('hover:border-primary', !isActive);
                 });
                 
                 renderFilteredJobs();
@@ -2590,9 +2576,10 @@ function openJobPopup(id) {
     onclick="closeJobPopup()"
 ></div>
     
-        <div
+        <div 
     class="modal-panel relative bg-white
-           w-full max-w-2xl max-h-[90vh]
+           w-full max-w-2xl
+           max-h-[calc(100vh-2rem)]
            overflow-y-auto
            rounded-xl border border-slate-200
            shadow-xl"
@@ -2799,9 +2786,10 @@ function openBranchSelector(jobId) {
     onclick="closeBranchSelector()"
 ></div>
     
-        <div
+        <div 
     class="modal-panel relative bg-white
-           w-full max-w-lg max-h-[90vh]
+           w-full max-w-lg
+           max-h-[calc(100vh-2rem)]
            overflow-y-auto
            rounded-xl border border-slate-200
            shadow-xl"
@@ -2902,76 +2890,74 @@ function openBranchSelector(jobId) {
     
     
                 <!-- Branch Email Result -->
-                <div
-                    id="branchEmailResult"
-                    class="hidden pt-6 border-t border-slate-200"
-                >
-                    <p
-                        class="text-sm text-slate-600 leading-relaxed"
-                    >
-                        ${escapeHTML(s.instruction)}
-                    </p>
-    
-                    <div
-                        class="mt-4
-                               border border-slate-200
-                               rounded-lg overflow-hidden"
-                    >
-    
-                        <div class="px-4 py-4 bg-slate-50">
-                            <p
-                                class="text-xs font-semibold uppercase
-                                       tracking-[0.12em]
-                                       text-slate-400 mb-1.5"
-                            >
-                                Branch Email
-                            </p>
-    
-                            <span
-                                id="branchEmailText"
-                                class="block text-sm sm:text-base
-                                       font-semibold text-primary
-                                       break-all"
-                            ></span>
-                        </div>
-    
-                        <div
-                            class="p-3
-                                   border-t border-slate-200
-                                   flex flex-col sm:flex-row gap-2"
-                        >
-                            <button
-                                id="copyEmailBtn"
-                                type="button"
-                                onclick="copyBranchEmail()"
-                                class="px-4 py-2.5 rounded-lg
-                                       border border-slate-300
-                                       text-sm font-semibold text-slate-700
-                                       hover:bg-slate-50
-                                       transition-colors"
-                            >
-                                ${escapeHTML(s.copyBtn)}
-                            </button>
-    
-                            <a
-                                id="mailtoLink"
-                                href="#"
-                                class="flex-1 inline-flex
-                                       items-center justify-center
-                                       px-5 py-2.5 rounded-lg
-                                       bg-primary text-white
-                                       text-sm font-semibold
-                                       hover:bg-primary-dark
-                                       transition-colors"
-                            >
-                                Open in Email App
-                            </a>
-                        </div>
-    
-                    </div>
-                </div>
-    
-            </div>
+<div
+    id="branchEmailResult"
+    class="hidden pt-6 border-t border-slate-200"
+>
+    <p class="text-sm text-slate-600 leading-relaxed">
+        ${escapeHTML(s.instruction)}
+    </p>
+
+    <div
+        class="mt-4
+               border border-slate-200
+               rounded-lg overflow-hidden"
+    >
+        <div class="px-4 py-4 bg-slate-50">
+            <p
+                class="text-xs font-semibold uppercase
+                       tracking-[0.12em]
+                       text-slate-400 mb-1.5"
+            >
+                Branch Email
+            </p>
+
+            <span
+                id="branchEmailText"
+                class="block
+                       text-sm sm:text-base
+                       font-semibold text-primary
+                       break-all"
+            ></span>
+        </div>
+
+        <div
+            class="p-3
+                   border-t border-slate-200
+                   flex flex-col sm:flex-row
+                   gap-2"
+        >
+            <button
+                id="copyEmailBtn"
+                type="button"
+                onclick="copyBranchEmail()"
+                class="min-h-11
+                       px-4 py-2.5 rounded-lg
+                       border border-slate-300
+                       text-sm font-semibold text-slate-700
+                       hover:bg-slate-50
+                       transition-colors"
+            >
+                ${escapeHTML(s.copyBtn)}
+            </button>
+
+            <a
+                id="mailtoLink"
+                href="#"
+                class="flex-1 inline-flex
+                       min-h-11
+                       items-center justify-center
+                       px-5 py-2.5 rounded-lg
+                       bg-primary text-white
+                       text-sm font-semibold
+                       hover:bg-primary-dark
+                       transition-colors"
+            >
+                Open in Email App
+            </a>
+        </div>
+    </div>
+</div>
     
     
             <!-- Modal Footer -->

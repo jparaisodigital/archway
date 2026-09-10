@@ -295,6 +295,28 @@
                 display: block;
             }
         }
+        
+        button,
+        a,
+        input,
+        select,
+        textarea {
+            touch-action: manipulation;
+        }
+        
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        @media (max-width: 767px) {
+            .hero-bg-mobile {
+                background-size: cover;
+                background-position: center center;
+            }
+        }
+        
     </style>
 </head>
 
