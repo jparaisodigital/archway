@@ -24,14 +24,14 @@ const config = {
   ],
   
   hero: {
-    eyebrow: "20+ YEARS OF RECRUITMENT EXCELLENCE",
+    eyebrow: "25 YEARS OF RECRUITMENT EXCELLENCE",
     title: "We Recruit the Best Filipino Workers",
     subtitle: "Connecting qualified Filipino talent with trusted local and overseas employers.",
     ctaPrimary: "View Job Openings",
     ctaSecondary: "How to Apply",
   
     trustItems: [
-      "20+ Years of Service",
+      "25 Years of Service",
       "POEA Licensed",
       "Zero Complaint Record"
     ],

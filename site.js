@@ -1180,12 +1180,20 @@ function renderHomePage() {
                            sm:items-center gap-6"
                 >
                     <img
-                        src="${c.poeaBadge.src}"
-                        alt="${escapeHTML(c.poeaBadge.alt)}"
-                        class="w-full max-w-[340px] h-auto object-contain mx-auto sm:w-auto sm:h-24 sm:mx-0"
-                    >
+                           src="assets/POEA.png"
+                           alt="POEA Licensed - Zero Complaint & Zero Citation Record"
+                           class="w-full
+                           max-w-[340px]
+                           h-auto
+                           object-contain
+                           mx-auto
+                           sm:w-auto
+                           sm:max-w-none
+                           sm:h-32
+                           sm:mx-0"
+                > 
     
-                    <div>
+                <div>
                         <p
                             class="text-xs font-bold uppercase
                                    tracking-[0.14em] text-primary mb-2"
@@ -1554,16 +1562,16 @@ function renderHomePage() {
                 
                 filterButtons.forEach(btn => {
                     const isActive =
-                        btn.dataset.jobFilter === activeFilter;
-                
+                    btn.dataset.jobFilter === activeFilter;
+                    
                     btn.classList.toggle('bg-primary', isActive);
                     btn.classList.toggle('text-white', isActive);
                     btn.classList.toggle('border-primary', isActive);
-                
+                    
                     btn.classList.toggle('bg-white', !isActive);
                     btn.classList.toggle('text-slate-600', !isActive);
                     btn.classList.toggle('border-slate-300', !isActive);
-                
+                    
                     btn.classList.toggle('hover:text-primary', !isActive);
                     btn.classList.toggle('hover:border-primary', !isActive);
                 });
@@ -1791,8 +1799,15 @@ function renderAboutPage() {
                         <img
                             src="${config.poeaBadge.src}"
                             alt="${escapeHTML(config.poeaBadge.alt)}"
-                            class="h-24 sm:h-28
-                                   w-auto object-contain"
+                            class="w-full
+                            max-w-[340px]
+                            h-auto
+                            object-contain
+                            mx-auto
+                            sm:w-auto
+                            sm:max-w-none
+                            sm:h-32
+                            sm:mx-0"
                         >
     
                         <div>
@@ -2897,7 +2912,7 @@ function openBranchSelector(jobId) {
     <p class="text-sm text-slate-600 leading-relaxed">
         ${escapeHTML(s.instruction)}
     </p>
-
+        
     <div
         class="mt-4
                border border-slate-200
@@ -2911,7 +2926,7 @@ function openBranchSelector(jobId) {
             >
                 Branch Email
             </p>
-
+        
             <span
                 id="branchEmailText"
                 class="block
@@ -2920,7 +2935,7 @@ function openBranchSelector(jobId) {
                        break-all"
             ></span>
         </div>
-
+        
         <div
             class="p-3
                    border-t border-slate-200
@@ -2940,7 +2955,7 @@ function openBranchSelector(jobId) {
             >
                 ${escapeHTML(s.copyBtn)}
             </button>
-
+        
             <a
                 id="mailtoLink"
                 href="#"
