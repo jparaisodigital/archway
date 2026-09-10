@@ -969,7 +969,7 @@ function renderHomePage() {
                    rounded-lg
                    border border-slate-300
                    bg-white
-                   text-sm text-slate-900
+                   text-base sm:text-sm text-slate-900
                    placeholder:text-slate-400
                    outline-none
                    focus:border-primary
