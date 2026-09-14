@@ -10,10 +10,10 @@ function renderNav(activePage) {
     
     return `
         <nav
-            class="site-navbar sticky top-0 z-50
-                   bg-slate-950/95 backdrop-blur-md
-                   border-b border-white/10"
-        >
+    class="site-navbar fixed top-0 left-0 right-0 z-50
+           bg-slate-950/95 backdrop-blur-md
+           border-b border-white/10"
+>
             <div
                 class="max-w-7xl mx-auto px-6
                        h-16
@@ -420,6 +420,17 @@ function escapeHTML(value) {
 
 // ===== SITE SETTINGS DATA (GOOGLE SHEETS) =====
 async function fetchSiteSettings() {
+    const cachedSettings =
+        sessionStorage.getItem('archwaySiteSettings');
+
+    if (cachedSettings) {
+        try {
+            return JSON.parse(cachedSettings);
+        } catch (error) {
+            sessionStorage.removeItem('archwaySiteSettings');
+        }
+    }
+
     try {
         const url = `${config.siteSettingsSheetUrl}&_=${Date.now()}`;
         
@@ -484,15 +495,20 @@ async function fetchSiteSettings() {
         
         rows.slice(1).forEach(values => {
             const key = (values[0] || '')
-            .trim()
-            .toLowerCase();
-            
+                .trim()
+                .toLowerCase();
+        
             const value = (values[1] || '').trim();
-            
+        
             if (key) {
                 settings[key] = value;
             }
         });
+        
+        sessionStorage.setItem(
+            'archwaySiteSettings',
+            JSON.stringify(settings)
+        );
         
         return settings;
         
@@ -792,16 +808,32 @@ function renderHomePage() {
     </div>
     
     <div class="relative z-10 w-full">
-        <div class="max-w-7xl mx-auto px-6 py-24 lg:py-32">
-            <div class="max-w-3xl">
-    
-                <p
-                    class="text-accent text-xs sm:text-sm
-                           font-bold tracking-[0.22em]
-                           uppercase mb-5"
-                >
-                    ${c.hero.eyebrow}
-                </p>
+    <div
+    class="max-w-7xl mx-auto px-6
+           min-h-screen
+           pt-20 pb-24
+           sm:pt-24
+           lg:pt-24 lg:pb-28
+           flex
+           items-center
+           lg:items-stretch"
+>
+        <div
+    class="max-w-3xl w-full
+           flex flex-col
+           justify-center
+           lg:justify-between"
+>
+
+    <div class="lg:pt-8">
+
+        <p 
+            class="text-accent text-xs sm:text-sm 
+                   font-bold tracking-[0.22em] 
+                   uppercase mb-5"
+        > 
+            ${c.hero.eyebrow} 
+        </p>
     
                 <h1
                     class="text-4xl sm:text-5xl lg:text-6xl
@@ -818,8 +850,14 @@ function renderHomePage() {
                 >
                     ${c.hero.subtitle}
                 </p>
-    
-                <div class="flex flex-wrap gap-4 mb-8">
+    </div>
+               <div
+    class="pt-20
+           sm:pt-24
+           lg:pt-14
+           flex flex-wrap gap-4
+           pb-2"
+>
     
                     <a
                         href="#jobs"
@@ -847,29 +885,44 @@ function renderHomePage() {
     
                 </div>
     
-                <div
-                    class="flex flex-wrap gap-x-6 gap-y-3
-                           text-sm text-white/80"
-                >
-                    ${c.hero.trustItems.map(item => `
-                        <div class="flex items-center gap-2">
-                            <span
-                                class="w-5 h-5 rounded-full
-                                       bg-white/10 border border-white/20
-                                       flex items-center justify-center
-                                       text-accent text-xs font-bold"
-                            >
-                                ✓
-                            </span>
-    
-                            <span>${item}</span>
-                        </div>
-                    `).join('')}
-                </div>
+                
     
             </div>
         </div>
     </div>
+    
+    <div
+    class="absolute bottom-0 left-0 right-0 z-20
+           overflow-hidden
+           border-t border-white/15
+           bg-slate-950/70
+           backdrop-blur-sm"
+>
+    <div class="hero-trust-marquee">
+    <div class="hero-trust-track">
+
+        <div class="hero-trust-group">
+            <span>25 Years of Service</span>
+            <span class="hero-trust-dot">•</span>
+            <span>POEA Licensed</span>
+            <span class="hero-trust-dot">•</span>
+            <span>Zero Complaint Record</span>
+            <span class="hero-trust-dot">•</span>
+        </div>
+
+        <div class="hero-trust-group" aria-hidden="true">
+            <span>25 Years of Service</span>
+            <span class="hero-trust-dot">•</span>
+            <span>POEA Licensed</span>
+            <span class="hero-trust-dot">•</span>
+            <span>Zero Complaint Record</span>
+            <span class="hero-trust-dot">•</span>
+        </div>
+
+    </div>
+</div>
+    
+    
 </section>
   
       <section class="relative z-10 border-b border-slate-200 bg-white reveal">

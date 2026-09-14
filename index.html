@@ -317,6 +317,56 @@
             }
         }
         
+        .hero-trust-marquee {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .hero-trust-track {
+            display: flex;
+            width: max-content;
+            
+            animation: heroTrustMarquee 24s linear infinite;
+        }
+        
+        @media (max-width: 767px) {
+            .hero-trust-track {
+                animation-duration: 14s;
+            }
+        }
+        
+        .hero-trust-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 1.5rem;
+            
+            flex-shrink: 0;
+            min-width: 100vw;
+            
+            padding: 0.9rem 1.5rem;
+            
+            color: rgb(255 255 255 / 0.82);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        
+        .hero-trust-dot {
+            color: rgb(0 194 203 / 0.9);
+        }
+        
+        @keyframes heroTrustMarquee {
+            from {
+                transform: translateX(0);
+            }
+            
+            to {
+                transform: translateX(-50%);
+            }
+        }
+        
     </style>
 </head>
 
