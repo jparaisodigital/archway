@@ -1740,6 +1740,14 @@ function syncSiteSettingsUI() {
                             const startTime = performance.now();
                             
                             function updateCount(currentTime) {
+                                const latestValue =
+                                (stat.dataset.statValue || '').trim();
+                                
+                                if (latestValue !== originalValue) {
+                                    stat.textContent = latestValue;
+                                    return;
+                                }
+                                
                                 const elapsed = currentTime - startTime;
                                 const progress = Math.min(elapsed / duration, 1);
                                 
@@ -2913,6 +2921,8 @@ function syncSiteSettingsUI() {
     `;
         
         document.body.appendChild(modal);
+        
+        document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
         
         setTimeout(() => {
@@ -2931,6 +2941,7 @@ function syncSiteSettingsUI() {
             modal.remove();
             
             if (!keepBodyLocked) {
+                document.documentElement.style.overflow = '';
                 document.body.style.overflow = '';
             }
         }, 200);
@@ -2957,7 +2968,7 @@ function syncSiteSettingsUI() {
         .filter(Boolean);
         
         const subtitle = isOverseas
-        ? 'Overseas applications are handled exclusively by Pasay / Main HR.'
+        ? 'Overseas applications are handled by Pasay / Main HR.'
         : s.subtitle;
         
         closeJobPopup(true);
@@ -3071,8 +3082,7 @@ function syncSiteSettingsUI() {
                                 class="mt-2 text-xs
                                        text-slate-500 leading-relaxed"
                             >
-                                All overseas applications are handled by
-                                Pasay / Main HR.
+                                Dedicated branch for overseas applications.
                             </p>
                         </div>
         
@@ -3154,12 +3164,12 @@ function syncSiteSettingsUI() {
                                            font-semibold text-primary
                                            break-all"
                                 >${
-                                    isOverseas
-                                    ? overseasEmails
-                                        .map(email => escapeHTML(email))
-                                        .join('<br>')
-                                    : ''
-                                  }</span>
+    isOverseas
+    ? overseasEmails
+    .map(email => escapeHTML(email))
+    .join('<br>')
+    : ''
+}</span>
                             </div>
 
                             <div
@@ -3235,6 +3245,8 @@ isOverseas && pasayBranch
         `;
 
 document.body.appendChild(modal);
+
+document.documentElement.style.overflow = 'hidden';
 document.body.style.overflow = 'hidden';
 
 setTimeout(() => {
@@ -3306,6 +3318,7 @@ function closeBranchSelector() {
     
     setTimeout(() => {
         modal.remove();
+        document.documentElement.style.overflow = '';
         document.body.style.overflow = '';
     }, 200);
 }
