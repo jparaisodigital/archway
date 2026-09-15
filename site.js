@@ -368,7 +368,7 @@ function renderFooter() {
                 </p>
     
                 <p class="text-xs text-slate-500 sm:text-right">
-                    ${escapeHTML(config.poeaLicense)}
+                    ${escapeHTML(config.dmwLicense)}
                 </p>
             </div>
         </footer>
@@ -546,8 +546,8 @@ function applySiteSettings(settings) {
         config.stats[1].value = settings.workers_deployed;
     }
     
-    if (settings.poea_complaints) {
-        config.stats[2].value = settings.poea_complaints;
+    if (settings.dmw_complaints) {
+        config.stats[2].value = settings.dmw_complaints;
     }
     
     if (settings.opportunities) {
@@ -635,6 +635,11 @@ async function fetchJobs() {
         const res = await fetch(url, {
             cache: 'no-store'
         });
+        
+        if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+        }
+        
         const csvText = await res.text();
         
         // Proper CSV parser that handles quoted fields + newlines
@@ -690,7 +695,12 @@ async function fetchJobs() {
                 id: values[cols.id] || '',
                 title: values[cols.title] || '',
                 type: values[cols.type] || '',
-                is_active: (values[cols.is_active] || 'TRUE').toUpperCase() === 'TRUE',
+            
+                is_active:
+                    (values[cols.is_active] || '')
+                        .toUpperCase() === 'TRUE',
+            
+                info: values[cols.info] || '',
                 specialization: values[cols.specialization] || '',
                 location: values[cols.location] || '',
                 experience: values[cols.experience] || '',
@@ -1319,7 +1329,7 @@ function renderHomePage() {
                         </p>
     
                         <p class="mt-1 text-sm text-slate-500">
-                            ${escapeHTML(c.poeaLicense)}
+                            ${escapeHTML(c.dmwLicense)}
                         </p>
                     </div>
                 </div>
@@ -1920,8 +1930,8 @@ function renderAboutPage() {
                                max-w-4xl"
                     >
                         <img
-                            src="${config.poeaBadge.src}"
-                            alt="${escapeHTML(config.poeaBadge.alt)}"
+                            src="${config.dmwBadge.src}"
+                            alt="${escapeHTML(config.dmwBadge.alt)}"
                             class="w-full
                             max-w-[340px]
                             h-auto
@@ -1954,7 +1964,7 @@ function renderAboutPage() {
                                 class="mt-1
                                        text-sm text-slate-500"
                             >
-                                ${escapeHTML(config.poeaLicense)}
+                                ${escapeHTML(config.dmwLicense)}
                             </p>
     
                             <div
@@ -2695,6 +2705,7 @@ function openJobPopup(id) {
     };
     
     const hasExtraDetails =
+    job.info ||
     job.specialization ||
     job.location ||
     job.experience ||
@@ -2776,6 +2787,33 @@ function openJobPopup(id) {
                     ${field('Experience', job.experience)}
                     ${field('Certifications', job.certifications)}
                 </div>
+
+                ${job.info ? `
+                    <div
+                        class="mt-8
+                               border border-amber-200
+                               bg-amber-50
+                               px-5 py-4
+                               rounded-lg"
+                    >
+                        <p
+                            class="text-xs font-bold uppercase
+                                   tracking-[0.14em]
+                                   text-amber-700 mb-1.5"
+                        >
+                            Important Notice
+                        </p>
+                
+                        <p
+                            class="text-sm sm:text-base
+                                   font-semibold
+                                   text-amber-900
+                                   leading-relaxed"
+                        >
+                            ${escapeHTML(job.info)}
+                        </p>
+                    </div>
+                ` : ''}
     
                 ${job.description ? `
                     <div class="mt-8 pt-8 border-t border-slate-200">

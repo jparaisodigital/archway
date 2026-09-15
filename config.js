@@ -1,6 +1,6 @@
 const config = {
   // Brand
-  poeaLicense: "DMW License No. DMW-656-LB-10092025-R",
+  dmwLicense: "DMW License No. DMW-656-LB-10092025-R",
   
   // Logo (config-driven)
   logo: {
@@ -8,12 +8,12 @@ const config = {
     alt: "Archway Logo",
     height: 40                 
   },
-  
-  // PAOE Badge (config-driven)
-  poeaBadge: {
+
+  // Logo DMW
+  dmwBadge: {
     src: "assets/DMW.png",
     alt: "DMW LICENSED - Zero Complaint & Zero Citation Record"
-  },
+},
   
   // Navigation
   nav: [
@@ -64,19 +64,20 @@ const config = {
   siteSettingsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=2131700161&single=true&output=csv",
   // Jobs settings (config-driven)
   jobsConfig: {
-    // Column mapping (order sa Google Sheet)
+    // Column mapping
     columns: {
       id: 0,
       title: 1,
       type: 2,
       is_active: 3,
-      specialization: 4,
-      location: 5,
-      experience: 6,
-      certifications: 7,
-      description: 8,
-      requirements: 9
-    },
+      info: 4,
+      specialization: 5,
+      location: 6,
+      experience: 7,
+      certifications: 8,
+      description: 9,
+      requirements: 10
+  },
     
     // Popup texts
     popup: {
@@ -101,7 +102,7 @@ const config = {
   homeApply: {
     eyebrow: "How to Apply",
     title: "Start Your Application in Three Steps",
-    subtitle: "Browse an opening, review the details, then contact the branch nearest you.",
+    subtitle: "Browse an opening, review the details, then follow the application instructions for the job.",
   
     steps: [
       {
@@ -117,7 +118,7 @@ const config = {
       {
         number: "03",
         title: "Contact the Right Branch",
-        desc: "Select the branch nearest you and send your resume by email."
+        desc: "Local applicants may select the nearest branch, while overseas applications are handled by Pasay / Main HR."
       }
     ],
   
@@ -183,7 +184,7 @@ aboutPage: {
   // Applicants Page
   applicantsPage: {
     headerTitle: "How to Apply",
-    headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and choose the branch nearest you for the right email to send your application to.",
+    headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and follow the branch instructions shown for that position.",
     
     branches: [
       { value: "pasay", label: "Pasay / Main HR", email: "Hr@Archway.com.ph" },
