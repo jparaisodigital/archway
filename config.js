@@ -1,6 +1,6 @@
 const config = {
   // Brand
-  poeaLicense: "POEA License No. 047-LB-10317-R",
+  poeaLicense: "DMW License No. DMW-656-LB-10092025-R",
   
   // Logo (config-driven)
   logo: {
@@ -9,10 +9,10 @@ const config = {
     height: 40                 
   },
   
-  // POEA Badge (config-driven)
+  // PAOE Badge (config-driven)
   poeaBadge: {
-    src: "assets/POEA.png",
-    alt: "POEA Licensed - Zero Complaint & Zero Citation Record"
+    src: "assets/DMW.png",
+    alt: "DMW LICENSED - Zero Complaint & Zero Citation Record"
   },
   
   // Navigation
@@ -32,7 +32,7 @@ const config = {
   
     trustItems: [
       "25 Years of Service",
-      "POEA Licensed",
+      "DMW LICENSED",
       "Zero Complaint Record"
     ],
   
@@ -55,7 +55,7 @@ const config = {
   stats: [
     { value: "20+", label: "Years of Excellence" },
     { value: "1000+", label: "Workers Deployed" },
-    { value: "Zero", label: "POEA Complaints" },
+    { value: "Zero", label: "DMW Complaints" },
     { value: "Local + Overseas", label: "Opportunities" }
   ],
   
@@ -134,16 +134,23 @@ const config = {
   },
   
   // About Page (separate from homepage "about" preview)
-  aboutPage: {
-    headerTitle: "About Us",
-    headerSubtitle: "We Create Opportunities for Candidates & Businesses",
-    whoWeAreTitle: "Who We Are",
-    whoWeAreParagraphs: [
-      "Archway Multi-Services Corporation is a licensed, privately-owned recruitment and placement company based in Pasay City, Metro Manila, Philippines. Archway has successfully deployed many highly-qualified Filipino professionals, skilled workers and non-skilled workforce throughout the Middle East. Aside from overseas, likewise, we have provided thousands of local jobs to Filipinos.",
-      "In our 20 years of service, we have witnessed the versatility and industry of the Filipinos and the desire to uplift the lives of their families, are the very important goals of our organization. Our quality assurance is borne by our appreciation of the importance of a systematic program of selection and placement of human resources allowing us to get down to the vital details of our clients' manpower demands and letting us customize our services to each of the clients' needs."
-    ],
-    highlight: "We stand proud by our clean record of <strong>Zero-complaint</strong> and <strong>Zero-citation</strong> sanction from POEA."
-  },
+aboutPage: {
+  headerTitle: "About Us",
+  headerSubtitle: "We Create Opportunities for Candidates & Businesses",
+  whoWeAreTitle: "Who We Are",
+
+  whoWeAreParagraphs: [
+    "Archway International is a licensed recruitment agency duly registered with the Department of Migrant Workers (DMW). We specialize in the recruitment and deployment of qualified professionals, skilled workers, and technicians to the Middle East and other international markets.",
+  
+    "Over the years, we have successfully partnered with clients across a wide range of industries, including <strong>FMCG, Hospitality, Construction & Installation, Operations & Maintenance, Support Services, Medical, Furniture Manufacturing, Heavy Machinery, and Engineering</strong>.",
+  
+    "Our extensive recruitment experience, commitment to quality, and strict compliance with government regulations have enabled us to establish long-standing and trusted relationships with clients and partners worldwide.",
+  
+    "In our 20 years of service, we have witnessed the versatility and industry of the Filipinos and the desire to uplift the lives of their families, are the very important goals of our organization. Our quality assurance is borne by our appreciation of the importance of a systematic program of selection and placement of human resources allowing us to get down to the vital details of our clients' manpower demands and letting us customize our services to each of the clients' needs."
+  ],
+
+  highlight: "Licensed and duly registered with the <strong>Department of Migrant Workers (DMW)</strong>."
+},
   
   // Employers Page
   employersPage: {
@@ -151,7 +158,7 @@ const config = {
     headerSubtitle: "Partner with Archway for quality and ethical Filipino manpower solutions.",
     reqTitle: "Documentary Requirements",
     reqIntro: [
-      "The documentary requirements from principal employers vary depending on the host country's own set of rules and regulations pertaining to hiring foreign workers. POEA is also concerned on the state of economy, the records on human rights abuses being reported by the Philippine labor attaché back to our government. As such, additional requirements may be required by the POEA as it deems necessary in order to protect the welfare of the Filipino workers.",
+      "The documentary requirements from principal employers vary depending on the host country's own set of rules and regulations pertaining to hiring foreign workers. DMW is also concerned on the state of economy, the records on human rights abuses being reported by the Philippine labor attaché back to our government. As such, additional requirements may be required by the DMW as it deems necessary in order to protect the welfare of the Filipino workers.",
       "However, the following are the typical basic requirements that are asked of our principal employers."
     ],
     requirements: [
@@ -170,7 +177,7 @@ const config = {
       "Authorization letter of the authorized representative;",
       "ID copy of authorized representative."
     ],
-    note: "All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the POEA for acknowledgment and registration. It is important that these documents carry English translations."
+    note: "All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the DMW for acknowledgment and registration. It is important that these documents carry English translations."
   },
   
   // Applicants Page
@@ -254,7 +261,7 @@ const config = {
         { title: "Pre-Selection", desc: "Shortlisted applicants are prepared and documents are checked for completeness." },
         { title: "Principal Interview", desc: "Selected candidates are presented to the foreign principal for final interview." },
         { title: "Final Selection", desc: "Successful candidates are officially selected and proceed to the next stage." },
-        { title: "Travel Clearances", desc: "We assist with POEA processing, medicals, visas, and all required clearances." },
+        { title: "Travel Clearances", desc: "We assist with DMW processing, medicals, visas, and all required clearances." },
         { title: "Deployment", desc: "Workers are deployed to their destination. We remain available for support even after deployment." }
       ]
     }

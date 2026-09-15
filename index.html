@@ -58,7 +58,7 @@
     
     <meta
     name="twitter:image"
-    content="https://jparaisodigital.github.io/archway/assets/link.png"
+    content="https://archwayintl.com.ph/assets/link.png"
     >
     
     <!-- Tailwind CSS -->
@@ -378,10 +378,29 @@
     <script src="site.js"></script>
     
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const settings = await fetchSiteSettings();
-            applySiteSettings(settings);
+        document.addEventListener('DOMContentLoaded', () => {
+    
             renderHomePage();
+    
+            fetchSiteSettings()
+                .then(settings => {
+    
+                    applySiteSettings(settings);
+    
+                    if (typeof syncSiteSettingsUI === 'function') {
+                        syncSiteSettingsUI();
+                    }
+    
+                })
+                .catch(error => {
+    
+                    console.warn(
+                        'Site settings could not be refreshed:',
+                        error
+                    );
+    
+                });
+    
         });
     </script>
     

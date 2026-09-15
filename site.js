@@ -420,16 +420,7 @@ function escapeHTML(value) {
 
 // ===== SITE SETTINGS DATA (GOOGLE SHEETS) =====
 async function fetchSiteSettings() {
-    const cachedSettings =
-        sessionStorage.getItem('archwaySiteSettings');
-
-    if (cachedSettings) {
-        try {
-            return JSON.parse(cachedSettings);
-        } catch (error) {
-            sessionStorage.removeItem('archwaySiteSettings');
-        }
-    }
+    
 
     try {
         const url = `${config.siteSettingsSheetUrl}&_=${Date.now()}`;
@@ -505,11 +496,6 @@ async function fetchSiteSettings() {
             }
         });
         
-        sessionStorage.setItem(
-            'archwaySiteSettings',
-            JSON.stringify(settings)
-        );
-        
         return settings;
         
     } catch (err) {
@@ -550,10 +536,6 @@ function applySiteSettings(settings) {
         `https://maps.google.com/maps?q=${encodeURIComponent(settings.map_location)}&output=embed`;
     }
     
-    if (settings.poea_license) {
-        config.poeaLicense = settings.poea_license;
-    }
-    
     if (settings.years_experience) {
         config.stats[0].value = settings.years_experience;
         config.hero.eyebrow = `${settings.years_experience} YEARS OF RECRUITMENT EXCELLENCE`;
@@ -570,6 +552,78 @@ function applySiteSettings(settings) {
     
     if (settings.opportunities) {
         config.stats[3].value = settings.opportunities;
+    }
+}
+
+function syncSiteSettingsUI() {
+
+    // Hero years
+    const heroEyebrow = document.getElementById('heroEyebrow');
+
+    if (heroEyebrow) {
+        heroEyebrow.textContent = config.hero.eyebrow;
+    }
+
+    // Marquee years
+    document
+        .querySelectorAll('[data-hero-years-service]')
+        .forEach(element => {
+            element.textContent = config.hero.trustItems[0];
+        });
+
+    // Statistics
+    document
+        .querySelectorAll('.stat-value')
+        .forEach((element, index) => {
+
+            const stat = config.stats[index];
+
+            if (!stat) return;
+
+            element.dataset.statValue = stat.value;
+            element.textContent = stat.value;
+        });
+
+    // Contact address
+    const address = document.getElementById('contactAddress');
+
+    if (address) {
+        address.textContent = config.contact.address;
+    }
+
+    // Contact phones
+    const phones = document.getElementById('contactPhones');
+
+    if (phones) {
+        phones.innerHTML = config.contact.phones
+            .map(phone => `<p>${escapeHTML(phone)}</p>`)
+            .join('');
+    }
+
+    // Contact emails
+    const emails = document.getElementById('contactEmails');
+
+    if (emails) {
+        emails.innerHTML = config.contact.emails
+            .map(email => `
+                <a
+                    href="mailto:${escapeHTML(email)}"
+                    class="block w-fit
+                           text-white/85
+                           hover:text-white
+                           transition-colors"
+                >
+                    ${escapeHTML(email)}
+                </a>
+            `)
+            .join('');
+    }
+
+    // Google Map
+    const map = document.getElementById('contactMap');
+
+    if (map) {
+        map.src = config.contact.mapEmbedUrl;
     }
 }
 
@@ -827,13 +881,14 @@ function renderHomePage() {
 
     <div class="lg:pt-8">
 
-        <p 
-            class="text-accent text-xs sm:text-sm 
-                   font-bold tracking-[0.22em] 
-                   uppercase mb-5"
-        > 
-            ${c.hero.eyebrow} 
-        </p>
+        <p
+    id="heroEyebrow"
+    class="text-accent text-xs sm:text-sm 
+           font-bold tracking-[0.22em] 
+           uppercase mb-5"
+>
+    ${c.hero.eyebrow}
+</p>
     
                 <h1
                     class="text-4xl sm:text-5xl lg:text-6xl
@@ -899,26 +954,31 @@ function renderHomePage() {
            backdrop-blur-sm"
 >
     <div class="hero-trust-marquee">
-    <div class="hero-trust-track">
+        <div class="hero-trust-track">
 
-        <div class="hero-trust-group">
-            <span>25 Years of Service</span>
-            <span class="hero-trust-dot">•</span>
-            <span>POEA Licensed</span>
-            <span class="hero-trust-dot">•</span>
-            <span>Zero Complaint Record</span>
-            <span class="hero-trust-dot">•</span>
+            <div class="hero-trust-group">
+                <span data-hero-years-service>
+                ${escapeHTML(c.hero.trustItems[0])}
+                </span>
+                <span class="hero-trust-dot">•</span>
+                <span>DMW LICENSED</span>
+                <span class="hero-trust-dot">•</span>
+                <span>Zero Complaint Record</span>
+                <span class="hero-trust-dot">•</span>
+            </div>
+
+            <div class="hero-trust-group" aria-hidden="true">
+                <span data-hero-years-service>
+                ${escapeHTML(c.hero.trustItems[0])}
+                </span>
+                <span class="hero-trust-dot">•</span>
+                <span>DMW LICENSED</span>
+                <span class="hero-trust-dot">•</span>
+                <span>Zero Complaint Record</span>
+                <span class="hero-trust-dot">•</span>
+            </div>
+
         </div>
-
-        <div class="hero-trust-group" aria-hidden="true">
-            <span>25 Years of Service</span>
-            <span class="hero-trust-dot">•</span>
-            <span>POEA Licensed</span>
-            <span class="hero-trust-dot">•</span>
-            <span>Zero Complaint Record</span>
-            <span class="hero-trust-dot">•</span>
-        </div>
-
     </div>
 </div>
     
@@ -1209,7 +1269,7 @@ function renderHomePage() {
             <div>
                 <div class="space-y-5 text-base text-slate-600 leading-7">
                     ${c.about.paragraphs.slice(0, 2).map(p => `
-                        <p>${escapeHTML(p)}</p>
+                        <p>${p}</p>
                     `).join('')}
                 </div>
     
@@ -1233,8 +1293,8 @@ function renderHomePage() {
                            sm:items-center gap-6"
                 >
                     <img
-                           src="assets/POEA.png"
-                           alt="POEA Licensed - Zero Complaint & Zero Citation Record"
+                           src="assets/DMW.png"
+                           alt="DMW LICENSED - Zero Complaint & Zero Citation Record"
                            class="w-full
                            max-w-[340px]
                            h-auto
@@ -1255,7 +1315,7 @@ function renderHomePage() {
                         </p>
     
                         <p class="font-semibold text-slate-900">
-                            POEA Licensed • Zero Complaint Record
+                            DMW LICENSED • Zero Complaint Record
                         </p>
     
                         <p class="mt-1 text-sm text-slate-500">
@@ -1314,9 +1374,12 @@ function renderHomePage() {
                             Address
                         </p>
     
-                        <p class="text-sm sm:text-base text-white/85 leading-relaxed">
-                            ${escapeHTML(c.contact.address)}
-                        </p>
+                        <p
+    id="contactAddress"
+    class="text-sm sm:text-base text-white/85 leading-relaxed"
+>
+    ${escapeHTML(c.contact.address)}
+</p>
                     </div>
     
                     <div class="py-5 border-t border-white/15">
@@ -1328,7 +1391,10 @@ function renderHomePage() {
                             Phone
                         </p>
     
-                        <div class="space-y-1 text-sm sm:text-base text-white/85">
+                        <div
+    id="contactPhones"
+    class="space-y-1 text-sm sm:text-base text-white/85"
+>
                             ${c.contact.phones.map(phone => `
                                 <p>${escapeHTML(phone)}</p>
                             `).join('')}
@@ -1344,7 +1410,10 @@ function renderHomePage() {
                             Email
                         </p>
     
-                        <div class="space-y-2 text-sm sm:text-base">
+                        <div
+    id="contactEmails"
+    class="space-y-2 text-sm sm:text-base"
+>
                             ${c.contact.emails.map(email => `
                                 <a
                                     href="mailto:${email}"
@@ -1406,6 +1475,7 @@ function renderHomePage() {
                            bg-white/5"
                 >
                     <iframe
+    id="contactMap"
     src="${c.contact.mapEmbedUrl}"
     width="100%"
     class="h-[340px] lg:h-[480px]"
@@ -1820,15 +1890,15 @@ function renderAboutPage() {
     
     
                         <div
-                            class="space-y-6
-                                   text-base sm:text-lg
-                                   text-slate-600
-                                   leading-8 reveal"
-                        >
-                            ${p.whoWeAreParagraphs.map(para => `
-                                <p>${escapeHTML(para)}</p>
-                            `).join('')}
-                        </div>
+    class="space-y-6
+           text-base sm:text-lg
+           text-slate-600
+           leading-8 reveal"
+>
+    ${p.whoWeAreParagraphs.map(para => `
+        <p>${para}</p>
+    `).join('')}
+</div>
     
                     </div>
                 </div>
@@ -1877,7 +1947,7 @@ function renderAboutPage() {
                                        font-bold tracking-tight
                                        text-slate-900"
                             >
-                                POEA Licensed
+                                DMW LICENSED
                             </p>
     
                             <p
@@ -2834,234 +2904,305 @@ function openBranchSelector(jobId) {
     const job = (window._allJobs || []).find(j => j.id === jobId);
     const s = config.applicantsPage.branchSelector;
     const branches = config.applicantsPage.branches;
-    
+
+    const isOverseas =
+        String(job?.type || '').trim().toLowerCase() === 'overseas';
+
+    const pasayBranch =
+        branches.find(branch => branch.value === 'pasay');
+
+    const localBranches =
+        branches.filter(branch => branch.value !== 'pasay');
+
+    const subtitle = isOverseas
+        ? 'Overseas applications are handled exclusively by Pasay / Main HR.'
+        : s.subtitle;
+
     closeJobPopup(true);
-    
+
     setTimeout(() => {
-        
+
         const existing = document.getElementById('branchModal');
         if (existing) existing.remove();
-        
+
         const modal = document.createElement('div');
-        
+
         modal.id = 'branchModal';
         modal.className =
-        'fixed inset-0 z-[100] flex items-center justify-center p-4';
-        
+            'fixed inset-0 z-[100] flex items-center justify-center p-4';
+
         modal.innerHTML = `
-        <div
-    class="modal-backdrop absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
-    onclick="closeBranchSelector()"
-></div>
-    
-        <div 
-    class="modal-panel relative bg-white
-           w-full max-w-lg
-           max-h-[calc(100vh-2rem)]
-           overflow-y-auto
-           rounded-xl border border-slate-200
-           shadow-xl"
->
-    
-            <!-- Modal Header -->
             <div
-                class="px-6 py-6 sm:px-8 sm:py-7
-                       border-b border-slate-200"
+                class="modal-backdrop absolute inset-0
+                       bg-slate-950/60 backdrop-blur-[2px]"
+                onclick="closeBranchSelector()"
+            ></div>
+
+            <div
+                class="modal-panel relative bg-white
+                       w-full max-w-lg
+                       max-h-[calc(100vh-2rem)]
+                       overflow-y-auto
+                       rounded-xl border border-slate-200
+                       shadow-xl"
             >
-                <div class="flex items-start justify-between gap-6">
-    
-                    <div class="min-w-0">
-                        <p
-                            class="text-xs font-bold uppercase
-                                   tracking-[0.16em]
-                                   text-primary mb-2"
-                        >
-                            ${escapeHTML(s.title)}
-                        </p>
-    
-                        ${job ? `
-                            <h3
-                                class="text-xl sm:text-2xl
-                                       font-bold tracking-tight
-                                       leading-tight text-slate-900"
+
+                <!-- Modal Header -->
+                <div
+                    class="px-6 py-6 sm:px-8 sm:py-7
+                           border-b border-slate-200"
+                >
+                    <div class="flex items-start justify-between gap-6">
+
+                        <div class="min-w-0">
+                            <p
+                                class="text-xs font-bold uppercase
+                                       tracking-[0.16em]
+                                       text-primary mb-2"
                             >
-                                ${escapeHTML(job.title)}
-                            </h3>
-                        ` : ''}
+                                ${escapeHTML(s.title)}
+                            </p>
+
+                            ${job ? `
+                                <h3
+                                    class="text-xl sm:text-2xl
+                                           font-bold tracking-tight
+                                           leading-tight text-slate-900"
+                                >
+                                    ${escapeHTML(job.title)}
+                                </h3>
+                            ` : ''}
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="closeBranchSelector()"
+                            aria-label="Close application instructions"
+                            class="shrink-0 w-10 h-10
+                                   inline-flex items-center justify-center
+                                   rounded-lg border border-slate-200
+                                   text-slate-500
+                                   hover:bg-slate-50 hover:text-slate-900
+                                   transition-colors"
+                        >
+                            <span class="text-2xl leading-none">&times;</span>
+                        </button>
+
                     </div>
-    
+                </div>
+
+
+                <!-- Modal Body -->
+                <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
+
+                    <p
+                        class="text-sm sm:text-base
+                               text-slate-600 leading-relaxed"
+                    >
+                        ${escapeHTML(subtitle)}
+                    </p>
+
+                    ${isOverseas ? `
+
+                        <!-- Overseas: Fixed Pasay Branch -->
+                        <div>
+                            <p
+                                class="block text-sm font-semibold
+                                       text-slate-800 mb-2"
+                            >
+                                Application Branch
+                            </p>
+
+                            <div
+                                class="w-full px-4 py-3
+                                       rounded-lg border border-slate-300
+                                       bg-slate-50
+                                       text-sm font-semibold
+                                       text-slate-800"
+                            >
+                                ${escapeHTML(
+                                    pasayBranch?.label || 'Pasay / Main HR'
+                                )}
+                            </div>
+
+                            <p
+                                class="mt-2 text-xs
+                                       text-slate-500 leading-relaxed"
+                            >
+                                All overseas applications are handled by
+                                Pasay / Main HR.
+                            </p>
+                        </div>
+
+                    ` : `
+
+                        <!-- Local: Branch Dropdown -->
+                        <div>
+                            <label
+                                for="branchSelect"
+                                class="block text-sm font-semibold
+                                       text-slate-800 mb-2"
+                            >
+                                ${escapeHTML(s.selectLabel)}
+                            </label>
+
+                            <select
+                                id="branchSelect"
+                                onchange="onBranchSelected()"
+                                class="w-full px-4 py-3
+                                       rounded-lg border border-slate-300
+                                       bg-white text-sm text-slate-800
+                                       focus:border-primary focus:ring-2
+                                       focus:ring-primary/20
+                                       outline-none transition"
+                            >
+                                <option value="">
+                                    ${escapeHTML(s.placeholder)}
+                                </option>
+
+                                ${localBranches.map(branch => `
+                                    <option
+                                        value="${escapeHTML(branch.value)}"
+                                    >
+                                        ${escapeHTML(branch.label)}
+                                    </option>
+                                `).join('')}
+                            </select>
+
+                            <p
+                                class="mt-2 text-xs
+                                       text-slate-500 leading-relaxed"
+                            >
+                                Choose the branch nearest to your location.
+                            </p>
+                        </div>
+
+                    `}
+
+
+                    <!-- Branch Email Result -->
+                    <div
+                        id="branchEmailResult"
+                        class="${
+                            isOverseas ? '' : 'hidden'
+                        } pt-6 border-t border-slate-200"
+                    >
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            ${escapeHTML(s.instruction)}
+                        </p>
+
+                        <div
+                            class="mt-4
+                                   border border-slate-200
+                                   rounded-lg overflow-hidden"
+                        >
+                            <div class="px-4 py-4 bg-slate-50">
+                                <p
+                                    class="text-xs font-semibold uppercase
+                                           tracking-[0.12em]
+                                           text-slate-400 mb-1.5"
+                                >
+                                    Branch Email
+                                </p>
+
+                                <span
+                                    id="branchEmailText"
+                                    class="block
+                                           text-sm sm:text-base
+                                           font-semibold text-primary
+                                           break-all"
+                                >${
+                                    isOverseas && pasayBranch
+                                        ? escapeHTML(pasayBranch.email)
+                                        : ''
+                                }</span>
+                            </div>
+
+                            <div
+                                class="p-3
+                                       border-t border-slate-200
+                                       flex flex-col sm:flex-row
+                                       gap-2"
+                            >
+                                <button
+                                    id="copyEmailBtn"
+                                    type="button"
+                                    onclick="copyBranchEmail()"
+                                    class="min-h-11
+                                           px-4 py-2.5 rounded-lg
+                                           border border-slate-300
+                                           text-sm font-semibold
+                                           text-slate-700
+                                           hover:bg-slate-50
+                                           transition-colors"
+                                >
+                                    ${escapeHTML(s.copyBtn)}
+                                </button>
+
+                                <a
+                                    id="mailtoLink"
+                                    href="${
+                                        isOverseas && pasayBranch
+                                            ? `mailto:${escapeHTML(
+                                                pasayBranch.email
+                                            )}?subject=${encodeURIComponent(
+                                                'Job Application'
+                                            )}`
+                                            : '#'
+                                    }"
+                                    class="flex-1 inline-flex
+                                           min-h-11
+                                           items-center justify-center
+                                           px-5 py-2.5 rounded-lg
+                                           bg-primary text-white
+                                           text-sm font-semibold
+                                           hover:bg-primary-dark
+                                           transition-colors"
+                                >
+                                    Open in Email App
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Modal Footer -->
+                <div
+                    class="px-6 py-5 sm:px-8
+                           border-t border-slate-200
+                           bg-slate-50/70
+                           flex justify-end"
+                >
                     <button
                         type="button"
                         onclick="closeBranchSelector()"
-                        aria-label="Close application instructions"
-                        class="shrink-0 w-10 h-10
-                               inline-flex items-center justify-center
-                               rounded-lg border border-slate-200
-                               text-slate-500
-                               hover:bg-slate-50 hover:text-slate-900
+                        class="px-5 py-2.5 rounded-lg
+                               text-sm font-semibold text-slate-600
+                               hover:text-slate-900 hover:bg-slate-100
                                transition-colors"
                     >
-                        <span class="text-2xl leading-none">&times;</span>
+                        ${escapeHTML(s.closeBtn)}
                     </button>
-    
                 </div>
+
             </div>
-    
-    
-            <!-- Modal Body -->
-            <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
-    
-                <p
-                    class="text-sm sm:text-base
-                           text-slate-600 leading-relaxed"
-                >
-                    ${escapeHTML(s.subtitle)}
-                </p>
-    
-                <div>
-                    <label
-                        for="branchSelect"
-                        class="block text-sm font-semibold
-                               text-slate-800 mb-2"
-                    >
-                        ${escapeHTML(s.selectLabel)}
-                    </label>
-    
-                    <select
-                        id="branchSelect"
-                        onchange="onBranchSelected()"
-                        class="w-full px-4 py-3
-                               rounded-lg border border-slate-300
-                               bg-white text-sm text-slate-800
-                               focus:border-primary focus:ring-2
-                               focus:ring-primary/20
-                               outline-none transition"
-                    >
-                        <option value="">
-                            ${escapeHTML(s.placeholder)}
-                        </option>
-    
-                        ${branches.map(branch => `
-                            <option value="${escapeHTML(branch.value)}">
-                                ${escapeHTML(branch.label)}
-                            </option>
-                        `).join('')}
-                    </select>
-    
-                    <p
-                        class="mt-2 text-xs
-                               text-slate-500 leading-relaxed"
-                    >
-                        Choose the branch nearest to your location.
-                    </p>
-                </div>
-    
-    
-                <!-- Branch Email Result -->
-<div
-    id="branchEmailResult"
-    class="hidden pt-6 border-t border-slate-200"
->
-    <p class="text-sm text-slate-600 leading-relaxed">
-        ${escapeHTML(s.instruction)}
-    </p>
-        
-    <div
-        class="mt-4
-               border border-slate-200
-               rounded-lg overflow-hidden"
-    >
-        <div class="px-4 py-4 bg-slate-50">
-            <p
-                class="text-xs font-semibold uppercase
-                       tracking-[0.12em]
-                       text-slate-400 mb-1.5"
-            >
-                Branch Email
-            </p>
-        
-            <span
-                id="branchEmailText"
-                class="block
-                       text-sm sm:text-base
-                       font-semibold text-primary
-                       break-all"
-            ></span>
-        </div>
-        
-        <div
-            class="p-3
-                   border-t border-slate-200
-                   flex flex-col sm:flex-row
-                   gap-2"
-        >
-            <button
-                id="copyEmailBtn"
-                type="button"
-                onclick="copyBranchEmail()"
-                class="min-h-11
-                       px-4 py-2.5 rounded-lg
-                       border border-slate-300
-                       text-sm font-semibold text-slate-700
-                       hover:bg-slate-50
-                       transition-colors"
-            >
-                ${escapeHTML(s.copyBtn)}
-            </button>
-        
-            <a
-                id="mailtoLink"
-                href="#"
-                class="flex-1 inline-flex
-                       min-h-11
-                       items-center justify-center
-                       px-5 py-2.5 rounded-lg
-                       bg-primary text-white
-                       text-sm font-semibold
-                       hover:bg-primary-dark
-                       transition-colors"
-            >
-                Open in Email App
-            </a>
-        </div>
-    </div>
-</div>
-    
-    
-            <!-- Modal Footer -->
-            <div
-                class="px-6 py-5 sm:px-8
-                       border-t border-slate-200
-                       bg-slate-50/70
-                       flex justify-end"
-            >
-                <button
-                    type="button"
-                    onclick="closeBranchSelector()"
-                    class="px-5 py-2.5 rounded-lg
-                           text-sm font-semibold text-slate-600
-                           hover:text-slate-900 hover:bg-slate-100
-                           transition-colors"
-                >
-                    ${escapeHTML(s.closeBtn)}
-                </button>
-            </div>
-    
-        </div>
-    `;
-        
+        `;
+
         document.body.appendChild(modal);
         document.body.style.overflow = 'hidden';
-        
+
         setTimeout(() => {
             modal.classList.add('modal-visible');
         }, 10);
-        
+
     }, 210);
 }
 
 function onBranchSelected() {
     const select = document.getElementById('branchSelect');
+    if (!select) return;
     const branches = config.applicantsPage.branches;
     const branch = branches.find(b => b.value === select.value);
     
