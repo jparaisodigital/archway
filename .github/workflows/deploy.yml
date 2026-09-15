@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Test FTPS deployment
+      - name: Deploy to cPanel
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -23,7 +23,6 @@ jobs:
           port: 21
           server-dir: ./
           local-dir: ./
-          dry-run: true
           exclude: |
             **/.git*
             **/.git*/**
@@ -31,4 +30,4 @@ jobs:
             **/node_modules/**
             **/.env
             **/.env.*
-            **/*.mds
+            **/*.md
