@@ -379,28 +379,28 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    
+            
             renderHomePage();
-    
+            
             fetchSiteSettings()
-                .then(settings => {
-    
-                    applySiteSettings(settings);
-    
-                    if (typeof syncSiteSettingsUI === 'function') {
-                        syncSiteSettingsUI();
-                    }
-    
-                })
-                .catch(error => {
-    
-                    console.warn(
-                        'Site settings could not be refreshed:',
-                        error
-                    );
-    
-                });
-    
+            .then(settings => {
+                
+                applySiteSettings(settings);
+                
+                if (typeof syncSiteSettingsUI === 'function') {
+                    syncSiteSettingsUI();
+                }
+                
+            })
+            .catch(error => {
+                
+                console.warn(
+                'Site settings could not be refreshed:',
+                error
+                );
+                
+            });
+            
         });
     </script>
     

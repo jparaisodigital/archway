@@ -421,7 +421,7 @@ function escapeHTML(value) {
 // ===== SITE SETTINGS DATA (GOOGLE SHEETS) =====
 async function fetchSiteSettings() {
     
-
+    
     try {
         const url = `${config.siteSettingsSheetUrl}&_=${Date.now()}`;
         
@@ -486,11 +486,11 @@ async function fetchSiteSettings() {
         
         rows.slice(1).forEach(values => {
             const key = (values[0] || '')
-                .trim()
-                .toLowerCase();
-        
+            .trim()
+            .toLowerCase();
+            
             const value = (values[1] || '').trim();
-        
+            
             if (key) {
                 settings[key] = value;
             }
@@ -556,56 +556,56 @@ function applySiteSettings(settings) {
 }
 
 function syncSiteSettingsUI() {
-
+    
     // Hero years
     const heroEyebrow = document.getElementById('heroEyebrow');
-
+    
     if (heroEyebrow) {
         heroEyebrow.textContent = config.hero.eyebrow;
     }
-
+    
     // Marquee years
     document
-        .querySelectorAll('[data-hero-years-service]')
-        .forEach(element => {
-            element.textContent = config.hero.trustItems[0];
-        });
-
+    .querySelectorAll('[data-hero-years-service]')
+    .forEach(element => {
+        element.textContent = config.hero.trustItems[0];
+    });
+    
     // Statistics
     document
-        .querySelectorAll('.stat-value')
-        .forEach((element, index) => {
-
-            const stat = config.stats[index];
-
-            if (!stat) return;
-
-            element.dataset.statValue = stat.value;
-            element.textContent = stat.value;
-        });
-
+    .querySelectorAll('.stat-value')
+    .forEach((element, index) => {
+        
+        const stat = config.stats[index];
+        
+        if (!stat) return;
+        
+        element.dataset.statValue = stat.value;
+        element.textContent = stat.value;
+    });
+    
     // Contact address
     const address = document.getElementById('contactAddress');
-
+    
     if (address) {
         address.textContent = config.contact.address;
     }
-
+    
     // Contact phones
     const phones = document.getElementById('contactPhones');
-
+    
     if (phones) {
         phones.innerHTML = config.contact.phones
-            .map(phone => `<p>${escapeHTML(phone)}</p>`)
-            .join('');
+        .map(phone => `<p>${escapeHTML(phone)}</p>`)
+        .join('');
     }
-
+    
     // Contact emails
     const emails = document.getElementById('contactEmails');
-
+    
     if (emails) {
         emails.innerHTML = config.contact.emails
-            .map(email => `
+        .map(email => `
                 <a
                     href="mailto:${escapeHTML(email)}"
                     class="block w-fit
@@ -617,113 +617,113 @@ function syncSiteSettingsUI() {
                 </a>
             `)
             .join('');
-    }
-
-    // Google Map
-    const map = document.getElementById('contactMap');
-
-    if (map) {
-        map.src = config.contact.mapEmbedUrl;
-    }
-}
-
-// ===== JOBS DATA (GOOGLE SHEETS) =====
-async function fetchJobs() {
-    try {
-        const url = `${config.jobsSheetUrl}&_=${Date.now()}`;
-        
-        const res = await fetch(url, {
-            cache: 'no-store'
-        });
-        
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
         }
         
-        const csvText = await res.text();
+        // Google Map
+        const map = document.getElementById('contactMap');
         
-        // Proper CSV parser that handles quoted fields + newlines
-        function parseCSV(text) {
-            const rows = [];
-            let currentRow = [];
-            let currentValue = '';
-            let insideQuotes = false;
-            
-            for (let i = 0; i < text.length; i++) {
-                const char = text[i];
-                const nextChar = text[i + 1];
-                
-                if (char === '"' && insideQuotes && nextChar === '"') {
-                    // Escaped quote ("")
-                    currentValue += '"';
-                    i++;
-                } else if (char === '"') {
-                    insideQuotes = !insideQuotes;
-                } else if (char === ',' && !insideQuotes) {
-                    currentRow.push(currentValue.trim());
-                    currentValue = '';
-                } else if ((char === '\n' || char === '\r') && !insideQuotes) {
-                    if (currentValue || currentRow.length > 0) {
-                        currentRow.push(currentValue.trim());
-                        rows.push(currentRow);
-                        currentRow = [];
-                        currentValue = '';
-                    }
-                    // skip \r\n
-                    if (char === '\r' && nextChar === '\n') i++;
-                } else {
-                    currentValue += char;
-                }
-            }
-            
-            // last value
-            if (currentValue || currentRow.length > 0) {
-                currentRow.push(currentValue.trim());
-                rows.push(currentRow);
-            }
-            
-            return rows;
+        if (map) {
+            map.src = config.contact.mapEmbedUrl;
         }
-        
-        const allRows = parseCSV(csvText);
-        if (allRows.length < 2) return [];
-        
-        const cols = config.jobsConfig.columns;
-        
-        return allRows.slice(1).map(values => {
-            const job = {
-                id: values[cols.id] || '',
-                title: values[cols.title] || '',
-                type: values[cols.type] || '',
-            
-                is_active:
-                    (values[cols.is_active] || '')
-                        .toUpperCase() === 'TRUE',
-            
-                info: values[cols.info] || '',
-                specialization: values[cols.specialization] || '',
-                location: values[cols.location] || '',
-                experience: values[cols.experience] || '',
-                certifications: values[cols.certifications] || '',
-                description: values[cols.description] || '',
-                requirements: values[cols.requirements] || ''
-            };
-            return job;
-        }).filter(job => job.id && job.title && job.is_active);
-        
-    } catch (err) {
-        console.error('Failed to fetch jobs:', err);
-        return [];
     }
-}
-
-function renderJobTable(title, jobs) {
-    const openingLabel =
-    jobs.length === 1
-    ? '1 current opening'
-    : `${jobs.length} current openings`;
     
-    return `
+    // ===== JOBS DATA (GOOGLE SHEETS) =====
+    async function fetchJobs() {
+        try {
+            const url = `${config.jobsSheetUrl}&_=${Date.now()}`;
+            
+            const res = await fetch(url, {
+                cache: 'no-store'
+            });
+            
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+            
+            const csvText = await res.text();
+            
+            // Proper CSV parser that handles quoted fields + newlines
+            function parseCSV(text) {
+                const rows = [];
+                let currentRow = [];
+                let currentValue = '';
+                let insideQuotes = false;
+                
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i];
+                    const nextChar = text[i + 1];
+                    
+                    if (char === '"' && insideQuotes && nextChar === '"') {
+                        // Escaped quote ("")
+                        currentValue += '"';
+                        i++;
+                    } else if (char === '"') {
+                        insideQuotes = !insideQuotes;
+                    } else if (char === ',' && !insideQuotes) {
+                        currentRow.push(currentValue.trim());
+                        currentValue = '';
+                    } else if ((char === '\n' || char === '\r') && !insideQuotes) {
+                        if (currentValue || currentRow.length > 0) {
+                            currentRow.push(currentValue.trim());
+                            rows.push(currentRow);
+                            currentRow = [];
+                            currentValue = '';
+                        }
+                        // skip \r\n
+                        if (char === '\r' && nextChar === '\n') i++;
+                    } else {
+                        currentValue += char;
+                    }
+                }
+                
+                // last value
+                if (currentValue || currentRow.length > 0) {
+                    currentRow.push(currentValue.trim());
+                    rows.push(currentRow);
+                }
+                
+                return rows;
+            }
+            
+            const allRows = parseCSV(csvText);
+            if (allRows.length < 2) return [];
+            
+            const cols = config.jobsConfig.columns;
+            
+            return allRows.slice(1).map(values => {
+                const job = {
+                    id: values[cols.id] || '',
+                    title: values[cols.title] || '',
+                    type: values[cols.type] || '',
+                    
+                    is_active:
+                    (values[cols.is_active] || '')
+                    .toUpperCase() === 'TRUE',
+                    
+                    info: values[cols.info] || '',
+                    specialization: values[cols.specialization] || '',
+                    location: values[cols.location] || '',
+                    experience: values[cols.experience] || '',
+                    certifications: values[cols.certifications] || '',
+                    description: values[cols.description] || '',
+                    requirements: values[cols.requirements] || ''
+                };
+                return job;
+            }).filter(job => job.id && job.title && job.is_active);
+            
+        } catch (err) {
+            console.error('Failed to fetch jobs:', err);
+            return [];
+        }
+    }
+    
+    function renderJobTable(title, jobs) {
+        const openingLabel =
+        jobs.length === 1
+        ? '1 current opening'
+        : `${jobs.length} current openings`;
+        
+        return `
         <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-200">
                 <h3 class="text-xl font-bold tracking-tight text-slate-900">
@@ -792,11 +792,11 @@ function renderJobTable(title, jobs) {
             </div>
         </div>
     `;
-}
-
-// ===== HOME PAGE =====
-function renderJobsLoading(title) {
-    return `
+    }
+    
+    // ===== HOME PAGE =====
+    function renderJobsLoading(title) {
+        return `
         <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
             <div class="px-6 py-5 border-b border-slate-200">
                 <h3 class="text-xl font-bold tracking-tight text-slate-900">
@@ -833,13 +833,13 @@ function renderJobsLoading(title) {
             </div>
         </div>
     `;
-}
-
-function renderHomePage() {
-    const app = document.getElementById('app');
-    const c = config;
+    }
     
-    app.innerHTML = `
+    function renderHomePage() {
+        const app = document.getElementById('app');
+        const c = config;
+        
+        app.innerHTML = `
     ${renderNav('index.html')}
     
     <div class="fade-in-content">
@@ -888,9 +888,9 @@ function renderHomePage() {
            justify-center
            lg:justify-between"
 >
-
+        
     <div class="lg:pt-8">
-
+        
         <p
     id="heroEyebrow"
     class="text-accent text-xs sm:text-sm 
@@ -965,7 +965,7 @@ function renderHomePage() {
 >
     <div class="hero-trust-marquee">
         <div class="hero-trust-track">
-
+        
             <div class="hero-trust-group">
                 <span data-hero-years-service>
                 ${escapeHTML(c.hero.trustItems[0])}
@@ -976,7 +976,7 @@ function renderHomePage() {
                 <span>Zero Complaint Record</span>
                 <span class="hero-trust-dot">•</span>
             </div>
-
+        
             <div class="hero-trust-group" aria-hidden="true">
                 <span data-hero-years-service>
                 ${escapeHTML(c.hero.trustItems[0])}
@@ -987,7 +987,7 @@ function renderHomePage() {
                 <span>Zero Complaint Record</span>
                 <span class="hero-trust-dot">•</span>
             </div>
-
+        
         </div>
     </div>
 </div>
@@ -1507,117 +1507,117 @@ function renderHomePage() {
             ${renderFooter()}
       </div>
     `;
-    
-    initNavbarScroll();
-    initBackToTop();
-    initHomepageSectionNav();
-    initScrollReveal();
-    
-    if (window.location.hash) {
-        setTimeout(() => {
-            const target = document.querySelector(window.location.hash);
-            if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
-        }, 0);
-    }
-    
-    // Hero background image carousel
-    const desktopHeroSlides =
-    document.querySelectorAll('.hero-bg-desktop');
-    
-    const mobileHeroSlides =
-    document.querySelectorAll('.hero-bg-mobile');
-    
-    function startHeroCarousel(slides) {
-        if (!slides || slides.length <= 1) return;
         
-        let index = 0;
+        initNavbarScroll();
+        initBackToTop();
+        initHomepageSectionNav();
+        initScrollReveal();
         
-        setInterval(() => {
-            slides[index].classList.remove('active');
-            
-            index = (index + 1) % slides.length;
-            
-            slides[index].classList.add('active');
-        }, c.hero.slideInterval || 4000);
-    }
-    
-    startHeroCarousel(desktopHeroSlides);
-    startHeroCarousel(mobileHeroSlides);
-    
-    fetchJobs().then(jobs => {
-        window._allJobs = jobs;
-        
-        const grid = document.getElementById('jobsGrid');
-        const searchInput = document.getElementById('jobSearchInput');
-        const filterButtons = document.querySelectorAll('.job-filter-btn');
-        const resultCount = document.getElementById('jobResultCount');
-        
-        let activeFilter = 'all';
-        
-        function revealJobsGrid() {
-            if (!grid) return;
-            
-            grid.classList.add('jobs-loaded');
-            
-            requestAnimationFrame(() => {
-                grid.classList.add('is-visible');
-            });
+        if (window.location.hash) {
+            setTimeout(() => {
+                const target = document.querySelector(window.location.hash);
+                if (target) target.scrollIntoView({ behavior: 'instant', block: 'start' });
+            }, 0);
         }
         
-        function renderFilteredJobs() {
-            if (!grid) return;
+        // Hero background image carousel
+        const desktopHeroSlides =
+        document.querySelectorAll('.hero-bg-desktop');
+        
+        const mobileHeroSlides =
+        document.querySelectorAll('.hero-bg-mobile');
+        
+        function startHeroCarousel(slides) {
+            if (!slides || slides.length <= 1) return;
             
-            grid.classList.remove('is-visible');
+            let index = 0;
             
-            const searchTerm = (searchInput?.value || '')
-            .trim()
-            .toLowerCase();
-            
-            const filteredJobs = jobs.filter(job => {
-                const matchesSearch =
-                job.title.toLowerCase().includes(searchTerm);
+            setInterval(() => {
+                slides[index].classList.remove('active');
                 
-                const matchesFilter =
-                activeFilter === 'all' ||
-                job.type.toLowerCase() === activeFilter;
+                index = (index + 1) % slides.length;
                 
-                return matchesSearch && matchesFilter;
-            });
+                slides[index].classList.add('active');
+            }, c.hero.slideInterval || 4000);
+        }
+        
+        startHeroCarousel(desktopHeroSlides);
+        startHeroCarousel(mobileHeroSlides);
+        
+        fetchJobs().then(jobs => {
+            window._allJobs = jobs;
             
-            const localJobs = filteredJobs.filter(
-                job => job.type === 'Local'
-            );
+            const grid = document.getElementById('jobsGrid');
+            const searchInput = document.getElementById('jobSearchInput');
+            const filterButtons = document.querySelectorAll('.job-filter-btn');
+            const resultCount = document.getElementById('jobResultCount');
             
-            const overseasJobs = filteredJobs.filter(
-                job => job.type === 'Overseas'
-            );
+            let activeFilter = 'all';
             
-            if (resultCount) {
-                const count = filteredJobs.length;
+            function revealJobsGrid() {
+                if (!grid) return;
                 
-                if (activeFilter === 'local') {
-                    resultCount.textContent =
-                    count === 1
-                    ? '1 local opening'
-                    : `${count} local openings`;
-                } else if (activeFilter === 'overseas') {
-                    resultCount.textContent =
-                    count === 1
-                    ? '1 overseas opening'
-                    : `${count} overseas openings`;
-                } else {
-                    resultCount.textContent =
-                    count === 1
-                    ? '1 opening'
-                    : `${count} openings`;
-                }
+                grid.classList.add('jobs-loaded');
+                
+                requestAnimationFrame(() => {
+                    grid.classList.add('is-visible');
+                });
             }
             
-            if (filteredJobs.length === 0) {
-                grid.className =
-                'jobs-loaded grid md:grid-cols-2 gap-6 lg:gap-8';
+            function renderFilteredJobs() {
+                if (!grid) return;
                 
-                grid.innerHTML = `
+                grid.classList.remove('is-visible');
+                
+                const searchTerm = (searchInput?.value || '')
+                .trim()
+                .toLowerCase();
+                
+                const filteredJobs = jobs.filter(job => {
+                    const matchesSearch =
+                    job.title.toLowerCase().includes(searchTerm);
+                    
+                    const matchesFilter =
+                    activeFilter === 'all' ||
+                    job.type.toLowerCase() === activeFilter;
+                    
+                    return matchesSearch && matchesFilter;
+                });
+                
+                const localJobs = filteredJobs.filter(
+                    job => job.type === 'Local'
+                );
+                
+                const overseasJobs = filteredJobs.filter(
+                    job => job.type === 'Overseas'
+                );
+                
+                if (resultCount) {
+                    const count = filteredJobs.length;
+                    
+                    if (activeFilter === 'local') {
+                        resultCount.textContent =
+                        count === 1
+                        ? '1 local opening'
+                        : `${count} local openings`;
+                    } else if (activeFilter === 'overseas') {
+                        resultCount.textContent =
+                        count === 1
+                        ? '1 overseas opening'
+                        : `${count} overseas openings`;
+                    } else {
+                        resultCount.textContent =
+                        count === 1
+                        ? '1 opening'
+                        : `${count} openings`;
+                    }
+                }
+                
+                if (filteredJobs.length === 0) {
+                    grid.className =
+                    'jobs-loaded grid md:grid-cols-2 gap-6 lg:gap-8';
+                    
+                    grid.innerHTML = `
                     <div
                         class="md:col-span-2
                                border-y border-slate-200
@@ -1628,195 +1628,195 @@ function renderHomePage() {
                         </p>
                     </div>
                 `;
+                    
+                    revealJobsGrid();
+                    return;
+                }
                 
-                revealJobsGrid();
-                return;
-            }
-            
-            if (activeFilter === 'local') {
+                if (activeFilter === 'local') {
+                    grid.className =
+                    'jobs-loaded grid gap-6 lg:gap-8';
+                    
+                    grid.innerHTML =
+                    renderJobTable(
+                        c.jobs.local.title,
+                        localJobs
+                    );
+                    
+                    revealJobsGrid();
+                    return;
+                }
+                
+                if (activeFilter === 'overseas') {
+                    grid.className =
+                    'jobs-loaded grid gap-6 lg:gap-8';
+                    
+                    grid.innerHTML =
+                    renderJobTable(
+                        c.jobs.overseas.title,
+                        overseasJobs
+                    );
+                    
+                    revealJobsGrid();
+                    return;
+                }
+                
                 grid.className =
-                'jobs-loaded grid gap-6 lg:gap-8';
+                'jobs-loaded grid md:grid-cols-2 gap-6 lg:gap-8';
                 
                 grid.innerHTML =
                 renderJobTable(
                     c.jobs.local.title,
                     localJobs
-                );
-                
-                revealJobsGrid();
-                return;
-            }
-            
-            if (activeFilter === 'overseas') {
-                grid.className =
-                'jobs-loaded grid gap-6 lg:gap-8';
-                
-                grid.innerHTML =
+                ) +
                 renderJobTable(
                     c.jobs.overseas.title,
                     overseasJobs
                 );
                 
                 revealJobsGrid();
-                return;
             }
             
-            grid.className =
-            'jobs-loaded grid md:grid-cols-2 gap-6 lg:gap-8';
-            
-            grid.innerHTML =
-            renderJobTable(
-                c.jobs.local.title,
-                localJobs
-            ) +
-            renderJobTable(
-                c.jobs.overseas.title,
-                overseasJobs
-            );
-            
-            revealJobsGrid();
-        }
-        
-        searchInput?.addEventListener('input', () => {
-            renderFilteredJobs();
-        });
-        
-        searchInput?.addEventListener('keydown', event => {
-            if (event.key !== 'Escape') return;
-            if (!searchInput.value) return;
-            
-            searchInput.value = '';
-            renderFilteredJobs();
-        });
-        
-        filterButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                activeFilter = button.dataset.jobFilter;
-                
-                filterButtons.forEach(btn => {
-                    const isActive =
-                    btn.dataset.jobFilter === activeFilter;
-                    
-                    btn.classList.toggle('bg-primary', isActive);
-                    btn.classList.toggle('text-white', isActive);
-                    btn.classList.toggle('border-primary', isActive);
-                    
-                    btn.classList.toggle('bg-white', !isActive);
-                    btn.classList.toggle('text-slate-600', !isActive);
-                    btn.classList.toggle('border-slate-300', !isActive);
-                    
-                    btn.classList.toggle('hover:text-primary', !isActive);
-                    btn.classList.toggle('hover:border-primary', !isActive);
-                });
-                
+            searchInput?.addEventListener('input', () => {
                 renderFilteredJobs();
             });
-        });
-        
-        renderFilteredJobs();
-    });
-    
-    const statValues = document.querySelectorAll('.stat-value');
-    
-    if (statValues.length > 0) {
-        const statsObserver = new IntersectionObserver(
-            (entries, observer) => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting) return;
+            
+            searchInput?.addEventListener('keydown', event => {
+                if (event.key !== 'Escape') return;
+                if (!searchInput.value) return;
+                
+                searchInput.value = '';
+                renderFilteredJobs();
+            });
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    activeFilter = button.dataset.jobFilter;
                     
-                    statValues.forEach(stat => {
-                        const originalValue = (stat.dataset.statValue || '').trim();
+                    filterButtons.forEach(btn => {
+                        const isActive =
+                        btn.dataset.jobFilter === activeFilter;
                         
-                        const cleanedValue = originalValue.replace(/,/g, '').trim();
+                        btn.classList.toggle('bg-primary', isActive);
+                        btn.classList.toggle('text-white', isActive);
+                        btn.classList.toggle('border-primary', isActive);
                         
-                        const match = cleanedValue.match(/^(\d+)\s*(\+)?$/);
+                        btn.classList.toggle('bg-white', !isActive);
+                        btn.classList.toggle('text-slate-600', !isActive);
+                        btn.classList.toggle('border-slate-300', !isActive);
                         
-                        if (!match) return;
-                        
-                        const target = Number(match[1]);
-                        const suffix = match[2] || '';
-                        
-                        const duration = 1000;
-                        const startTime = performance.now();
-                        
-                        function updateCount(currentTime) {
-                            const elapsed = currentTime - startTime;
-                            const progress = Math.min(elapsed / duration, 1);
-                            
-                            const easedProgress =
-                            1 - Math.pow(1 - progress, 3);
-                            
-                            const currentValue = Math.floor(
-                                target * easedProgress
-                            );
-                            
-                            stat.textContent =
-                            currentValue.toLocaleString() + suffix;
-                            
-                            if (progress < 1) {
-                                requestAnimationFrame(updateCount);
-                            } else {
-                                stat.textContent =
-                                target.toLocaleString() + suffix;
-                            }
-                        }
-                        
-                        stat.textContent = `0${suffix}`;
-                        requestAnimationFrame(updateCount);
+                        btn.classList.toggle('hover:text-primary', !isActive);
+                        btn.classList.toggle('hover:border-primary', !isActive);
                     });
                     
-                    observer.disconnect();
+                    renderFilteredJobs();
                 });
-            },
-            {
-                threshold: 0.35
+            });
+            
+            renderFilteredJobs();
+        });
+        
+        const statValues = document.querySelectorAll('.stat-value');
+        
+        if (statValues.length > 0) {
+            const statsObserver = new IntersectionObserver(
+                (entries, observer) => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) return;
+                        
+                        statValues.forEach(stat => {
+                            const originalValue = (stat.dataset.statValue || '').trim();
+                            
+                            const cleanedValue = originalValue.replace(/,/g, '').trim();
+                            
+                            const match = cleanedValue.match(/^(\d+)\s*(\+)?$/);
+                            
+                            if (!match) return;
+                            
+                            const target = Number(match[1]);
+                            const suffix = match[2] || '';
+                            
+                            const duration = 1000;
+                            const startTime = performance.now();
+                            
+                            function updateCount(currentTime) {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(elapsed / duration, 1);
+                                
+                                const easedProgress =
+                                1 - Math.pow(1 - progress, 3);
+                                
+                                const currentValue = Math.floor(
+                                    target * easedProgress
+                                );
+                                
+                                stat.textContent =
+                                currentValue.toLocaleString() + suffix;
+                                
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateCount);
+                                } else {
+                                    stat.textContent =
+                                    target.toLocaleString() + suffix;
+                                }
+                            }
+                            
+                            stat.textContent = `0${suffix}`;
+                            requestAnimationFrame(updateCount);
+                        });
+                        
+                        observer.disconnect();
+                    });
+                },
+                {
+                    threshold: 0.35
+                }
+            );
+            
+            const statsSection =
+            statValues[0].closest('section');
+            
+            if (statsSection) {
+                statsObserver.observe(statsSection);
             }
-        );
-        
-        const statsSection =
-        statValues[0].closest('section');
-        
-        if (statsSection) {
-            statsObserver.observe(statsSection);
         }
+        
     }
     
-}
-
-// ===== SCROLL REVEAL =====
-
-function initScrollReveal() {
-    const observerOptions = {
-        threshold: 0.15,
-        rootMargin: "0px 0px -40px 0px"
-    };
+    // ===== SCROLL REVEAL =====
     
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            
-            entry.target.classList.add('active');
-            
-            const staggerGroup =
-            entry.target.querySelector('.reveal-stagger');
-            
-            if (staggerGroup) {
-                staggerGroup.classList.add('reveal-visible');
-            }
+    function initScrollReveal() {
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -40px 0px"
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                
+                entry.target.classList.add('active');
+                
+                const staggerGroup =
+                entry.target.querySelector('.reveal-stagger');
+                
+                if (staggerGroup) {
+                    staggerGroup.classList.add('reveal-visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
         });
-    }, observerOptions);
+    }
     
-    document.querySelectorAll('.reveal').forEach(el => {
-        observer.observe(el);
-    });
-}
-
-// ===== ABOUT PAGE =====
-function renderAboutPage() {
-    const app = document.getElementById('app');
-    const p = config.aboutPage;
-    
-    app.innerHTML = `
+    // ===== ABOUT PAGE =====
+    function renderAboutPage() {
+        const app = document.getElementById('app');
+        const p = config.aboutPage;
+        
+        app.innerHTML = `
         ${renderNav('about.html')}
     
         <div class="fade-in-content">
@@ -2048,17 +2048,17 @@ function renderAboutPage() {
     
         </div>
     `;
-    
-    initNavbarScroll();
-    initBackToTop();
-    initScrollReveal();
-}
-// ===== EMPLOYERS PAGE =====
-function renderEmployersPage() {
-    const app = document.getElementById('app');
-    const p = config.employersPage;
-    
-    app.innerHTML = `
+        
+        initNavbarScroll();
+        initBackToTop();
+        initScrollReveal();
+    }
+    // ===== EMPLOYERS PAGE =====
+    function renderEmployersPage() {
+        const app = document.getElementById('app');
+        const p = config.employersPage;
+        
+        app.innerHTML = `
         ${renderNav('employers.html')}
     
         <div class="fade-in-content">
@@ -2278,18 +2278,18 @@ function renderEmployersPage() {
     
         </div>
     `;
+        
+        initNavbarScroll();
+        initBackToTop();
+        initScrollReveal();
+    }
     
-    initNavbarScroll();
-    initBackToTop();
-    initScrollReveal();
-}
-
-// ===== APPLICANTS PAGE (info-only "How to Apply" guide) =====
-function renderApplicantsPage() {
-    const app = document.getElementById('app');
-    const p = config.applicantsPage;
-    
-    app.innerHTML = `
+    // ===== APPLICANTS PAGE (info-only "How to Apply" guide) =====
+    function renderApplicantsPage() {
+        const app = document.getElementById('app');
+        const p = config.applicantsPage;
+        
+        app.innerHTML = `
         ${renderNav('applicants.html')}
     
         <div class="fade-in-content">
@@ -2641,50 +2641,50 @@ function renderApplicantsPage() {
             ${renderFooter()}
         </div>
     `;
-    
-    initNavbarScroll();
-    initBackToTop();
-    initScrollReveal();
-}
-
-// ===== ACCORDION TOGGLE =====
-function toggleSection(id) {
-    const section = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    
-    if (section.classList.contains('open')) {
-        section.classList.remove('open');
-        icon.textContent = '+';
-        icon.style.transform = 'rotate(0deg)';
-    } else {
-        section.classList.add('open');
-        icon.textContent = '−';
-        icon.style.transform = 'rotate(180deg)';
-    }
-}
-
-
-// ===== JOB POPUP / MODAL =====
-function openJobPopupFromButton(button) {
-    const id = button.dataset.jobId;
-    openJobPopup(id);
-}
-
-function openJobPopup(id) {
-    const job = (window._allJobs || []).find(j => j.id === id);
-    
-    if (!job) {
-        console.warn('Job not found.');
-        return;
-    }
-    
-    const existing = document.getElementById('jobModal');
-    if (existing) existing.remove();
-    
-    const field = (label, value) => {
-        if (!value) return '';
         
-        return `
+        initNavbarScroll();
+        initBackToTop();
+        initScrollReveal();
+    }
+    
+    // ===== ACCORDION TOGGLE =====
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        const icon = document.getElementById('icon-' + id);
+        
+        if (section.classList.contains('open')) {
+            section.classList.remove('open');
+            icon.textContent = '+';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            section.classList.add('open');
+            icon.textContent = '−';
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
+    
+    
+    // ===== JOB POPUP / MODAL =====
+    function openJobPopupFromButton(button) {
+        const id = button.dataset.jobId;
+        openJobPopup(id);
+    }
+    
+    function openJobPopup(id) {
+        const job = (window._allJobs || []).find(j => j.id === id);
+        
+        if (!job) {
+            console.warn('Job not found.');
+            return;
+        }
+        
+        const existing = document.getElementById('jobModal');
+        if (existing) existing.remove();
+        
+        const field = (label, value) => {
+            if (!value) return '';
+            
+            return `
             <div>
                 <p
                     class="text-xs font-semibold uppercase
@@ -2702,24 +2702,24 @@ function openJobPopup(id) {
                 </p>
             </div>
         `;
-    };
-    
-    const hasExtraDetails =
-    job.info ||
-    job.specialization ||
-    job.location ||
-    job.experience ||
-    job.certifications ||
-    job.description ||
-    job.requirements;
-    
-    const modal = document.createElement('div');
-    
-    modal.id = 'jobModal';
-    modal.className =
-    'fixed inset-0 z-[100] flex items-center justify-center p-4';
-    
-    modal.innerHTML = `
+        };
+        
+        const hasExtraDetails =
+        job.info ||
+        job.specialization ||
+        job.location ||
+        job.experience ||
+        job.certifications ||
+        job.description ||
+        job.requirements;
+        
+        const modal = document.createElement('div');
+        
+        modal.id = 'jobModal';
+        modal.className =
+        'fixed inset-0 z-[100] flex items-center justify-center p-4';
+        
+        modal.innerHTML = `
         <div
     class="modal-backdrop absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
     onclick="closeJobPopup()"
@@ -2787,7 +2787,7 @@ function openJobPopup(id) {
                     ${field('Experience', job.experience)}
                     ${field('Certifications', job.certifications)}
                 </div>
-
+        
                 ${job.info ? `
                     <div
                         class="mt-8
@@ -2911,71 +2911,75 @@ function openJobPopup(id) {
     
         </div>
     `;
-    
-    document.body.appendChild(modal);
-    document.body.style.overflow = 'hidden';
-    
-    setTimeout(() => {
-        modal.classList.add('modal-visible');
-    }, 10);
-}
-
-function closeJobPopup(keepBodyLocked = false) {
-    const modal = document.getElementById('jobModal');
-    
-    if (!modal) return;
-    
-    modal.classList.remove('modal-visible');
-    
-    setTimeout(() => {
-        modal.remove();
         
-        if (!keepBodyLocked) {
-            document.body.style.overflow = '';
-        }
-    }, 200);
-}
-
-
-// ===== BRANCH SELECTOR MODAL =====
-function openBranchSelector(jobId) {
-    const job = (window._allJobs || []).find(j => j.id === jobId);
-    const s = config.applicantsPage.branchSelector;
-    const branches = config.applicantsPage.branches;
-
-    const isOverseas =
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+        
+        setTimeout(() => {
+            modal.classList.add('modal-visible');
+        }, 10);
+    }
+    
+    function closeJobPopup(keepBodyLocked = false) {
+        const modal = document.getElementById('jobModal');
+        
+        if (!modal) return;
+        
+        modal.classList.remove('modal-visible');
+        
+        setTimeout(() => {
+            modal.remove();
+            
+            if (!keepBodyLocked) {
+                document.body.style.overflow = '';
+            }
+        }, 200);
+    }
+    
+    
+    // ===== BRANCH SELECTOR MODAL =====
+    function openBranchSelector(jobId) {
+        const job = (window._allJobs || []).find(j => j.id === jobId);
+        const s = config.applicantsPage.branchSelector;
+        const branches = config.applicantsPage.branches;
+        
+        const isOverseas =
         String(job?.type || '').trim().toLowerCase() === 'overseas';
-
-    const pasayBranch =
+        
+        const pasayBranch =
         branches.find(branch => branch.value === 'pasay');
-
-    const localBranches =
+        
+        const localBranches =
         branches.filter(branch => branch.value !== 'pasay');
-
-    const subtitle = isOverseas
+        
+        const overseasEmails =
+        (config.contact.emails || [])
+        .filter(Boolean);
+        
+        const subtitle = isOverseas
         ? 'Overseas applications are handled exclusively by Pasay / Main HR.'
         : s.subtitle;
-
-    closeJobPopup(true);
-
-    setTimeout(() => {
-
-        const existing = document.getElementById('branchModal');
-        if (existing) existing.remove();
-
-        const modal = document.createElement('div');
-
-        modal.id = 'branchModal';
-        modal.className =
+        
+        closeJobPopup(true);
+        
+        setTimeout(() => {
+            
+            const existing = document.getElementById('branchModal');
+            if (existing) existing.remove();
+            
+            const modal = document.createElement('div');
+            
+            modal.id = 'branchModal';
+            modal.className =
             'fixed inset-0 z-[100] flex items-center justify-center p-4';
-
-        modal.innerHTML = `
+            
+            modal.innerHTML = `
             <div
                 class="modal-backdrop absolute inset-0
                        bg-slate-950/60 backdrop-blur-[2px]"
                 onclick="closeBranchSelector()"
             ></div>
-
+            
             <div
                 class="modal-panel relative bg-white
                        w-full max-w-lg
@@ -2984,14 +2988,14 @@ function openBranchSelector(jobId) {
                        rounded-xl border border-slate-200
                        shadow-xl"
             >
-
+            
                 <!-- Modal Header -->
                 <div
                     class="px-6 py-6 sm:px-8 sm:py-7
                            border-b border-slate-200"
                 >
                     <div class="flex items-start justify-between gap-6">
-
+            
                         <div class="min-w-0">
                             <p
                                 class="text-xs font-bold uppercase
@@ -3000,7 +3004,7 @@ function openBranchSelector(jobId) {
                             >
                                 ${escapeHTML(s.title)}
                             </p>
-
+            
                             ${job ? `
                                 <h3
                                     class="text-xl sm:text-2xl
@@ -3011,7 +3015,7 @@ function openBranchSelector(jobId) {
                                 </h3>
                             ` : ''}
                         </div>
-
+            
                         <button
                             type="button"
                             onclick="closeBranchSelector()"
@@ -3025,23 +3029,23 @@ function openBranchSelector(jobId) {
                         >
                             <span class="text-2xl leading-none">&times;</span>
                         </button>
-
+            
                     </div>
                 </div>
-
-
+            
+            
                 <!-- Modal Body -->
                 <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
-
+            
                     <p
                         class="text-sm sm:text-base
                                text-slate-600 leading-relaxed"
                     >
                         ${escapeHTML(subtitle)}
                     </p>
-
+            
                     ${isOverseas ? `
-
+            
                         <!-- Overseas: Fixed Pasay Branch -->
                         <div>
                             <p
@@ -3050,7 +3054,7 @@ function openBranchSelector(jobId) {
                             >
                                 Application Branch
                             </p>
-
+            
                             <div
                                 class="w-full px-4 py-3
                                        rounded-lg border border-slate-300
@@ -3059,10 +3063,10 @@ function openBranchSelector(jobId) {
                                        text-slate-800"
                             >
                                 ${escapeHTML(
-                                    pasayBranch?.label || 'Pasay / Main HR'
-                                )}
+            pasayBranch?.label || 'Pasay / Main HR'
+        )}
                             </div>
-
+        
                             <p
                                 class="mt-2 text-xs
                                        text-slate-500 leading-relaxed"
@@ -3071,9 +3075,9 @@ function openBranchSelector(jobId) {
                                 Pasay / Main HR.
                             </p>
                         </div>
-
+        
                     ` : `
-
+        
                         <!-- Local: Branch Dropdown -->
                         <div>
                             <label
@@ -3083,7 +3087,7 @@ function openBranchSelector(jobId) {
                             >
                                 ${escapeHTML(s.selectLabel)}
                             </label>
-
+        
                             <select
                                 id="branchSelect"
                                 onchange="onBranchSelected()"
@@ -3097,7 +3101,7 @@ function openBranchSelector(jobId) {
                                 <option value="">
                                     ${escapeHTML(s.placeholder)}
                                 </option>
-
+        
                                 ${localBranches.map(branch => `
                                     <option
                                         value="${escapeHTML(branch.value)}"
@@ -3106,7 +3110,7 @@ function openBranchSelector(jobId) {
                                     </option>
                                 `).join('')}
                             </select>
-
+        
                             <p
                                 class="mt-2 text-xs
                                        text-slate-500 leading-relaxed"
@@ -3114,21 +3118,21 @@ function openBranchSelector(jobId) {
                                 Choose the branch nearest to your location.
                             </p>
                         </div>
-
+        
                     `}
-
-
+        
+        
                     <!-- Branch Email Result -->
                     <div
                         id="branchEmailResult"
                         class="${
-                            isOverseas ? '' : 'hidden'
-                        } pt-6 border-t border-slate-200"
+        isOverseas ? '' : 'hidden'
+    } pt-6 border-t border-slate-200"
                     >
                         <p class="text-sm text-slate-600 leading-relaxed">
                             ${escapeHTML(s.instruction)}
                         </p>
-
+    
                         <div
                             class="mt-4
                                    border border-slate-200
@@ -3140,9 +3144,9 @@ function openBranchSelector(jobId) {
                                            tracking-[0.12em]
                                            text-slate-400 mb-1.5"
                                 >
-                                    Branch Email
+                                    OVERSEAS APPLICATION EMAILS
                                 </p>
-
+    
                                 <span
                                     id="branchEmailText"
                                     class="block
@@ -3150,10 +3154,12 @@ function openBranchSelector(jobId) {
                                            font-semibold text-primary
                                            break-all"
                                 >${
-                                    isOverseas && pasayBranch
-                                        ? escapeHTML(pasayBranch.email)
-                                        : ''
-                                }</span>
+                                    isOverseas
+                                    ? overseasEmails
+                                        .map(email => escapeHTML(email))
+                                        .join('<br>')
+                                    : ''
+                                  }</span>
                             </div>
 
                             <div
@@ -3180,14 +3186,14 @@ function openBranchSelector(jobId) {
                                 <a
                                     id="mailtoLink"
                                     href="${
-                                        isOverseas && pasayBranch
-                                            ? `mailto:${escapeHTML(
-                                                pasayBranch.email
-                                            )}?subject=${encodeURIComponent(
-                                                'Job Application'
-                                            )}`
-                                            : '#'
-                                    }"
+isOverseas && pasayBranch
+? `mailto:${escapeHTML(
+    pasayBranch.email
+)}?subject=${encodeURIComponent(
+    'Job Application'
+)}`
+: '#'
+}"
                                     class="flex-1 inline-flex
                                            min-h-11
                                            items-center justify-center
@@ -3228,14 +3234,14 @@ function openBranchSelector(jobId) {
             </div>
         `;
 
-        document.body.appendChild(modal);
-        document.body.style.overflow = 'hidden';
+document.body.appendChild(modal);
+document.body.style.overflow = 'hidden';
 
-        setTimeout(() => {
-            modal.classList.add('modal-visible');
-        }, 10);
+setTimeout(() => {
+    modal.classList.add('modal-visible');
+}, 10);
 
-    }, 210);
+}, 210);
 }
 
 function onBranchSelected() {

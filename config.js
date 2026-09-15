@@ -187,7 +187,7 @@ aboutPage: {
     headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and follow the branch instructions shown for that position.",
     
     branches: [
-      { value: "pasay", label: "Pasay / Main HR", email: "Hr@Archway.com.ph" },
+      { value: "pasay", label: "Pasay / Main HR", email: "hr@archwayintl.com.ph" },
       { value: "bulacan", label: "Bulacan", email: "Archway.bulacan@intl.com.ph" },
       { value: "pampanga", label: "Pampanga", email: "Archway.pampanga@intl.com.ph" },
       { value: "la-union", label: "La Union", email: "Archway.launion@intl.com.ph" },
@@ -278,7 +278,7 @@ aboutPage: {
     ],
     emails: [
       "inquiry@archwayintl.com.ph",
-      "Hr@Archway.com.ph"
+      "hr@archwayintl.com.ph"
     ]
   },
   
