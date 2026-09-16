@@ -780,12 +780,13 @@ ${job.location ? `
                text-sm text-slate-500"
     >
         <span
-            aria-hidden="true"
-            class="w-1.5 h-1.5
-                   rounded-full
-                   bg-primary/60
-                   shrink-0"
-        ></span>
+    aria-hidden="true"
+    class="w-1.5 h-1.5
+           rounded-full
+           bg-emerald-600/90
+           animate-pulse
+           shrink-0"
+></span>
 
         <span
     class="leading-snug
