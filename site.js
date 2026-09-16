@@ -521,14 +521,6 @@ function applySiteSettings(settings) {
     
     if (settings.hr_email) {
         config.contact.emails[1] = settings.hr_email;
-        
-        const mainBranch = config.applicantsPage.branches.find(
-            branch => branch.value === 'pasay'
-        );
-        
-        if (mainBranch) {
-            mainBranch.email = settings.hr_email;
-        }
     }
     
     if (settings.map_location) {
@@ -2997,8 +2989,7 @@ ${job.location ? `
             const pasayBranch =
             branches.find(branch => branch.value === 'pasay');
             
-            const localBranches =
-            branches.filter(branch => branch.value !== 'pasay');
+            const localBranches = branches;
             
             const overseasEmails =
             (config.contact.emails || [])

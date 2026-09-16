@@ -187,13 +187,37 @@ aboutPage: {
     headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and follow the branch instructions shown for that position.",
     
     branches: [
-  { value: "pasay", label: "Pasay / Main HR", email: "pasay@archwayintl.com.ph" },
-  { value: "bulacan", label: "Bulacan", email: "bulacan@archwayintl.com.ph" },
-  { value: "pampanga", label: "Pampanga", email: "pampanga@archwayintl.com.ph" },
-  { value: "laguna", label: "Laguna", email: "laguna@archwayintl.com.ph" },
-  { value: "batangas", label: "Batangas", email: "batangas@archwayintl.com.ph" },
-  { value: "cavite", label: "Cavite", email: "cavite@archwayintl.com.ph" }
-],
+      {
+        value: "pasay",
+        label: "Pasay / Main HR",
+        email: "pasay@archwayintl.com.ph"
+      },
+      {
+        value: "bulacan",
+        label: "Bulacan",
+        email: "bulacan@archwayintl.com.ph"
+      },
+      {
+        value: "pampanga",
+        label: "Pampanga",
+        email: "pampanga@archwayintl.com.ph"
+      },
+      {
+        value: "laguna",
+        label: "Laguna",
+        email: "laguna@archwayintl.com.ph"
+      },
+      {
+        value: "batangas",
+        label: "Batangas",
+        email: "batangas@archwayintl.com.ph"
+      },
+      {
+        value: "cavite",
+        label: "Cavite",
+        email: "cavite@archwayintl.com.ph"
+      }
+    ],
     
     // Branch Selector Modal
     branchSelector: {
