@@ -754,13 +754,26 @@ function syncSiteSettingsUI() {
     </p>
         
     ${job.location ? `
-        <p
+        <div
             class="mt-1
-                   text-sm text-slate-500
-                   md:hidden"
+                   md:hidden
+                   flex items-start gap-2
+                   text-sm text-slate-500"
         >
-            ${escapeHTML(job.location)}
-        </p>
+            <span
+                aria-hidden="true"
+                class="mt-[0.45rem]
+                       w-1.5 h-1.5
+                       rounded-full
+                       bg-emerald-600/90
+                       animate-pulse
+                       shrink-0"
+            ></span>
+    
+            <span class="leading-snug line-clamp-2">
+                ${escapeHTML(job.location)}
+            </span>
+        </div>
     ` : ''}
 </div>
         
