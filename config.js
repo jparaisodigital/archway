@@ -129,7 +129,7 @@ const config = {
   about: {
     title: "Welcome to Archway",
     paragraphs: [
-      "Archway Multi-Services Corporation began its operations serving Filipino jobseekers and has since deployed close to a thousand skilled, non-skilled and professional workers to the Middle East countries, especially to the Kingdom of Saudi Arabia.",
+      "Archway International and Marketing Services Inc. began its operations serving Filipino jobseekers and has since deployed close to a thousand skilled, non-skilled and professional workers to the Middle East countries, especially to the Kingdom of Saudi Arabia.",
       "Its key mission is two-pronged: To provide our dedicated and hardworking countrymen decent job opportunities abroad, helping them achieve their lifelong dream of prosperity on the one hand, while providing fully-qualified workmen and professionals to clients of high ethical and moral standards, helping them in turn achieve their business goals on the other."
     ]
   },
@@ -306,7 +306,7 @@ aboutPage: {
   
   // Footer
   footer: {
-    copyright: `© ${new Date().getFullYear()} Archway Multi-Services Corporation. All rights reserved.`
+    copyright: `© ${new Date().getFullYear()} Archway International and Marketing Services Inc. All rights reserved.`
   }
   
 };
