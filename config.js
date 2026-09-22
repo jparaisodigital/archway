@@ -82,7 +82,7 @@ const config = {
     // Popup texts
     popup: {
       title: "Job Details",
-      applyBtn: "How to Apply",
+      applyBtn: "Apply Now",
       closeBtn: "Close",
       noDetails: "No additional details available for this job yet."
     }
@@ -102,7 +102,7 @@ const config = {
   homeApply: {
     eyebrow: "How to Apply",
     title: "Start Your Application in Three Steps",
-    subtitle: "Browse an opening, review the details, then follow the application instructions for the job.",
+    subtitle: "Browse an opening, review the details, then submit your application and Resume/CV online.",
   
     steps: [
       {
@@ -117,8 +117,8 @@ const config = {
       },
       {
         number: "03",
-        title: "Contact the Right Branch",
-        desc: "Local applicants may select the nearest branch, while overseas applications are handled by Pasay / Main HR."
+        title: "Submit Your Application",
+        desc: "Complete the online application form and attach your Resume/CV. Local applications are routed to the selected branch; overseas applications go to Main HR."
       }
     ],
   
@@ -184,7 +184,7 @@ aboutPage: {
   // Applicants Page
   applicantsPage: {
     headerTitle: "How to Apply",
-    headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page and follow the branch instructions shown for that position.",
+    headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page, complete the online application form, and attach your Resume/CV.",
     
     branches: [
       {
@@ -219,15 +219,19 @@ aboutPage: {
       }
     ],
     
-    // Branch Selector Modal
-    branchSelector: {
-      title: "How to Apply",
-      subtitle: "Select the branch nearest you. We'll show you the email address to send your resume and application to.",
+    // Online Application Form
+    applicationForm: {
+      title: "Online Application",
+      localSubtitle: "Complete the form below and choose the branch nearest to your location.",
+      overseasSubtitle: "Complete the form below. Overseas applications are routed to Pasay / Main HR.",
       selectLabel: "Preferred Branch",
       placeholder: "Select a branch...",
-      instruction: "Send your resume and application documents to this email address:",
-      copyBtn: "Copy Email",
-      copiedLabel: "Copied!",
+      endpoint: "send-application.php",
+      maxResumeMB: 5,
+      submitBtn: "Submit Application",
+      submittingLabel: "Sending Application...",
+      successTitle: "Application Received",
+      successMessage: "Your application and Resume/CV were sent successfully to Archway HR.",
       closeBtn: "Close"
     },
     
