@@ -111,6 +111,159 @@ function cleanText(string $value, int $maxLength): string
 
 /*
 |--------------------------------------------------------------------------
+| RATE LIMIT HELPERS
+|--------------------------------------------------------------------------
+*/
+
+function getClientIp(): ?string
+{
+    $ip = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+
+    if ($ip === '') {
+        return null;
+    }
+
+    if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        return null;
+    }
+
+    return $ip;
+}
+
+function enforceRateLimit(
+    string $ip,
+    int $hourlyLimit = 30,
+    int $dailyLimit = 100
+): void {
+    /*
+     * Store rate-limit files outside public_html.
+     * If storage is unavailable, fail open so legitimate
+     * applications are not blocked by a server filesystem issue.
+     */
+    $storageDir = dirname(__DIR__) . '/.archway-rate-limit';
+
+    if (!is_dir($storageDir)) {
+        @mkdir($storageDir, 0700, true);
+    }
+
+    if (!is_dir($storageDir) || !is_writable($storageDir)) {
+        return;
+    }
+
+    $filePath =
+        $storageDir . '/' .
+        hash('sha256', $ip) .
+        '.json';
+
+    $handle = @fopen($filePath, 'c+');
+
+    if ($handle === false) {
+        return;
+    }
+
+    if (!flock($handle, LOCK_EX)) {
+        fclose($handle);
+        return;
+    }
+
+    rewind($handle);
+
+    $raw = stream_get_contents($handle);
+    $data = json_decode($raw ?: '', true);
+
+    $timestamps = [];
+
+    if (
+        is_array($data) &&
+        isset($data['timestamps']) &&
+        is_array($data['timestamps'])
+    ) {
+        foreach ($data['timestamps'] as $timestamp) {
+            if (is_int($timestamp) || ctype_digit((string)$timestamp)) {
+                $timestamps[] = (int)$timestamp;
+            }
+        }
+    }
+
+    $now = time();
+    $dayCutoff = $now - 86400;
+    $hourCutoff = $now - 3600;
+
+    $timestamps = array_values(
+        array_filter(
+            $timestamps,
+            static function ($timestamp) use ($dayCutoff) {
+                return $timestamp >= $dayCutoff;
+            }
+        )
+    );
+
+    $dailyCount = count($timestamps);
+
+    $hourlyCount = 0;
+
+    foreach ($timestamps as $timestamp) {
+        if ($timestamp >= $hourCutoff) {
+            $hourlyCount++;
+        }
+    }
+
+    if (
+        $hourlyCount >= $hourlyLimit ||
+        $dailyCount >= $dailyLimit
+    ) {
+        flock($handle, LOCK_UN);
+        fclose($handle);
+
+        header('Retry-After: 3600');
+
+        respond(
+            429,
+            false,
+            'Too many applications were submitted from this network. Please try again later.'
+        );
+    }
+
+    $timestamps[] = $now;
+
+    $payload = json_encode(
+        ['timestamps' => $timestamps],
+        JSON_UNESCAPED_SLASHES
+    );
+
+    if ($payload !== false) {
+        rewind($handle);
+        ftruncate($handle, 0);
+        fwrite($handle, $payload);
+        fflush($handle);
+    }
+
+    flock($handle, LOCK_UN);
+    fclose($handle);
+
+    /*
+     * Occasionally remove inactive rate-limit files older than 48 hours
+     * so the directory does not grow indefinitely.
+     */
+    if (mt_rand(1, 100) === 1) {
+        $staleBefore = $now - 172800;
+        $files = glob($storageDir . '/*.json');
+
+        if (is_array($files)) {
+            foreach ($files as $file) {
+                $modified = @filemtime($file);
+
+                if ($modified !== false && $modified < $staleBefore) {
+                    @unlink($file);
+                }
+            }
+        }
+    }
+}
+
+
+/*
+|--------------------------------------------------------------------------
 | FORM DATA
 |--------------------------------------------------------------------------
 */
@@ -443,6 +596,23 @@ $safeFileName =
 if (!$safeFileName) {
     $safeFileName =
         'resume.' . $extension;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RATE LIMIT
+|--------------------------------------------------------------------------
+*/
+
+$clientIp = getClientIp();
+
+if ($clientIp !== null) {
+    enforceRateLimit(
+        $clientIp,
+        30,
+        100
+    );
 }
 
 
