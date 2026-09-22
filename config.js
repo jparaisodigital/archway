@@ -296,7 +296,7 @@ aboutPage: {
     address: "7F Unit 708A, Philflex Bay Center, Coral Way Drive, Pasay City",
     mapEmbedUrl: "https://maps.google.com/maps?q=Philflex%20Bay%20Center%2C%20Coral%20Way%20Drive%2C%20Pasay%20City&output=embed",
     phones: [
-      "Tel: (02) 863-11088 loc. 109"
+      "Tel: (02) 863-11088 — loc. 106 for Overseas Applicants, loc. 104 for Local Applicants"
     ],
     emails: [
       "inquiry@archwayintl.com.ph",
