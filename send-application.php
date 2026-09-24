@@ -24,7 +24,11 @@ function respond(int $status, bool $success, string $message)
 */
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    respond(405, false, 'Method not allowed.');
+    respond(
+        405,
+        false,
+        'Method not allowed.'
+    );
 }
 
 
@@ -34,10 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 |--------------------------------------------------------------------------
 */
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin =
+    $_SERVER['HTTP_ORIGIN'] ?? '';
 
 if ($origin !== '') {
-    $originHost = parse_url($origin, PHP_URL_HOST);
+
+    $originHost =
+        parse_url(
+            $origin,
+            PHP_URL_HOST
+        );
 
     $allowedHosts = [
         'archwayintl.com.ph',
@@ -46,9 +56,17 @@ if ($origin !== '') {
 
     if (
         !$originHost ||
-        !in_array(strtolower($originHost), $allowedHosts, true)
+        !in_array(
+            strtolower($originHost),
+            $allowedHosts,
+            true
+        )
     ) {
-        respond(403, false, 'Invalid request origin.');
+        respond(
+            403,
+            false,
+            'Invalid request origin.'
+        );
     }
 }
 
@@ -59,8 +77,18 @@ if ($origin !== '') {
 |--------------------------------------------------------------------------
 */
 
-if (trim((string)($_POST['website'] ?? '')) !== '') {
-    respond(200, true, 'Application received.');
+if (
+    trim(
+        (string)(
+            $_POST['website'] ?? ''
+        )
+    ) !== ''
+) {
+    respond(
+        200,
+        true,
+        'Application received.'
+    );
 }
 
 
@@ -70,13 +98,24 @@ if (trim((string)($_POST['website'] ?? '')) !== '') {
 |--------------------------------------------------------------------------
 */
 
-$formStarted = (int)($_POST['form_started'] ?? 0);
+$formStarted =
+    (int)(
+        $_POST['form_started']
+        ?? 0
+    );
 
 if ($formStarted > 0) {
-    $elapsedMs =
-        (int)round(microtime(true) * 1000) - $formStarted;
 
-    if ($elapsedMs >= 0 && $elapsedMs < 2500) {
+    $elapsedMs =
+        (int)round(
+            microtime(true) * 1000
+        )
+        - $formStarted;
+
+    if (
+        $elapsedMs >= 0 &&
+        $elapsedMs < 2500
+    ) {
         respond(
             429,
             false,
@@ -92,20 +131,626 @@ if ($formStarted > 0) {
 |--------------------------------------------------------------------------
 */
 
-function cleanLine(string $value, int $maxLength): string
-{
-    $value = trim(
-        preg_replace('/[\r\n]+/', ' ', $value) ?? ''
-    );
+function cleanLine(
+    string $value,
+    int $maxLength
+): string {
 
-    return mb_substr($value, 0, $maxLength);
+    $value =
+        trim(
+            preg_replace(
+                '/[\r\n]+/',
+                ' ',
+                $value
+            ) ?? ''
+        );
+
+    return mb_substr(
+        $value,
+        0,
+        $maxLength
+    );
 }
 
-function cleanText(string $value, int $maxLength): string
-{
-    $value = trim($value);
 
-    return mb_substr($value, 0, $maxLength);
+function cleanText(
+    string $value,
+    int $maxLength
+): string {
+
+    $value =
+        trim($value);
+
+    return mb_substr(
+        $value,
+        0,
+        $maxLength
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| APPLICATION ROUTING HELPERS
+|--------------------------------------------------------------------------
+*/
+
+function fetchTextUrl(
+    string $url
+): ?string {
+
+    /*
+     * Prefer cURL when available.
+     */
+
+    if (function_exists('curl_init')) {
+
+        $ch =
+            curl_init($url);
+
+        if ($ch !== false) {
+
+            curl_setopt_array(
+                $ch,
+                [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_CONNECTTIMEOUT => 3,
+                    CURLOPT_TIMEOUT => 5,
+                    CURLOPT_USERAGENT =>
+                        'ArchwayApplicationRouter/1.0',
+                ]
+            );
+
+            $body =
+                curl_exec($ch);
+
+            $status =
+                (int)curl_getinfo(
+                    $ch,
+                    CURLINFO_HTTP_CODE
+                );
+
+            curl_close($ch);
+
+            if (
+                is_string($body) &&
+                $body !== '' &&
+                $status >= 200 &&
+                $status < 300
+            ) {
+                return $body;
+            }
+        }
+    }
+
+
+    /*
+     * Fallback for hosting environments
+     * where cURL is unavailable.
+     */
+
+    $context =
+        stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'timeout' => 5,
+                'ignore_errors' => true,
+                'header' =>
+                    "User-Agent: ArchwayApplicationRouter/1.0\r\n",
+            ],
+        ]);
+
+    $body =
+        @file_get_contents(
+            $url,
+            false,
+            $context
+        );
+
+    if (
+        $body === false ||
+        $body === ''
+    ) {
+        return null;
+    }
+
+    return $body;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| PARSE APPLICATION ROUTING CSV
+|--------------------------------------------------------------------------
+*/
+
+function parseApplicationRoutingCsv(
+    string $csvText
+): array {
+
+    $handle =
+        fopen(
+            'php://temp',
+            'r+'
+        );
+
+    if ($handle === false) {
+        return [];
+    }
+
+    fwrite(
+        $handle,
+        $csvText
+    );
+
+    rewind($handle);
+
+    $routes = [];
+    $isHeader = true;
+
+    /*
+     * Only these routing keys are allowed.
+     */
+
+    $allowedRouteKeys = [
+        'metro_manila',
+        'batangas',
+        'bulacan',
+        'cavite',
+        'la_union',
+        'laguna',
+        'pampanga',
+    ];
+
+
+    while (
+        ($row = fgetcsv($handle))
+        !== false
+    ) {
+
+        if ($isHeader) {
+            $isHeader = false;
+            continue;
+        }
+
+        $routeKey =
+            strtolower(
+                trim(
+                    (string)(
+                        $row[0] ?? ''
+                    )
+                )
+            );
+
+        $officeName =
+            trim(
+                (string)(
+                    $row[1] ?? ''
+                )
+            );
+
+        $assignedEmail =
+            trim(
+                (string)(
+                    $row[2] ?? ''
+                )
+            );
+
+
+        if (
+            $routeKey === '' ||
+            !in_array(
+                $routeKey,
+                $allowedRouteKeys,
+                true
+            )
+        ) {
+            continue;
+        }
+
+
+        $routes[$routeKey] = [
+            'office_name' =>
+                $officeName,
+
+            'assigned_email' =>
+                $assignedEmail,
+        ];
+    }
+
+
+    fclose($handle);
+
+    return $routes;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| READ ROUTING CACHE
+|--------------------------------------------------------------------------
+*/
+
+function readApplicationRoutingCache(
+    string $cachePath
+): array {
+
+    if (!is_file($cachePath)) {
+        return [];
+    }
+
+    $raw =
+        @file_get_contents(
+            $cachePath
+        );
+
+    if (
+        $raw === false ||
+        $raw === ''
+    ) {
+        return [];
+    }
+
+    $data =
+        json_decode(
+            $raw,
+            true
+        );
+
+    if (
+        !is_array($data) ||
+        !isset($data['routes']) ||
+        !is_array($data['routes'])
+    ) {
+        return [];
+    }
+
+    return $data['routes'];
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| GET APPLICATION ROUTES
+|--------------------------------------------------------------------------
+*/
+
+function getApplicationRoutes(): array
+{
+    static $memoizedRoutes = null;
+
+    if (
+        is_array(
+            $memoizedRoutes
+        )
+    ) {
+        return $memoizedRoutes;
+    }
+
+
+    /*
+     * Published APPLICATION ROUTING
+     * Google Sheet CSV.
+     */
+
+    $routingSheetUrl =
+        'https://docs.google.com/spreadsheets/d/e/' .
+        '2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/' .
+        'pub?gid=1084831089&single=true&output=csv';
+
+
+    /*
+     * Cache routing data outside public_html.
+     *
+     * Routing changes in Google Sheets may
+     * take up to approximately 5 minutes
+     * to reflect on new applications.
+     */
+
+    $cachePath =
+        dirname(__DIR__) .
+        '/.archway-application-routing.json';
+
+    $cacheTtlSeconds =
+        300;
+
+    $cacheModified =
+        @filemtime(
+            $cachePath
+        );
+
+
+    /*
+     * Use fresh cache first.
+     */
+
+    if (
+        $cacheModified !== false &&
+        $cacheModified >=
+            time() - $cacheTtlSeconds
+    ) {
+
+        $cachedRoutes =
+            readApplicationRoutingCache(
+                $cachePath
+            );
+
+        if ($cachedRoutes !== []) {
+
+            $memoizedRoutes =
+                $cachedRoutes;
+
+            return $memoizedRoutes;
+        }
+    }
+
+
+    /*
+     * Fetch latest routing table.
+     */
+
+    $csvText =
+        fetchTextUrl(
+            $routingSheetUrl
+        );
+
+
+    if ($csvText !== null) {
+
+        $freshRoutes =
+            parseApplicationRoutingCsv(
+                $csvText
+            );
+
+
+        if ($freshRoutes !== []) {
+
+            $payload =
+                json_encode(
+                    [
+                        'fetched_at' =>
+                            time(),
+
+                        'routes' =>
+                            $freshRoutes,
+                    ],
+                    JSON_UNESCAPED_SLASHES
+                );
+
+
+            if ($payload !== false) {
+
+                @file_put_contents(
+                    $cachePath,
+                    $payload,
+                    LOCK_EX
+                );
+
+                @chmod(
+                    $cachePath,
+                    0600
+                );
+            }
+
+
+            $memoizedRoutes =
+                $freshRoutes;
+
+            return $memoizedRoutes;
+        }
+    }
+
+
+    /*
+     * If Google is temporarily unavailable,
+     * use the last valid cached routing data.
+     */
+
+    $staleRoutes =
+        readApplicationRoutingCache(
+            $cachePath
+        );
+
+
+    if ($staleRoutes !== []) {
+
+        $memoizedRoutes =
+            $staleRoutes;
+
+        return $memoizedRoutes;
+    }
+
+
+    $memoizedRoutes = [];
+
+    return $memoizedRoutes;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| NORMALIZE LOCATION
+|--------------------------------------------------------------------------
+*/
+
+function normalizeApplicationLocation(
+    string $value
+): string {
+
+    $value =
+        strtolower(
+            trim($value)
+        );
+
+    $value =
+        preg_replace(
+            '/[^a-z0-9]+/',
+            ' ',
+            $value
+        ) ?? '';
+
+    return trim(
+        preg_replace(
+            '/\s+/',
+            ' ',
+            $value
+        ) ?? ''
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOCATION CONTAINS
+|--------------------------------------------------------------------------
+*/
+
+function locationContains(
+    string $normalizedLocation,
+    string $term
+): bool {
+
+    return strpos(
+        $normalizedLocation,
+        $term
+    ) !== false;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| DETERMINE LOCAL ROUTE FROM JOB LOCATION
+|--------------------------------------------------------------------------
+*/
+
+function getLocalRouteKeyFromLocation(
+    string $location
+): string {
+
+    $normalized =
+        normalizeApplicationLocation(
+            $location
+        );
+
+
+    if ($normalized === '') {
+        return '';
+    }
+
+
+    /*
+     * ALL Metro Manila / NCR jobs
+     * go to Pasay / Main HR.
+     */
+
+    $metroManilaTerms = [
+        'metro manila',
+        'national capital region',
+        'ncr',
+
+        'pasay',
+        'manila',
+        'makati',
+        'taguig',
+
+        'bonifacio global city',
+        'bgc',
+
+        'quezon city',
+        'mandaluyong',
+
+        'paranaque',
+        'las pinas',
+
+        'muntinlupa',
+        'alabang',
+
+        'marikina',
+        'pasig',
+        'san juan',
+
+        'caloocan',
+        'malabon',
+        'navotas',
+        'valenzuela',
+
+        'pateros',
+    ];
+
+
+    foreach (
+        $metroManilaTerms
+        as $term
+    ) {
+
+        if (
+            locationContains(
+                $normalized,
+                $term
+            )
+        ) {
+            return 'metro_manila';
+        }
+    }
+
+
+    /*
+     * Provincial routes.
+     */
+
+    $provinceRoutes = [
+
+        'batangas' => [
+            'batangas',
+        ],
+
+        'bulacan' => [
+            'bulacan',
+        ],
+
+        'cavite' => [
+            'cavite',
+        ],
+
+        'la_union' => [
+            'la union',
+        ],
+
+        'laguna' => [
+            'laguna',
+        ],
+
+        'pampanga' => [
+            'pampanga',
+        ],
+
+    ];
+
+
+    foreach (
+        $provinceRoutes
+        as $routeKey => $terms
+    ) {
+
+        foreach (
+            $terms
+            as $term
+        ) {
+
+            if (
+                locationContains(
+                    $normalized,
+                    $term
+                )
+            ) {
+                return $routeKey;
+            }
+        }
+    }
+
+
+    return '';
 }
 
 
@@ -117,105 +762,229 @@ function cleanText(string $value, int $maxLength): string
 
 function getClientIp(): ?string
 {
-    $ip = trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+    $ip =
+        trim(
+            (string)(
+                $_SERVER['REMOTE_ADDR']
+                ?? ''
+            )
+        );
+
 
     if ($ip === '') {
         return null;
     }
 
-    if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+
+    if (
+        !filter_var(
+            $ip,
+            FILTER_VALIDATE_IP
+        )
+    ) {
         return null;
     }
 
+
     return $ip;
 }
+
 
 function enforceRateLimit(
     string $ip,
     int $hourlyLimit = 30,
     int $dailyLimit = 100
 ): void {
+
     /*
-     * Store rate-limit files outside public_html.
-     * If storage is unavailable, fail open so legitimate
-     * applications are not blocked by a server filesystem issue.
+     * Store rate-limit files
+     * outside public_html.
      */
-    $storageDir = dirname(__DIR__) . '/.archway-rate-limit';
+
+    $storageDir =
+        dirname(__DIR__) .
+        '/.archway-rate-limit';
+
 
     if (!is_dir($storageDir)) {
-        @mkdir($storageDir, 0700, true);
+
+        @mkdir(
+            $storageDir,
+            0700,
+            true
+        );
     }
 
-    if (!is_dir($storageDir) || !is_writable($storageDir)) {
+
+    /*
+     * Fail open if filesystem
+     * storage is unavailable.
+     */
+
+    if (
+        !is_dir($storageDir) ||
+        !is_writable($storageDir)
+    ) {
         return;
     }
 
+
     $filePath =
-        $storageDir . '/' .
-        hash('sha256', $ip) .
+        $storageDir .
+        '/' .
+        hash(
+            'sha256',
+            $ip
+        ) .
         '.json';
 
-    $handle = @fopen($filePath, 'c+');
+
+    $handle =
+        @fopen(
+            $filePath,
+            'c+'
+        );
+
 
     if ($handle === false) {
         return;
     }
 
-    if (!flock($handle, LOCK_EX)) {
+
+    if (
+        !flock(
+            $handle,
+            LOCK_EX
+        )
+    ) {
         fclose($handle);
         return;
     }
 
+
     rewind($handle);
 
-    $raw = stream_get_contents($handle);
-    $data = json_decode($raw ?: '', true);
+
+    $raw =
+        stream_get_contents(
+            $handle
+        );
+
+
+    $data =
+        json_decode(
+            $raw ?: '',
+            true
+        );
+
 
     $timestamps = [];
+
 
     if (
         is_array($data) &&
         isset($data['timestamps']) &&
         is_array($data['timestamps'])
     ) {
-        foreach ($data['timestamps'] as $timestamp) {
-            if (is_int($timestamp) || ctype_digit((string)$timestamp)) {
-                $timestamps[] = (int)$timestamp;
+
+        foreach (
+            $data['timestamps']
+            as $timestamp
+        ) {
+
+            if (
+                is_int($timestamp) ||
+                ctype_digit(
+                    (string)$timestamp
+                )
+            ) {
+
+                $timestamps[] =
+                    (int)$timestamp;
             }
         }
     }
 
-    $now = time();
-    $dayCutoff = $now - 86400;
-    $hourCutoff = $now - 3600;
 
-    $timestamps = array_values(
-        array_filter(
-            $timestamps,
-            static function ($timestamp) use ($dayCutoff) {
-                return $timestamp >= $dayCutoff;
-            }
-        )
-    );
+    $now =
+        time();
 
-    $dailyCount = count($timestamps);
+    $dayCutoff =
+        $now - 86400;
+
+    $hourCutoff =
+        $now - 3600;
+
+
+    /*
+     * Remove timestamps older
+     * than 24 hours.
+     */
+
+    $timestamps =
+        array_values(
+            array_filter(
+                $timestamps,
+                static function (
+                    $timestamp
+                ) use (
+                    $dayCutoff
+                ) {
+                    return
+                        $timestamp
+                        >= $dayCutoff;
+                }
+            )
+        );
+
+
+    $dailyCount =
+        count(
+            $timestamps
+        );
+
 
     $hourlyCount = 0;
 
-    foreach ($timestamps as $timestamp) {
-        if ($timestamp >= $hourCutoff) {
+
+    foreach (
+        $timestamps
+        as $timestamp
+    ) {
+
+        if (
+            $timestamp
+            >= $hourCutoff
+        ) {
             $hourlyCount++;
         }
     }
+
+
+    /*
+     * 30 submissions / hour / IP
+     * 100 submissions / 24 hours / IP
+     */
 
     if (
         $hourlyCount >= $hourlyLimit ||
         $dailyCount >= $dailyLimit
     ) {
-        flock($handle, LOCK_UN);
-        fclose($handle);
 
-        header('Retry-After: 3600');
+        flock(
+            $handle,
+            LOCK_UN
+        );
+
+        fclose(
+            $handle
+        );
+
+
+        header(
+            'Retry-After: 3600'
+        );
+
 
         respond(
             429,
@@ -224,37 +993,97 @@ function enforceRateLimit(
         );
     }
 
-    $timestamps[] = $now;
 
-    $payload = json_encode(
-        ['timestamps' => $timestamps],
-        JSON_UNESCAPED_SLASHES
-    );
+    /*
+     * Record this submission.
+     */
+
+    $timestamps[] =
+        $now;
+
+
+    $payload =
+        json_encode(
+            [
+                'timestamps' =>
+                    $timestamps,
+            ],
+            JSON_UNESCAPED_SLASHES
+        );
+
 
     if ($payload !== false) {
+
         rewind($handle);
-        ftruncate($handle, 0);
-        fwrite($handle, $payload);
+
+        ftruncate(
+            $handle,
+            0
+        );
+
+        fwrite(
+            $handle,
+            $payload
+        );
+
         fflush($handle);
     }
 
-    flock($handle, LOCK_UN);
-    fclose($handle);
+
+    flock(
+        $handle,
+        LOCK_UN
+    );
+
+    fclose(
+        $handle
+    );
+
 
     /*
-     * Occasionally remove inactive rate-limit files older than 48 hours
-     * so the directory does not grow indefinitely.
+     * Occasionally remove stale
+     * IP files older than 48 hours.
      */
-    if (mt_rand(1, 100) === 1) {
-        $staleBefore = $now - 172800;
-        $files = glob($storageDir . '/*.json');
+
+    if (
+        mt_rand(
+            1,
+            100
+        ) === 1
+    ) {
+
+        $staleBefore =
+            $now - 172800;
+
+
+        $files =
+            glob(
+                $storageDir .
+                '/*.json'
+            );
+
 
         if (is_array($files)) {
-            foreach ($files as $file) {
-                $modified = @filemtime($file);
 
-                if ($modified !== false && $modified < $staleBefore) {
-                    @unlink($file);
+            foreach (
+                $files
+                as $file
+            ) {
+
+                $modified =
+                    @filemtime(
+                        $file
+                    );
+
+
+                if (
+                    $modified !== false &&
+                    $modified < $staleBefore
+                ) {
+
+                    @unlink(
+                        $file
+                    );
                 }
             }
         }
@@ -268,57 +1097,93 @@ function enforceRateLimit(
 |--------------------------------------------------------------------------
 */
 
-$fullName = cleanLine(
-    (string)($_POST['full_name'] ?? ''),
-    120
-);
-
-$email = cleanLine(
-    (string)($_POST['email'] ?? ''),
-    180
-);
-
-$mobile = cleanLine(
-    (string)($_POST['mobile'] ?? ''),
-    30
-);
-
-$message = cleanText(
-    (string)($_POST['message'] ?? ''),
-    1500
-);
-
-$jobId = cleanLine(
-    (string)($_POST['job_id'] ?? ''),
-    80
-);
-
-$jobTitle = cleanLine(
-    (string)($_POST['job_title'] ?? ''),
-    160
-);
-
-$jobType = strtolower(
+$fullName =
     cleanLine(
-        (string)($_POST['job_type'] ?? ''),
+        (string)(
+            $_POST['full_name']
+            ?? ''
+        ),
+        120
+    );
+
+
+$email =
+    cleanLine(
+        (string)(
+            $_POST['email']
+            ?? ''
+        ),
+        180
+    );
+
+
+$mobile =
+    cleanLine(
+        (string)(
+            $_POST['mobile']
+            ?? ''
+        ),
         30
-    )
-);
+    );
 
-$jobLocation = cleanLine(
-    (string)($_POST['job_location'] ?? ''),
-    180
-);
 
-$branch = strtolower(
+$message =
+    cleanText(
+        (string)(
+            $_POST['message']
+            ?? ''
+        ),
+        1500
+    );
+
+
+$jobId =
     cleanLine(
-        (string)($_POST['branch'] ?? ''),
-        40
-    )
-);
+        (string)(
+            $_POST['job_id']
+            ?? ''
+        ),
+        80
+    );
+
+
+$jobTitle =
+    cleanLine(
+        (string)(
+            $_POST['job_title']
+            ?? ''
+        ),
+        160
+    );
+
+
+$jobType =
+    strtolower(
+        cleanLine(
+            (string)(
+                $_POST['job_type']
+                ?? ''
+            ),
+            30
+        )
+    );
+
+
+$jobLocation =
+    cleanLine(
+        (string)(
+            $_POST['job_location']
+            ?? ''
+        ),
+        180
+    );
+
 
 $privacyConsent =
-    (string)($_POST['privacy_consent'] ?? '');
+    (string)(
+        $_POST['privacy_consent']
+        ?? ''
+    );
 
 
 /*
@@ -333,6 +1198,7 @@ if (
     $mobile === '' ||
     $jobTitle === ''
 ) {
+
     respond(
         422,
         false,
@@ -340,7 +1206,14 @@ if (
     );
 }
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+
+if (
+    !filter_var(
+        $email,
+        FILTER_VALIDATE_EMAIL
+    )
+) {
+
     respond(
         422,
         false,
@@ -348,7 +1221,12 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     );
 }
 
-if ($privacyConsent !== 'yes') {
+
+if (
+    $privacyConsent
+    !== 'yes'
+) {
+
     respond(
         422,
         false,
@@ -363,63 +1241,201 @@ if ($privacyConsent !== 'yes') {
 |--------------------------------------------------------------------------
 */
 
-$branchRecipients = [
-    'pasay' =>
-        'pasay@archwayintl.com.ph',
+if (
+    !in_array(
+        $jobType,
+        [
+            'local',
+            'overseas',
+        ],
+        true
+    )
+) {
 
-    'bulacan' =>
-        'bulacan@archwayintl.com.ph',
+    respond(
+        422,
+        false,
+        'Invalid job type.'
+    );
+}
 
-    'pampanga' =>
-        'pampanga@archwayintl.com.ph',
 
-    'laguna' =>
-        'laguna@archwayintl.com.ph',
-
-    'batangas' =>
-        'batangas@archwayintl.com.ph',
-
-    'cavite' =>
-        'cavite@archwayintl.com.ph',
-];
-
+/*
+|--------------------------------------------------------------------------
+| OVERSEAS
+|--------------------------------------------------------------------------
+*/
 
 if ($jobType === 'overseas') {
 
     /*
-     * Overseas applications always go to Main HR.
+     * Overseas stays FIXED.
+     *
+     * Google Sheet routing does
+     * NOT control this address.
      */
 
     $recipient =
         'hr@archwayintl.com.ph';
 
+
     $branchLabel =
         'Pasay / Main HR';
 
-} else {
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOCAL
+|--------------------------------------------------------------------------
+*/
+
+else {
 
     /*
-     * Local applications go to the
-     * branch selected by the applicant.
+     * Local routing is automatic
+     * based on the JOB LOCATION.
+     *
+     * Metro Manila -> Pasay
+     * Batangas     -> Batangas
+     * Bulacan      -> Bulacan
+     * Cavite       -> Cavite
+     * La Union     -> La Union
+     * Laguna       -> Laguna
+     * Pampanga     -> Pampanga
      */
 
-    if (!isset($branchRecipients[$branch])) {
+
+    $routeKey =
+        getLocalRouteKeyFromLocation(
+            $jobLocation
+        );
+
+
+    /*
+     * Prevent unknown locations
+     * from accidentally going to
+     * the wrong HR office.
+     */
+
+    if ($routeKey === '') {
+
         respond(
             422,
             false,
-            'Please select a valid application branch.'
+            'No application office is assigned to this job location.'
         );
     }
 
+
+    /*
+     * Load editable Local emails
+     * from Google Sheets.
+     */
+
+    $applicationRoutes =
+        getApplicationRoutes();
+
+
+    if (
+        $applicationRoutes
+        === []
+    ) {
+
+        respond(
+            503,
+            false,
+            'Application routing is temporarily unavailable. Please try again later.'
+        );
+    }
+
+
+    if (
+        !isset(
+            $applicationRoutes[
+                $routeKey
+            ]
+        )
+    ) {
+
+        respond(
+            503,
+            false,
+            'No application route is configured for this job location.'
+        );
+    }
+
+
+    $route =
+        $applicationRoutes[
+            $routeKey
+        ];
+
+
+    /*
+     * Recipient email comes ONLY
+     * from the Google Sheet.
+     */
+
     $recipient =
-        $branchRecipients[$branch];
+        trim(
+            (string)(
+                $route[
+                    'assigned_email'
+                ]
+                ?? ''
+            )
+        );
+
 
     $branchLabel =
-        ucfirst($branch);
+        trim(
+            (string)(
+                $route[
+                    'office_name'
+                ]
+                ?? ''
+            )
+        );
 
-    if ($branch === 'pasay') {
+
+    /*
+     * Fallback label only.
+     * Email never falls back.
+     */
+
+    if ($branchLabel === '') {
+
         $branchLabel =
-            'Pasay / Main HR';
+            ucwords(
+                str_replace(
+                    '_',
+                    ' ',
+                    $routeKey
+                )
+            );
+    }
+
+
+    /*
+     * Do not send if client has
+     * not assigned a valid email.
+     */
+
+    if (
+        $recipient === '' ||
+        !filter_var(
+            $recipient,
+            FILTER_VALIDATE_EMAIL
+        )
+    ) {
+
+        respond(
+            503,
+            false,
+            'The assigned application email is not configured. Please contact Archway HR.'
+        );
     }
 }
 
@@ -431,9 +1447,14 @@ if ($jobType === 'overseas') {
 */
 
 if (
-    !isset($_FILES['resume']) ||
-    !is_array($_FILES['resume'])
+    !isset(
+        $_FILES['resume']
+    ) ||
+    !is_array(
+        $_FILES['resume']
+    )
 ) {
+
     respond(
         422,
         false,
@@ -441,12 +1462,19 @@ if (
     );
 }
 
-$resume = $_FILES['resume'];
+
+$resume =
+    $_FILES['resume'];
+
 
 if (
-    ($resume['error'] ?? UPLOAD_ERR_NO_FILE)
+    (
+        $resume['error']
+        ?? UPLOAD_ERR_NO_FILE
+    )
     !== UPLOAD_ERR_OK
 ) {
+
     respond(
         422,
         false,
@@ -464,13 +1492,19 @@ if (
 $maxFileSize =
     5 * 1024 * 1024;
 
+
 $fileSize =
-    (int)($resume['size'] ?? 0);
+    (int)(
+        $resume['size']
+        ?? 0
+    );
+
 
 if (
     $fileSize <= 0 ||
     $fileSize > $maxFileSize
 ) {
+
     respond(
         422,
         false,
@@ -486,7 +1520,11 @@ if (
 */
 
 $originalName =
-    (string)($resume['name'] ?? 'resume');
+    (string)(
+        $resume['name']
+        ?? 'resume'
+    );
+
 
 $extension =
     strtolower(
@@ -496,11 +1534,13 @@ $extension =
         )
     );
 
+
 $allowedExtensions = [
     'pdf',
     'doc',
     'docx',
 ];
+
 
 if (
     !in_array(
@@ -509,6 +1549,7 @@ if (
         true
     )
 ) {
+
     respond(
         422,
         false,
@@ -518,12 +1559,19 @@ if (
 
 
 $tmpName =
-    (string)($resume['tmp_name'] ?? '');
+    (string)(
+        $resume['tmp_name']
+        ?? ''
+    );
+
 
 if (
     $tmpName === '' ||
-    !is_uploaded_file($tmpName)
+    !is_uploaded_file(
+        $tmpName
+    )
 ) {
+
     respond(
         422,
         false,
@@ -539,11 +1587,17 @@ if (
 */
 
 $finfo =
-    new finfo(FILEINFO_MIME_TYPE);
+    new finfo(
+        FILEINFO_MIME_TYPE
+    );
+
 
 $detectedMime =
-    $finfo->file($tmpName)
+    $finfo->file(
+        $tmpName
+    )
     ?: 'application/octet-stream';
+
 
 $allowedMimes = [
 
@@ -565,13 +1619,17 @@ $allowedMimes = [
 
 ];
 
+
 if (
     !in_array(
         $detectedMime,
-        $allowedMimes[$extension],
+        $allowedMimes[
+            $extension
+        ],
         true
     )
 ) {
+
     respond(
         422,
         false,
@@ -590,12 +1648,17 @@ $safeFileName =
     preg_replace(
         '/[^A-Za-z0-9._-]/',
         '_',
-        basename($originalName)
+        basename(
+            $originalName
+        )
     );
 
+
 if (!$safeFileName) {
+
     $safeFileName =
-        'resume.' . $extension;
+        'resume.' .
+        $extension;
 }
 
 
@@ -605,9 +1668,12 @@ if (!$safeFileName) {
 |--------------------------------------------------------------------------
 */
 
-$clientIp = getClientIp();
+$clientIp =
+    getClientIp();
+
 
 if ($clientIp !== null) {
+
     enforceRateLimit(
         $clientIp,
         30,
@@ -623,9 +1689,13 @@ if ($clientIp !== null) {
 */
 
 $fileData =
-    file_get_contents($tmpName);
+    file_get_contents(
+        $tmpName
+    );
+
 
 if ($fileData === false) {
+
     respond(
         500,
         false,
@@ -648,6 +1718,7 @@ $subjectName =
     )
     ?: 'Applicant';
 
+
 $subjectJob =
     preg_replace(
         '/[^A-Za-z0-9 ._()&\/-]/',
@@ -655,6 +1726,7 @@ $subjectJob =
         $jobTitle
     )
     ?: 'Job Application';
+
 
 $subject =
     "Job Application - {$subjectJob} - {$subjectName}";
@@ -667,143 +1739,272 @@ $subject =
 */
 
 $submittedAt =
-    date('Y-m-d H:i:s T');
-
-$escaped = static function ($value) {
-    return htmlspecialchars(
-        $value,
-        ENT_QUOTES,
-        'UTF-8'
+    date(
+        'Y-m-d H:i:s T'
     );
-};
+
+
+$escaped =
+    static function ($value) {
+
+        return htmlspecialchars(
+            $value,
+            ENT_QUOTES,
+            'UTF-8'
+        );
+    };
 
 
 $htmlBody = '
 <!doctype html>
 
 <html>
+
 <body
     style="
-        font-family: Arial, sans-serif;
-        color: #0f172a;
-        line-height: 1.55;
+        font-family:
+            Arial,
+            sans-serif;
+
+        color:
+            #0f172a;
+
+        line-height:
+            1.55;
     "
 >
 
-    <h2 style="margin:0 0 18px">
+    <h2
+        style="
+            margin:
+                0 0 18px;
+        "
+    >
         New Job Application
     </h2>
+
 
     <table
         cellpadding="6"
         cellspacing="0"
+
         style="
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 720px;
+            border-collapse:
+                collapse;
+
+            width:
+                100%;
+
+            max-width:
+                720px;
         "
     >
 
         <tr>
-            <td><strong>Position</strong></td>
-            <td>' .
-                $escaped($jobTitle) .
-            '</td>
-        </tr>
 
-        <tr>
-            <td><strong>Job ID</strong></td>
-            <td>' .
-                $escaped($jobId) .
-            '</td>
-        </tr>
+            <td>
+                <strong>
+                    Position
+                </strong>
+            </td>
 
-        <tr>
-            <td><strong>Job Type</strong></td>
             <td>' .
                 $escaped(
-                    ucfirst($jobType)
+                    $jobTitle
                 ) .
             '</td>
+
         </tr>
 
+
         <tr>
-            <td><strong>Location</strong></td>
+
+            <td>
+                <strong>
+                    Job ID
+                </strong>
+            </td>
+
+            <td>' .
+                $escaped(
+                    $jobId
+                ) .
+            '</td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <strong>
+                    Job Type
+                </strong>
+            </td>
+
+            <td>' .
+                $escaped(
+                    ucfirst(
+                        $jobType
+                    )
+                ) .
+            '</td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <strong>
+                    Location
+                </strong>
+            </td>
+
             <td>' .
                 $escaped(
                     $jobLocation
                     ?: 'Not specified'
                 ) .
             '</td>
+
         </tr>
 
+
         <tr>
+
             <td>
                 <strong>
-                    Application Branch
+                    Application Office
                 </strong>
             </td>
 
             <td>' .
-                $escaped($branchLabel) .
+                $escaped(
+                    $branchLabel
+                ) .
             '</td>
+
         </tr>
 
-        <tr>
-            <td><strong>Applicant</strong></td>
-            <td>' .
-                $escaped($fullName) .
-            '</td>
-        </tr>
 
         <tr>
-            <td><strong>Email</strong></td>
+
+            <td>
+                <strong>
+                    Applicant
+                </strong>
+            </td>
+
             <td>' .
-                $escaped($email) .
+                $escaped(
+                    $fullName
+                ) .
             '</td>
+
         </tr>
 
-        <tr>
-            <td><strong>Mobile</strong></td>
-            <td>' .
-                $escaped($mobile) .
-            '</td>
-        </tr>
 
         <tr>
-            <td><strong>Submitted</strong></td>
+
+            <td>
+                <strong>
+                    Email
+                </strong>
+            </td>
+
             <td>' .
-                $escaped($submittedAt) .
+                $escaped(
+                    $email
+                ) .
             '</td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <strong>
+                    Mobile
+                </strong>
+            </td>
+
+            <td>' .
+                $escaped(
+                    $mobile
+                ) .
+            '</td>
+
+        </tr>
+
+
+        <tr>
+
+            <td>
+                <strong>
+                    Submitted
+                </strong>
+            </td>
+
+            <td>' .
+                $escaped(
+                    $submittedAt
+                ) .
+            '</td>
+
         </tr>
 
     </table>
 
-    <h3 style="margin:22px 0 8px">
+
+    <h3
+        style="
+            margin:
+                22px 0 8px;
+        "
+    >
         Short Message / Experience
     </h3>
 
-    <p style="white-space:pre-wrap">' .
+
+    <p
+        style="
+            white-space:
+                pre-wrap;
+        "
+    >' .
+
         $escaped(
             $message !== ''
                 ? $message
                 : 'No message provided.'
-        ) .
-    '</p>
+        )
+
+    . '</p>
+
 
     <p
         style="
-            margin-top:24px;
-            color:#64748b;
-            font-size:12px;
+            margin-top:
+                24px;
+
+            color:
+                #64748b;
+
+            font-size:
+                12px;
         "
     >
+
         The applicant confirmed consent
         to process the submitted information
         and Resume/CV for recruitment purposes.
+
     </p>
 
 </body>
+
 </html>';
 
 
@@ -815,13 +2016,19 @@ $htmlBody = '
 
 $boundary =
     '=_Archway_' .
-    bin2hex(random_bytes(16));
+    bin2hex(
+        random_bytes(16)
+    );
+
 
 $fromEmail =
     'hr@archwayintl.com.ph';
 
+
 $encodedFilename =
-    rawurlencode($safeFileName);
+    rawurlencode(
+        $safeFileName
+    );
 
 
 $headers = [
@@ -832,7 +2039,8 @@ $headers = [
         $fromEmail .
     '>',
 
-    'Reply-To: ' . $email,
+    'Reply-To: ' .
+        $email,
 
     'Content-Type: multipart/mixed; boundary="' .
         $boundary .
@@ -844,16 +2052,25 @@ $headers = [
 ];
 
 
+/*
+|--------------------------------------------------------------------------
+| HTML EMAIL PART
+|--------------------------------------------------------------------------
+*/
+
 $body =
     '--' .
     $boundary .
     "\r\n";
 
+
 $body .=
     "Content-Type: text/html; charset=UTF-8\r\n";
 
+
 $body .=
     "Content-Transfer-Encoding: 8bit\r\n\r\n";
+
 
 $body .=
     $htmlBody .
@@ -871,6 +2088,7 @@ $body .=
     $boundary .
     "\r\n";
 
+
 $body .=
     'Content-Type: ' .
     $detectedMime .
@@ -879,6 +2097,7 @@ $body .=
     '"' .
     "\r\n";
 
+
 $body .=
     'Content-Disposition: attachment; filename="' .
     $safeFileName .
@@ -886,14 +2105,19 @@ $body .=
     $encodedFilename .
     "\r\n";
 
+
 $body .=
     "Content-Transfer-Encoding: base64\r\n\r\n";
 
+
 $body .=
     chunk_split(
-        base64_encode($fileData)
+        base64_encode(
+            $fileData
+        )
     ) .
     "\r\n";
+
 
 $body .=
     '--' .
@@ -907,18 +2131,20 @@ $body .=
 |--------------------------------------------------------------------------
 */
 
-$sent = mail(
-    $recipient,
-    $subject,
-    $body,
-    implode(
-        "\r\n",
-        $headers
-    )
-);
+$sent =
+    mail(
+        $recipient,
+        $subject,
+        $body,
+        implode(
+            "\r\n",
+            $headers
+        )
+    );
 
 
 if (!$sent) {
+
     respond(
         500,
         false,
@@ -926,6 +2152,12 @@ if (!$sent) {
     );
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| SUCCESS
+|--------------------------------------------------------------------------
+*/
 
 respond(
     200,

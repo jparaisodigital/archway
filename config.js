@@ -1,20 +1,20 @@
 const config = {
   // Brand
   dmwLicense: "DMW License No. DMW-656-LB-10092025-R",
-  
+
   // Logo (config-driven)
   logo: {
-    src: "assets/archwaylogo.png",  
+    src: "assets/archwaylogo.png",
     alt: "Archway Logo",
-    height: 40                 
+    height: 40
   },
 
   // Logo DMW
   dmwBadge: {
     src: "assets/DMW.png",
     alt: "DMW LICENSED - Zero Complaint & Zero Citation Record"
-},
-  
+  },
+
   // Navigation
   nav: [
     { label: "Home", href: "index.html" },
@@ -22,35 +22,35 @@ const config = {
     { label: "Employers", href: "employers.html" },
     { label: "About Us", href: "about.html" }
   ],
-  
+
   hero: {
     eyebrow: "25 YEARS OF RECRUITMENT EXCELLENCE",
     title: "We Recruit the Best Filipino Workers",
     subtitle: "Connecting qualified Filipino talent with trusted local and overseas employers.",
     ctaPrimary: "View Job Openings",
     ctaSecondary: "How to Apply",
-  
+
     trustItems: [
       "25 Years of Service",
       "DMW LICENSED",
       "Zero Complaint Record"
     ],
-  
+
     images: [
       "assets/hero.png",
       "assets/hero2.png",
       "assets/hero3.png"
-  ],
-  
-  mobileImages: [
+    ],
+
+    mobileImages: [
       "assets/mobile1.png",
       "assets/mobile2.png",
       "assets/mobile3.png"
-  ],
-  
-  slideInterval: 4500,
+    ],
+
+    slideInterval: 4500,
   },
-  
+
   // Stats
   stats: [
     { value: "20+", label: "Years of Excellence" },
@@ -58,10 +58,14 @@ const config = {
     { value: "Zero", label: "DMW Complaints" },
     { value: "Local + Overseas", label: "Opportunities" }
   ],
-  
-  // Google Sheets — published CSV link ng job listings
+
+  // Google Sheets — published CSV links
   jobsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=0&single=true&output=csv",
+
   siteSettingsSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=2131700161&single=true&output=csv",
+
+  applicationRoutingSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQsBk0u1xhSjpgwp195BHWQ1DKbms8M1MirNqEejwDnOkciyrRex7s0aoJMMFsalvVtw04Xm0PpV5am/pub?gid=1084831089&single=true&output=csv",
+
   // Jobs settings (config-driven)
   jobsConfig: {
     // Column mapping
@@ -77,8 +81,8 @@ const config = {
       certifications: 8,
       description: 9,
       requirements: 10
-  },
-    
+    },
+
     // Popup texts
     popup: {
       title: "Job Details",
@@ -87,7 +91,7 @@ const config = {
       noDetails: "No additional details available for this job yet."
     }
   },
-  
+
   // Jobs Section
   jobs: {
     title: "Now Hiring",
@@ -103,7 +107,7 @@ const config = {
     eyebrow: "How to Apply",
     title: "Start Your Application in Three Steps",
     subtitle: "Browse an opening, review the details, then submit your application and Resume/CV online.",
-  
+
     steps: [
       {
         number: "01",
@@ -121,10 +125,10 @@ const config = {
         desc: "Complete the online application form and attach your Resume/CV. Local applications are routed to the selected branch; overseas applications go to Main HR."
       }
     ],
-  
+
     cta: "View Full Application Guide"
   },
-  
+
   // About
   about: {
     title: "Welcome to Archway",
@@ -133,26 +137,26 @@ const config = {
       "Its key mission is two-pronged: To provide our dedicated and hardworking countrymen decent job opportunities abroad, helping them achieve their lifelong dream of prosperity on the one hand, while providing fully-qualified workmen and professionals to clients of high ethical and moral standards, helping them in turn achieve their business goals on the other."
     ]
   },
-  
+
   // About Page (separate from homepage "about" preview)
-aboutPage: {
-  headerTitle: "About Us",
-  headerSubtitle: "We Create Opportunities for Candidates & Businesses",
-  whoWeAreTitle: "Who We Are",
+  aboutPage: {
+    headerTitle: "About Us",
+    headerSubtitle: "We Create Opportunities for Candidates & Businesses",
+    whoWeAreTitle: "Who We Are",
 
-  whoWeAreParagraphs: [
-    "Archway International is a licensed recruitment agency duly registered with the Department of Migrant Workers (DMW). We specialize in the recruitment and deployment of qualified professionals, skilled workers, and technicians to the Middle East and other international markets.",
-  
-    "Over the years, we have successfully partnered with clients across a wide range of industries, including <strong>FMCG, Hospitality, Construction & Installation, Operations & Maintenance, Support Services, Medical, Furniture Manufacturing, Heavy Machinery, and Engineering</strong>.",
-  
-    "Our extensive recruitment experience, commitment to quality, and strict compliance with government regulations have enabled us to establish long-standing and trusted relationships with clients and partners worldwide.",
-  
-    "In our 20 years of service, we have witnessed the versatility and industry of the Filipinos and the desire to uplift the lives of their families, are the very important goals of our organization. Our quality assurance is borne by our appreciation of the importance of a systematic program of selection and placement of human resources allowing us to get down to the vital details of our clients' manpower demands and letting us customize our services to each of the clients' needs."
-  ],
+    whoWeAreParagraphs: [
+      "Archway International is a licensed recruitment agency duly registered with the Department of Migrant Workers (DMW). We specialize in the recruitment and deployment of qualified professionals, skilled workers, and technicians to the Middle East and other international markets.",
 
-  highlight: "Licensed and duly registered with the <strong>Department of Migrant Workers (DMW)</strong>."
-},
-  
+      "Over the years, we have successfully partnered with clients across a wide range of industries, including <strong>FMCG, Hospitality, Construction & Installation, Operations & Maintenance, Support Services, Medical, Furniture Manufacturing, Heavy Machinery, and Engineering</strong>.",
+
+      "Our extensive recruitment experience, commitment to quality, and strict compliance with government regulations have enabled us to establish long-standing and trusted relationships with clients and partners worldwide.",
+
+      "In our 20 years of service, we have witnessed the versatility and industry of the Filipinos and the desire to uplift the lives of their families, are the very important goals of our organization. Our quality assurance is borne by our appreciation of the importance of a systematic program of selection and placement of human resources allowing us to get down to the vital details of our clients' manpower demands and letting us customize our services to each of the clients' needs."
+    ],
+
+    highlight: "Licensed and duly registered with the <strong>Department of Migrant Workers (DMW)</strong>."
+  },
+
   // Employers Page
   employersPage: {
     headerTitle: "For Employers",
@@ -180,12 +184,12 @@ aboutPage: {
     ],
     note: "All these documents will have to be presented to the Philippine Embassy or Consulate in the host country for verification and authentication before they are forwarded to the agency for submission to the DMW for acknowledgment and registration. It is important that these documents carry English translations."
   },
-  
+
   // Applicants Page
   applicantsPage: {
     headerTitle: "How to Apply",
     headerSubtitle: "Here's what to prepare and how the process works. To apply, select a job on our Home page, complete the online application form, and attach your Resume/CV.",
-    
+
     branches: [
       {
         value: "pasay",
@@ -218,7 +222,7 @@ aboutPage: {
         email: "cavite@archwayintl.com.ph"
       }
     ],
-    
+
     // Online Application Form
     applicationForm: {
       title: "Online Application",
@@ -234,7 +238,7 @@ aboutPage: {
       successMessage: "Your application and Resume/CV were sent successfully to Archway HR.",
       closeBtn: "Close"
     },
-    
+
     protocols: {
       title: "Job Interview Protocols",
       intro: [
@@ -252,7 +256,7 @@ aboutPage: {
         "At the end of the interview, thank your interviewer, mentioning his/her name. Ex: “Thank you, Mr. Jones, for the interview.”"
       ]
     },
-    
+
     docs: {
       title: "Initial Documentary Requirements",
       overseas: {
@@ -278,7 +282,7 @@ aboutPage: {
         ]
       }
     },
-    
+
     process: {
       title: "We'll Be There Every Step of the Way",
       subtitle: "From application to deployment — we guide you through the entire process.",
@@ -293,7 +297,7 @@ aboutPage: {
       ]
     }
   },
-  
+
   // Contact
   contact: {
     title: "Get in Touch",
@@ -307,10 +311,10 @@ aboutPage: {
       "hr@archwayintl.com.ph"
     ]
   },
-  
+
   // Footer
   footer: {
     copyright: `© ${new Date().getFullYear()} Archway International and Marketing Services Inc. All rights reserved.`
   }
-  
+
 };

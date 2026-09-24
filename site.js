@@ -2989,401 +2989,754 @@ ${job.location ? `
             }, 200);
         }
         
-        
-        // ===== ONLINE APPLICATION MODAL =====
-        function openApplicationForm(jobId) {
-            const job = (window._allJobs || []).find(j => j.id === jobId);
-            if (!job) {
-                console.warn('Job not found.');
-                return;
-            }
+        // ===== APPLICATION ROUTING =====
+function normalizeApplicationLocation(value) {
+    return String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
-            const formConfig = config.applicantsPage.applicationForm;
-            const branches = config.applicantsPage.branches;
-            const isOverseas =
-            String(job.type || '').trim().toLowerCase() === 'overseas';
-            const pasayBranch = branches.find(branch => branch.value === 'pasay');
+function getLocalApplicationRouteKey(location) {
+    const normalized = normalizeApplicationLocation(location);
 
-            closeJobPopup(true);
+    if (!normalized) return '';
 
-            setTimeout(() => {
-                const existing = document.getElementById('applicationModal');
-                if (existing) existing.remove();
+    const metroManilaLocations = [
+        'metro manila',
+        'national capital region',
+        'ncr',
+        'pasay',
+        'manila',
+        'makati',
+        'taguig',
+        'quezon city',
+        'mandaluyong',
+        'paranaque',
+        'las pinas',
+        'muntinlupa',
+        'marikina',
+        'pasig',
+        'san juan',
+        'caloocan',
+        'malabon',
+        'navotas',
+        'valenzuela',
+        'pateros'
+    ];
 
-                const modal = document.createElement('div');
-                modal.id = 'applicationModal';
-                modal.className =
-                'fixed inset-0 z-[100] flex items-center justify-center p-4';
+    if (
+        metroManilaLocations.some(place =>
+            normalized.includes(place)
+        )
+    ) {
+        return 'metro_manila';
+    }
 
-                const subtitle = isOverseas
-                ? formConfig.overseasSubtitle
-                : formConfig.localSubtitle;
+    const provinceRoutes = [
+        {
+            key: 'batangas',
+            terms: ['batangas']
+        },
+        {
+            key: 'bulacan',
+            terms: ['bulacan']
+        },
+        {
+            key: 'cavite',
+            terms: ['cavite']
+        },
+        {
+            key: 'la_union',
+            terms: ['la union']
+        },
+        {
+            key: 'laguna',
+            terms: ['laguna']
+        },
+        {
+            key: 'pampanga',
+            terms: ['pampanga']
+        }
+    ];
 
-                modal.innerHTML = `
+    const matchedRoute = provinceRoutes.find(route =>
+        route.terms.some(term =>
+            normalized.includes(term)
+        )
+    );
+
+    return matchedRoute?.key || '';
+}
+
+function getApplicationOfficeLabel(routeKey) {
+    const labels = {
+        metro_manila: 'Pasay / Main HR',
+        batangas: 'Batangas',
+        bulacan: 'Bulacan',
+        cavite: 'Cavite',
+        la_union: 'La Union',
+        laguna: 'Laguna',
+        pampanga: 'Pampanga'
+    };
+
+    return labels[routeKey] || 'Assigned HR Office';
+}
+
+
+// ===== ONLINE APPLICATION MODAL =====
+function openApplicationForm(jobId) {
+    const job = (window._allJobs || []).find(
+        j => j.id === jobId
+    );
+
+    if (!job) {
+        console.warn('Job not found.');
+        return;
+    }
+
+    const formConfig =
+    config.applicantsPage.applicationForm;
+
+    const isOverseas =
+    String(job.type || '')
+    .trim()
+    .toLowerCase() === 'overseas';
+
+    const localRouteKey =
+    isOverseas
+    ? ''
+    : getLocalApplicationRouteKey(
+        job.location
+    );
+
+    const applicationOffice =
+    isOverseas
+    ? 'Pasay / Main HR'
+    : getApplicationOfficeLabel(
+        localRouteKey
+    );
+
+    closeJobPopup(true);
+
+    setTimeout(() => {
+        const existing =
+        document.getElementById(
+            'applicationModal'
+        );
+
+        if (existing) {
+            existing.remove();
+        }
+
+        const modal =
+        document.createElement('div');
+
+        modal.id =
+        'applicationModal';
+
+        modal.className =
+        'fixed inset-0 z-[100] flex items-center justify-center p-4';
+
+        const subtitle =
+        isOverseas
+        ? formConfig.overseasSubtitle
+        : 'Complete the form below. Your application office is assigned automatically based on the job location.';
+
+        const localRouteAvailable =
+        isOverseas ||
+        Boolean(localRouteKey);
+
+        modal.innerHTML = `
+            <div
+                class="modal-backdrop absolute inset-0
+                       bg-slate-950/60 backdrop-blur-[2px]"
+                onclick="closeApplicationForm()"
+            ></div>
+
+            <div
+                class="modal-panel relative bg-white
+                       w-full max-w-2xl
+                       max-h-[calc(100vh-2rem)]
+                       overflow-y-auto
+                       rounded-xl border border-slate-200
+                       shadow-xl"
+            >
+                <div
+                    class="px-6 py-6 sm:px-8 sm:py-7
+                           border-b border-slate-200"
+                >
                     <div
-                        class="modal-backdrop absolute inset-0
-                               bg-slate-950/60 backdrop-blur-[2px]"
-                        onclick="closeApplicationForm()"
-                    ></div>
+                        class="flex items-start
+                               justify-between gap-6"
+                    >
+                        <div class="min-w-0">
+                            <p
+                                class="text-xs
+                                       font-bold
+                                       uppercase
+                                       tracking-[0.16em]
+                                       text-primary
+                                       mb-2"
+                            >
+                                ${escapeHTML(
+                                    formConfig.title
+                                )}
+                            </p>
 
+                            <h3
+                                class="text-xl
+                                       sm:text-2xl
+                                       font-bold
+                                       tracking-tight
+                                       leading-tight
+                                       text-slate-900"
+                            >
+                                ${escapeHTML(
+                                    job.title
+                                )}
+                            </h3>
+
+                            <p
+                                class="mt-2
+                                       text-sm
+                                       text-slate-500
+                                       leading-relaxed"
+                            >
+                                ${escapeHTML(
+                                    job.type
+                                )}${
+                                    job.location
+                                    ? ` · ${escapeHTML(
+                                        job.location
+                                    )}`
+                                    : ''
+                                }
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="closeApplicationForm()"
+                            aria-label="Close application form"
+                            class="shrink-0
+                                   w-10 h-10
+                                   inline-flex
+                                   items-center
+                                   justify-center
+                                   rounded-lg
+                                   border
+                                   border-slate-200
+                                   text-slate-500
+                                   hover:bg-slate-50
+                                   hover:text-slate-900
+                                   transition-colors"
+                        >
+                            <span
+                                class="text-2xl leading-none"
+                            >
+                                &times;
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <form
+                    id="jobApplicationForm"
+                    onsubmit="submitApplicationForm(event)"
+                    enctype="multipart/form-data"
+                >
                     <div
-                        class="modal-panel relative bg-white
-                               w-full max-w-2xl
-                               max-h-[calc(100vh-2rem)]
-                               overflow-y-auto
-                               rounded-xl border border-slate-200
-                               shadow-xl"
+                        class="px-6 py-6
+                               sm:px-8 sm:py-8
+                               space-y-6"
                     >
                         <div
-                            class="px-6 py-6 sm:px-8 sm:py-7
-                                   border-b border-slate-200"
+                            id="applicationFormStatus"
+                            class="hidden
+                                   rounded-lg
+                                   border
+                                   px-4 py-3
+                                   text-sm
+                                   leading-relaxed"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+                        <p
+                            class="text-sm
+                                   sm:text-base
+                                   text-slate-600
+                                   leading-relaxed"
                         >
-                            <div class="flex items-start justify-between gap-6">
-                                <div class="min-w-0">
-                                    <p
-                                        class="text-xs font-bold uppercase
-                                               tracking-[0.16em]
-                                               text-primary mb-2"
-                                    >
-                                        ${escapeHTML(formConfig.title)}
-                                    </p>
+                            ${escapeHTML(
+                                subtitle
+                            )}
+                        </p>
 
-                                    <h3
-                                        class="text-xl sm:text-2xl
-                                               font-bold tracking-tight
-                                               leading-tight text-slate-900"
-                                    >
-                                        ${escapeHTML(job.title)}
-                                    </h3>
+                        <input
+                            type="hidden"
+                            name="job_id"
+                            value="${escapeHTML(
+                                job.id
+                            )}"
+                        >
 
-                                    <p
-                                        class="mt-2 text-sm
-                                               text-slate-500 leading-relaxed"
-                                    >
-                                        ${escapeHTML(job.type)}${job.location ? ` · ${escapeHTML(job.location)}` : ''}
-                                    </p>
-                                </div>
+                        <input
+                            type="hidden"
+                            name="job_title"
+                            value="${escapeHTML(
+                                job.title
+                            )}"
+                        >
 
-                                <button
-                                    type="button"
-                                    onclick="closeApplicationForm()"
-                                    aria-label="Close application form"
-                                    class="shrink-0 w-10 h-10
-                                           inline-flex items-center justify-center
-                                           rounded-lg border border-slate-200
-                                           text-slate-500
-                                           hover:bg-slate-50 hover:text-slate-900
-                                           transition-colors"
+                        <input
+                            type="hidden"
+                            name="job_type"
+                            value="${escapeHTML(
+                                job.type
+                            )}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="job_location"
+                            value="${escapeHTML(
+                                job.location || ''
+                            )}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="form_started"
+                            value="${Date.now()}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="branch"
+                            value="${escapeHTML(
+                                isOverseas
+                                ? 'pasay'
+                                : localRouteKey
+                            )}"
+                        >
+
+                        <div
+                            aria-hidden="true"
+                            class="absolute
+                                   left-[-9999px]
+                                   w-px h-px
+                                   overflow-hidden"
+                        >
+                            <label>
+                                Leave this field empty
+
+                                <input
+                                    type="text"
+                                    name="website"
+                                    tabindex="-1"
+                                    autocomplete="off"
                                 >
-                                    <span class="text-2xl leading-none">&times;</span>
-                                </button>
+                            </label>
+                        </div>
+
+                        <div>
+                            <p
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       text-slate-800
+                                       mb-2"
+                            >
+                                Application Office
+                            </p>
+
+                            <div
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-lg
+                                       border
+                                       border-slate-300
+                                       bg-slate-50
+                                       text-sm
+                                       font-semibold
+                                       text-slate-800"
+                            >
+                                ${escapeHTML(
+                                    applicationOffice
+                                )}
+                            </div>
+
+                            ${
+                                !localRouteAvailable
+                                ? `
+                                    <p
+                                        class="mt-2
+                                               text-xs
+                                               text-red-600
+                                               leading-relaxed"
+                                    >
+                                        No application office
+                                        is currently assigned
+                                        to this job location.
+                                        Please contact Archway HR
+                                        for assistance.
+                                    </p>
+                                `
+                                : ''
+                            }
+                        </div>
+
+                        <div
+                            class="grid
+                                   sm:grid-cols-2
+                                   gap-5"
+                        >
+                            <div>
+                                <label
+                                    for="applicantFullName"
+                                    class="block
+                                           text-sm
+                                           font-semibold
+                                           text-slate-800
+                                           mb-2"
+                                >
+                                    Full Name
+                                    <span
+                                        class="text-red-600"
+                                    >
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    id="applicantFullName"
+                                    name="full_name"
+                                    type="text"
+                                    required
+                                    autocomplete="name"
+                                    maxlength="120"
+                                    class="w-full
+                                           px-4 py-3
+                                           rounded-lg
+                                           border
+                                           border-slate-300
+                                           bg-white
+                                           text-base
+                                           sm:text-sm
+                                           text-slate-900
+                                           outline-none
+                                           transition
+                                           focus:border-primary
+                                           focus:ring-2
+                                           focus:ring-primary/20"
+                                >
+                            </div>
+
+                            <div>
+                                <label
+                                    for="applicantMobile"
+                                    class="block
+                                           text-sm
+                                           font-semibold
+                                           text-slate-800
+                                           mb-2"
+                                >
+                                    Mobile Number
+                                    <span
+                                        class="text-red-600"
+                                    >
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    id="applicantMobile"
+                                    name="mobile"
+                                    type="tel"
+                                    required
+                                    autocomplete="tel"
+                                    maxlength="30"
+                                    class="w-full
+                                           px-4 py-3
+                                           rounded-lg
+                                           border
+                                           border-slate-300
+                                           bg-white
+                                           text-base
+                                           sm:text-sm
+                                           text-slate-900
+                                           outline-none
+                                           transition
+                                           focus:border-primary
+                                           focus:ring-2
+                                           focus:ring-primary/20"
+                                >
                             </div>
                         </div>
 
-                        <form
-                            id="jobApplicationForm"
-                            onsubmit="submitApplicationForm(event)"
-                            enctype="multipart/form-data"
-                        >
-                            <div class="px-6 py-6 sm:px-8 sm:py-8 space-y-6">
-                                <div
-                                    id="applicationFormStatus"
-                                    class="hidden rounded-lg border px-4 py-3 text-sm leading-relaxed"
-                                    role="status"
-                                    aria-live="polite"
-                                ></div>
-
-                                <p
-                                    class="text-sm sm:text-base
-                                           text-slate-600 leading-relaxed"
-                                >
-                                    ${escapeHTML(subtitle)}
-                                </p>
-
-                                <input type="hidden" name="job_id" value="${escapeHTML(job.id)}">
-                                <input type="hidden" name="job_title" value="${escapeHTML(job.title)}">
-                                <input type="hidden" name="job_type" value="${escapeHTML(job.type)}">
-                                <input type="hidden" name="job_location" value="${escapeHTML(job.location || '')}">
-                                <input type="hidden" name="form_started" value="${Date.now()}">
-
-                                <div
-                                    aria-hidden="true"
-                                    class="absolute left-[-9999px] w-px h-px overflow-hidden"
-                                >
-                                    <label>
-                                        Leave this field empty
-                                        <input
-                                            type="text"
-                                            name="website"
-                                            tabindex="-1"
-                                            autocomplete="off"
-                                        >
-                                    </label>
-                                </div>
-
-                                ${isOverseas ? `
-                                    <div>
-                                        <p
-                                            class="block text-sm font-semibold
-                                                   text-slate-800 mb-2"
-                                        >
-                                            Application Branch
-                                        </p>
-
-                                        <div
-                                            class="w-full px-4 py-3
-                                                   rounded-lg border border-slate-300
-                                                   bg-slate-50
-                                                   text-sm font-semibold
-                                                   text-slate-800"
-                                        >
-                                            ${escapeHTML(pasayBranch?.label || 'Pasay / Main HR')}
-                                        </div>
-
-                                        <input
-                                            type="hidden"
-                                            name="branch"
-                                            value="pasay"
-                                        >
-                                    </div>
-                                ` : `
-                                    <div>
-                                        <label
-                                            for="applicationBranch"
-                                            class="block text-sm font-semibold
-                                                   text-slate-800 mb-2"
-                                        >
-                                            ${escapeHTML(formConfig.selectLabel)}
-                                            <span class="text-red-600">*</span>
-                                        </label>
-
-                                        <select
-                                            id="applicationBranch"
-                                            name="branch"
-                                            required
-                                            class="w-full px-4 py-3
-                                                   rounded-lg border border-slate-300
-                                                   bg-white text-sm text-slate-800
-                                                   focus:border-primary focus:ring-2
-                                                   focus:ring-primary/20
-                                                   outline-none transition"
-                                        >
-                                            <option value="">
-                                                ${escapeHTML(formConfig.placeholder)}
-                                            </option>
-
-                                            ${branches.map(branch => `
-                                                <option value="${escapeHTML(branch.value)}">
-                                                    ${escapeHTML(branch.label)}
-                                                </option>
-                                            `).join('')}
-                                        </select>
-                                    </div>
-                                `}
-
-                                <div class="grid sm:grid-cols-2 gap-5">
-                                    <div>
-                                        <label
-                                            for="applicantFullName"
-                                            class="block text-sm font-semibold
-                                                   text-slate-800 mb-2"
-                                        >
-                                            Full Name <span class="text-red-600">*</span>
-                                        </label>
-
-                                        <input
-                                            id="applicantFullName"
-                                            name="full_name"
-                                            type="text"
-                                            required
-                                            autocomplete="name"
-                                            maxlength="120"
-                                            class="w-full px-4 py-3
-                                                   rounded-lg border border-slate-300
-                                                   bg-white text-base sm:text-sm text-slate-900
-                                                   outline-none transition
-                                                   focus:border-primary focus:ring-2
-                                                   focus:ring-primary/20"
-                                        >
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            for="applicantMobile"
-                                            class="block text-sm font-semibold
-                                                   text-slate-800 mb-2"
-                                        >
-                                            Mobile Number <span class="text-red-600">*</span>
-                                        </label>
-
-                                        <input
-                                            id="applicantMobile"
-                                            name="mobile"
-                                            type="tel"
-                                            required
-                                            autocomplete="tel"
-                                            maxlength="30"
-                                            class="w-full px-4 py-3
-                                                   rounded-lg border border-slate-300
-                                                   bg-white text-base sm:text-sm text-slate-900
-                                                   outline-none transition
-                                                   focus:border-primary focus:ring-2
-                                                   focus:ring-primary/20"
-                                        >
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label
-                                        for="applicantEmail"
-                                        class="block text-sm font-semibold
-                                               text-slate-800 mb-2"
-                                    >
-                                        Email Address <span class="text-red-600">*</span>
-                                    </label>
-
-                                    <input
-                                        id="applicantEmail"
-                                        name="email"
-                                        type="email"
-                                        required
-                                        autocomplete="email"
-                                        maxlength="180"
-                                        class="w-full px-4 py-3
-                                               rounded-lg border border-slate-300
-                                               bg-white text-base sm:text-sm text-slate-900
-                                               outline-none transition
-                                               focus:border-primary focus:ring-2
-                                               focus:ring-primary/20"
-                                    >
-                                </div>
-
-                                <div>
-                                    <label
-                                        for="applicantResume"
-                                        class="block text-sm font-semibold
-                                               text-slate-800 mb-2"
-                                    >
-                                        Resume / CV <span class="text-red-600">*</span>
-                                    </label>
-
-                                    <input
-                                        id="applicantResume"
-                                        name="resume"
-                                        type="file"
-                                        required
-                                        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                                        onchange="validateResumeFile(this)"
-                                        class="block w-full
-                                               rounded-lg border border-slate-300
-                                               bg-white
-                                               text-sm text-slate-600
-                                               file:mr-4 file:border-0
-                                               file:border-r file:border-slate-200
-                                               file:bg-slate-50
-                                               file:px-4 file:py-3
-                                               file:text-sm file:font-semibold
-                                               file:text-slate-700
-                                               hover:file:bg-slate-100"
-                                    >
-
-                                    <p class="mt-2 text-xs text-slate-500">
-                                        PDF, DOC, or DOCX. Maximum ${escapeHTML(formConfig.maxResumeMB)} MB.
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label
-                                        for="applicantMessage"
-                                        class="block text-sm font-semibold
-                                               text-slate-800 mb-2"
-                                    >
-                                        Short Message / Experience
-                                        <span class="font-normal text-slate-400">(Optional)</span>
-                                    </label>
-
-                                    <textarea
-                                        id="applicantMessage"
-                                        name="message"
-                                        rows="4"
-                                        maxlength="1500"
-                                        placeholder="Briefly tell us about your relevant experience or availability."
-                                        class="w-full px-4 py-3
-                                               rounded-lg border border-slate-300
-                                               bg-white text-base sm:text-sm text-slate-900
-                                               resize-y outline-none transition
-                                               focus:border-primary focus:ring-2
-                                               focus:ring-primary/20"
-                                    ></textarea>
-                                </div>
-
-                                <label
-                                    class="flex items-start gap-3
-                                           text-sm text-slate-600 leading-relaxed"
-                                >
-                                    <input
-                                        type="checkbox"
-                                        name="privacy_consent"
-                                        value="yes"
-                                        required
-                                        class="mt-1 h-4 w-4 shrink-0
-                                               accent-[#0B6E99]"
-                                    >
-                                    <span>
-                                        I consent to Archway International and Marketing Services Inc.
-                                        processing my personal information and Resume/CV for recruitment purposes.
-                                        <span class="text-red-600">*</span>
-                                    </span>
-                                </label>
-                            </div>
-
-                            <div
-                                class="px-6 py-5 sm:px-8
-                                       border-t border-slate-200
-                                       bg-slate-50/70
-                                       flex flex-col-reverse sm:flex-row
-                                       sm:items-center sm:justify-end gap-3"
+                        <div>
+                            <label
+                                for="applicantEmail"
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       text-slate-800
+                                       mb-2"
                             >
-                                <button
-                                    type="button"
-                                    onclick="closeApplicationForm()"
-                                    class="px-5 py-2.5 rounded-lg
-                                           text-sm font-semibold text-slate-600
-                                           hover:text-slate-900 hover:bg-slate-100
-                                           transition-colors"
+                                Email Address
+                                <span
+                                    class="text-red-600"
                                 >
-                                    ${escapeHTML(formConfig.closeBtn)}
-                                </button>
+                                    *
+                                </span>
+                            </label>
 
-                                <button
-                                    id="applicationSubmitBtn"
-                                    type="submit"
-                                    class="inline-flex min-h-11
-                                           items-center justify-center
-                                           px-6 py-2.5 rounded-lg
-                                           bg-primary text-white
-                                           text-sm font-semibold
-                                           hover:bg-primary-dark
-                                           disabled:opacity-60
-                                           disabled:cursor-not-allowed
-                                           transition-colors"
+                            <input
+                                id="applicantEmail"
+                                name="email"
+                                type="email"
+                                required
+                                autocomplete="email"
+                                maxlength="180"
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-lg
+                                       border
+                                       border-slate-300
+                                       bg-white
+                                       text-base
+                                       sm:text-sm
+                                       text-slate-900
+                                       outline-none
+                                       transition
+                                       focus:border-primary
+                                       focus:ring-2
+                                       focus:ring-primary/20"
+                            >
+                        </div>
+
+                        <div>
+                            <label
+                                for="applicantResume"
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       text-slate-800
+                                       mb-2"
+                            >
+                                Resume / CV
+                                <span
+                                    class="text-red-600"
                                 >
-                                    ${escapeHTML(formConfig.submitBtn)}
-                                </button>
-                            </div>
-                        </form>
+                                    *
+                                </span>
+                            </label>
+
+                            <input
+                                id="applicantResume"
+                                name="resume"
+                                type="file"
+                                required
+                                accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                onchange="validateResumeFile(this)"
+                                class="block
+                                       w-full
+                                       rounded-lg
+                                       border
+                                       border-slate-300
+                                       bg-white
+                                       text-sm
+                                       text-slate-600
+                                       file:mr-4
+                                       file:border-0
+                                       file:border-r
+                                       file:border-slate-200
+                                       file:bg-slate-50
+                                       file:px-4
+                                       file:py-3
+                                       file:text-sm
+                                       file:font-semibold
+                                       file:text-slate-700
+                                       hover:file:bg-slate-100"
+                            >
+
+                            <p
+                                class="mt-2
+                                       text-xs
+                                       text-slate-500"
+                            >
+                                PDF, DOC, or DOCX.
+                                Maximum
+                                ${escapeHTML(
+                                    formConfig.maxResumeMB
+                                )} MB.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label
+                                for="applicantMessage"
+                                class="block
+                                       text-sm
+                                       font-semibold
+                                       text-slate-800
+                                       mb-2"
+                            >
+                                Short Message / Experience
+
+                                <span
+                                    class="font-normal
+                                           text-slate-400"
+                                >
+                                    (Optional)
+                                </span>
+                            </label>
+
+                            <textarea
+                                id="applicantMessage"
+                                name="message"
+                                rows="4"
+                                maxlength="1500"
+                                placeholder="Briefly tell us about your relevant experience or availability."
+                                class="w-full
+                                       px-4 py-3
+                                       rounded-lg
+                                       border
+                                       border-slate-300
+                                       bg-white
+                                       text-base
+                                       sm:text-sm
+                                       text-slate-900
+                                       resize-y
+                                       outline-none
+                                       transition
+                                       focus:border-primary
+                                       focus:ring-2
+                                       focus:ring-primary/20"
+                            ></textarea>
+                        </div>
+
+                        <label
+                            class="flex
+                                   items-start
+                                   gap-3
+                                   text-sm
+                                   text-slate-600
+                                   leading-relaxed"
+                        >
+                            <input
+                                type="checkbox"
+                                name="privacy_consent"
+                                value="yes"
+                                required
+                                class="mt-1
+                                       h-4 w-4
+                                       shrink-0
+                                       accent-[#0B6E99]"
+                            >
+
+                            <span>
+                                I consent to Archway International
+                                and Marketing Services Inc.
+                                processing my personal information
+                                and Resume/CV for recruitment
+                                purposes.
+
+                                <span
+                                    class="text-red-600"
+                                >
+                                    *
+                                </span>
+                            </span>
+                        </label>
                     </div>
-                `;
 
-                document.body.appendChild(modal);
-                document.documentElement.style.overflow = 'hidden';
-                document.body.style.overflow = 'hidden';
+                    <div
+                        class="px-6 py-5
+                               sm:px-8
+                               border-t
+                               border-slate-200
+                               bg-slate-50/70
+                               flex
+                               flex-col-reverse
+                               sm:flex-row
+                               sm:items-center
+                               sm:justify-end
+                               gap-3"
+                    >
+                        <button
+                            type="button"
+                            onclick="closeApplicationForm()"
+                            class="px-5
+                                   py-2.5
+                                   rounded-lg
+                                   text-sm
+                                   font-semibold
+                                   text-slate-600
+                                   hover:text-slate-900
+                                   hover:bg-slate-100
+                                   transition-colors"
+                        >
+                            ${escapeHTML(
+                                formConfig.closeBtn
+                            )}
+                        </button>
 
-                setTimeout(() => {
-                    modal.classList.add('modal-visible');
-                }, 10);
-            }, 210);
-        }
+                        <button
+                            id="applicationSubmitBtn"
+                            type="submit"
+                            ${
+                                localRouteAvailable
+                                ? ''
+                                : 'disabled'
+                            }
+                            class="inline-flex
+                                   min-h-11
+                                   items-center
+                                   justify-center
+                                   px-6 py-2.5
+                                   rounded-lg
+                                   bg-primary
+                                   text-white
+                                   text-sm
+                                   font-semibold
+                                   hover:bg-primary-dark
+                                   disabled:opacity-60
+                                   disabled:cursor-not-allowed
+                                   transition-colors"
+                        >
+                            ${escapeHTML(
+                                formConfig.submitBtn
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(
+            modal
+        );
+
+        document.documentElement
+        .style
+        .overflow = 'hidden';
+
+        document.body
+        .style
+        .overflow = 'hidden';
+
+        setTimeout(() => {
+            modal.classList.add(
+                'modal-visible'
+            );
+        }, 10);
+
+    }, 210);
+}
 
         function validateResumeFile(input) {
             const file = input?.files?.[0];
