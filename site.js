@@ -2990,6 +2990,8 @@ ${job.location ? `
         }
         
         // ===== APPLICATION ROUTING =====
+let applicationRoutingCache = null;
+
 function normalizeApplicationLocation(value) {
     return String(value || '')
     .toLowerCase()
@@ -3084,9 +3086,147 @@ function getApplicationOfficeLabel(routeKey) {
     return labels[routeKey] || 'Assigned HR Office';
 }
 
+function parseApplicationRoutingCSV(text) {
+    const rows = [];
+    let currentRow = [];
+    let currentValue = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (
+            char === '"' &&
+            insideQuotes &&
+            nextChar === '"'
+        ) {
+            currentValue += '"';
+            i++;
+        } else if (char === '"') {
+            insideQuotes = !insideQuotes;
+        } else if (
+            char === ',' &&
+            !insideQuotes
+        ) {
+            currentRow.push(
+                currentValue.trim()
+            );
+
+            currentValue = '';
+
+        } else if (
+            (char === '\n' || char === '\r') &&
+            !insideQuotes
+        ) {
+            if (
+                currentValue ||
+                currentRow.length > 0
+            ) {
+                currentRow.push(
+                    currentValue.trim()
+                );
+
+                rows.push(
+                    currentRow
+                );
+
+                currentRow = [];
+                currentValue = '';
+            }
+
+            if (
+                char === '\r' &&
+                nextChar === '\n'
+            ) {
+                i++;
+            }
+
+        } else {
+            currentValue += char;
+        }
+    }
+
+    if (
+        currentValue ||
+        currentRow.length > 0
+    ) {
+        currentRow.push(
+            currentValue.trim()
+        );
+
+        rows.push(
+            currentRow
+        );
+    }
+
+    return rows;
+}
+
+async function fetchApplicationRouting(jobType, jobLocation) {
+    try {
+        const params = new URLSearchParams({
+            action: 'routing',
+            job_type: String(jobType || '').trim(),
+            job_location: String(jobLocation || '').trim()
+        });
+
+        const response = await fetch(
+            `send-application.php?${params.toString()}`,
+            {
+                method: 'GET',
+                cache: 'no-store'
+            }
+        );
+
+        let data = {};
+
+        try {
+            data = await response.json();
+        } catch (error) {
+            throw new Error(
+                'Invalid routing response.'
+            );
+        }
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+            throw new Error(
+                data.message ||
+                'Routing lookup failed.'
+            );
+        }
+
+        return {
+            routeKey:
+                data.route_key || '',
+
+            officeName:
+                data.office_name || '',
+
+            assignedEmail:
+                data.assigned_email || ''
+        };
+
+    } catch (error) {
+        console.error(
+            'Failed to fetch application routing:',
+            error
+        );
+
+        return {
+            routeKey: '',
+            officeName: '',
+            assignedEmail: ''
+        };
+    }
+}
+
 
 // ===== ONLINE APPLICATION MODAL =====
-function openApplicationForm(jobId) {
+async function openApplicationForm(jobId) {
     const job = (window._allJobs || []).find(
         j => j.id === jobId
     );
@@ -3111,11 +3251,44 @@ function openApplicationForm(jobId) {
         job.location
     );
 
-    const applicationOffice =
+    let applicationOffice =
     isOverseas
     ? 'Pasay / Main HR'
     : getApplicationOfficeLabel(
         localRouteKey
+    );
+
+    let applicationEmail =
+    isOverseas
+    ? 'hr@archwayintl.com.ph'
+    : '';
+
+    if (
+        !isOverseas &&
+        localRouteKey
+    ) {
+        const route =
+await fetchApplicationRouting(
+    job.type,
+    job.location
+);
+
+if (route.officeName) {
+    applicationOffice =
+    route.officeName;
+}
+
+if (route.assignedEmail) {
+    applicationEmail =
+    route.assignedEmail;
+}
+    }
+
+    const localRouteAvailable =
+    isOverseas ||
+    (
+        Boolean(localRouteKey) &&
+        Boolean(applicationEmail)
     );
 
     closeJobPopup(true);
@@ -3143,10 +3316,6 @@ function openApplicationForm(jobId) {
         isOverseas
         ? formConfig.overseasSubtitle
         : 'Complete the form below. Your application office is assigned automatically based on the job location.';
-
-        const localRouteAvailable =
-        isOverseas ||
-        Boolean(localRouteKey);
 
         modal.innerHTML = `
             <div
@@ -3342,52 +3511,89 @@ function openApplicationForm(jobId) {
                             </label>
                         </div>
 
-                        <div>
-                            <p
-                                class="block
-                                       text-sm
-                                       font-semibold
-                                       text-slate-800
-                                       mb-2"
-                            >
-                                Application Office
-                            </p>
-
+                        <div
+                            class="border-y
+                                   border-slate-200
+                                   divide-y
+                                   divide-slate-200"
+                        >
                             <div
-                                class="w-full
-                                       px-4 py-3
-                                       rounded-lg
-                                       border
-                                       border-slate-300
-                                       bg-slate-50
-                                       text-sm
-                                       font-semibold
-                                       text-slate-800"
+                                class="py-4
+                                       grid
+                                       sm:grid-cols-[150px_1fr]
+                                       gap-1 sm:gap-5"
                             >
-                                ${escapeHTML(
-                                    applicationOffice
-                                )}
+                                <p
+                                    class="text-xs
+                                           font-bold
+                                           uppercase
+                                           tracking-[0.08em]
+                                           text-slate-500"
+                                >
+                                    Application Office
+                                </p>
+
+                                <p
+                                    class="text-sm
+                                           font-semibold
+                                           text-slate-900"
+                                >
+                                    ${escapeHTML(
+                                        applicationOffice
+                                    )}
+                                </p>
                             </div>
 
-                            ${
-                                !localRouteAvailable
-                                ? `
-                                    <p
-                                        class="mt-2
-                                               text-xs
-                                               text-red-600
-                                               leading-relaxed"
-                                    >
-                                        No application office
-                                        is currently assigned
-                                        to this job location.
-                                        Please contact Archway HR
-                                        for assistance.
-                                    </p>
-                                `
-                                : ''
-                            }
+                            <div
+                                class="py-4
+                                       grid
+                                       sm:grid-cols-[150px_1fr]
+                                       gap-1 sm:gap-5"
+                            >
+                                <p
+                                    class="text-xs
+                                           font-bold
+                                           uppercase
+                                           tracking-[0.08em]
+                                           text-slate-500"
+                                >
+                                    Application Email
+                                </p>
+
+                                <p
+                                    class="text-sm
+                                           font-medium
+                                           text-slate-700
+                                           break-all"
+                                >
+                                    ${
+                                        applicationEmail
+                                        ? escapeHTML(
+                                            applicationEmail
+                                        )
+                                        : 'Not configured'
+                                    }
+                                </p>
+                            </div>
                         </div>
+
+                        ${
+                            !localRouteAvailable
+                            ? `
+                                <p
+                                    class="text-xs
+                                           text-red-600
+                                           leading-relaxed"
+                                >
+                                    The application email
+                                    for this job location
+                                    is not currently configured.
+                                    Please contact Archway HR
+                                    for assistance.
+                                </p>
+                            `
+                            : ''
+                        }
 
                         <div
                             class="grid
