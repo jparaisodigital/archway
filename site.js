@@ -2333,6 +2333,109 @@ ${job.location ? `
             initBackToTop();
             initScrollReveal();
         }
+
+        // ===== CLIENTS PAGE =====
+function renderClientsPage() {
+    const app = document.getElementById('app');
+    const p = config.clientsPage;
+
+    app.innerHTML = `
+        ${renderNav('clients.html')}
+
+        <div class="fade-in-content">
+
+            <!-- Editorial Header --> 
+<header class="bg-white border-b border-slate-200"> 
+    <div 
+        class="max-w-7xl mx-auto px-6 
+               pt-24 pb-16
+               sm:pt-28
+               lg:pt-24 lg:pb-20" 
+    > 
+        <div 
+            class="grid lg:grid-cols-[1fr_0.9fr] 
+                   gap-8 lg:gap-20 
+                   items-end" 
+        >
+                        <div>
+                            <p
+                                class="text-xs sm:text-sm font-bold
+                                       tracking-[0.20em] uppercase
+                                       text-primary mb-3"
+                            >
+                                Corporate Partners
+                            </p>
+
+                            <h1
+                                class="text-4xl sm:text-5xl lg:text-6xl
+                                       font-extrabold tracking-tight
+                                       text-slate-900"
+                            >
+                                ${escapeHTML(p.headerTitle)}
+                            </h1>
+                        </div>
+
+                        <p
+                            class="text-base sm:text-lg
+                                   text-slate-600 leading-relaxed"
+                        >
+                            ${escapeHTML(p.headerSubtitle)}
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+
+            <!-- Client Logos -->
+            <section class="py-16 lg:py-24 bg-slate-50 reveal">
+                <div class="max-w-7xl mx-auto px-6">
+
+                    <div
+                        class="grid
+                               grid-cols-1
+                               md:grid-cols-2
+                               lg:grid-cols-3
+                               border-t border-l
+                               border-slate-200
+                               reveal-stagger"
+                    >
+                        ${p.majorAccounts.map(client => `
+                            <div
+                                class="min-h-[220px]
+                                       lg:min-h-[250px]
+                                       flex items-center
+                                       justify-center
+                                       px-8 py-10
+                                       bg-white
+                                       border-r border-b
+                                       border-slate-200"
+                            >
+                                <img
+                                    src="${escapeHTML(client.logo)}"
+                                    alt="${escapeHTML(client.name)} logo"
+                                    class="w-full
+                                           max-w-[280px]
+                                           max-h-[130px]
+                                           object-contain"
+                                    loading="lazy"
+                                >
+                            </div>
+                        `).join('')}
+                    </div>
+
+                </div>
+            </section>
+
+
+            ${renderFooter()}
+
+        </div>
+    `;
+
+    initNavbarScroll();
+    initBackToTop();
+    initScrollReveal();
+}
         
         // ===== APPLICANTS PAGE (info-only "How to Apply" guide) =====
         function renderApplicantsPage() {

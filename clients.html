@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Clients | Archway</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: [
+                            'Inter',
+                            'system-ui',
+                            'sans-serif'
+                        ]
+                    },
+
+                    colors: {
+                        primary: '#0B6E99',
+                        'primary-dark': '#084F6F',
+                        accent: '#00C2CB'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family:
+                'Inter',
+                system-ui,
+                sans-serif;
+
+            animation:
+                fadeIn
+                0.4s
+                ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-content {
+            animation:
+                fadeIn
+                0.4s
+                ease-out;
+        }
+
+        .site-navbar {
+            transition:
+                background-color 180ms ease,
+                border-color 180ms ease,
+                box-shadow 180ms ease;
+        }
+
+        .site-navbar.navbar-scrolled {
+            background-color:
+                rgb(2 6 23 / 0.98);
+
+            border-bottom-color:
+                rgb(51 65 85 / 0.75);
+
+            box-shadow:
+                0 8px 24px
+                rgb(2 6 23 / 0.12);
+        }
+
+        .mobile-menu-panel {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-6px);
+            pointer-events: none;
+
+            background-color:
+                rgb(2 6 23);
+
+            transition:
+                max-height 220ms ease,
+                opacity 180ms ease,
+                transform 180ms ease;
+        }
+
+        .mobile-menu-panel.mobile-menu-open {
+            max-height: 420px;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+
+            transition:
+                opacity 500ms ease,
+                transform 500ms ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-stagger > * {
+            opacity: 0;
+            transform: translateY(10px);
+
+            transition:
+                opacity 500ms ease,
+                transform 500ms ease;
+        }
+
+        .reveal-stagger.reveal-visible > * {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-stagger.reveal-visible > *:nth-child(2) {
+            transition-delay: 80ms;
+        }
+
+        .reveal-stagger.reveal-visible > *:nth-child(3) {
+            transition-delay: 160ms;
+        }
+
+        .reveal-stagger.reveal-visible > *:nth-child(4) {
+            transition-delay: 240ms;
+        }
+
+        .reveal-stagger.reveal-visible > *:nth-child(5) {
+            transition-delay: 320ms;
+        }
+
+        .reveal-stagger.reveal-visible > *:nth-child(6) {
+            transition-delay: 400ms;
+        }
+
+        #backToTop {
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+
+            transition:
+                opacity 180ms ease,
+                transform 180ms ease;
+        }
+
+        #backToTop.back-to-top-visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        button,
+        a {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+
+
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+    <div id="app"></div>
+
+    <script src="config.js"></script>
+    <script src="site.js"></script>
+
+    <script>
+        document.addEventListener(
+            'DOMContentLoaded',
+            async () => {
+
+                const settings =
+                    await fetchSiteSettings();
+
+                applySiteSettings(settings);
+
+                renderClientsPage();
+            }
+        );
+    </script>
+
+</body>
+
+</html>

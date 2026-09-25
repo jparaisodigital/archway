@@ -20,8 +20,9 @@ const config = {
     { label: "Home", href: "index.html" },
     { label: "How to Apply", href: "applicants.html" },
     { label: "Employers", href: "employers.html" },
+    { label: "Clients", href: "clients.html" },
     { label: "About Us", href: "about.html" }
-  ],
+],
 
   hero: {
     eyebrow: "25 YEARS OF RECRUITMENT EXCELLENCE",
@@ -310,7 +311,41 @@ const config = {
       "inquiry@archwayintl.com.ph",
       "hr@archwayintl.com.ph"
     ]
+    
   },
+
+  clientsPage: {
+    headerTitle: "Our Clients",
+    headerSubtitle: "Organizations that have worked with Archway for recruitment and manpower requirements.",
+
+    majorAccounts: [
+        {
+            name: "Pepsi",
+            logo: "assets/client-pepsi.png"
+        },
+        {
+            name: "Century Pacific Food, Inc.",
+            logo: "assets/client-century-pacific.png"
+        },
+        {
+            name: "Puregold",
+            logo: "assets/client-puregold.png"
+        },
+        {
+            name: "Birch Tree Fortified",
+            logo: "assets/client-birchtree.png"
+        },
+        {
+            name: "Camel",
+            logo: "assets/client-camel.png"
+        },
+        {
+            name: "Eaton",
+            logo: "assets/client-eaton.png"
+        }
+    ],
+
+},
 
   // Footer
   footer: {
